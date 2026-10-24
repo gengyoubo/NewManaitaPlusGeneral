@@ -24,7 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.List;
 
 @JeiPlugin
 public class MPJeiPlugin implements IModPlugin {
-    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MPG.MODID, "jei_plugin");
+    private static final ResourceLocation UID = new ResourceLocation(MPG.MODID, "jei_plugin");
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
@@ -48,11 +48,6 @@ public class MPJeiPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         typedItems().forEach(item -> registration.registerSubtypeInterpreter(item, MPGJeiSubtypeInterpreter.INSTANCE));
-    }
-
-    @Override
-    public void registerExtraIngredients(IExtraIngredientRegistration registration) {
-        registration.addExtraItemStacks(typedStacks());
     }
 
     @Override
@@ -85,16 +80,16 @@ public class MPJeiPlugin implements IModPlugin {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<RecipeHolder<CraftingRecipe>> getManaitaCraftingRecipes() {
+    private static List<CraftingRecipe> getManaitaCraftingRecipes() {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.level == null) {
             return List.of();
         }
         return minecraft.level.getRecipeManager().getRecipes().stream()
-                .filter(holder -> MPG.MODID.equals(holder.id().getNamespace()))
-                .filter(holder -> holder.value() instanceof CraftingRecipe)
-                .filter(holder -> holder.value().getSerializer() == MPRecipeSerializerCore.NBTCraftingRecipe.get())
-                .map(holder -> (RecipeHolder<CraftingRecipe>) holder)
+                .filter(holder -> MPG.MODID.equals(holder.getId().getNamespace()))
+                .filter(holder -> holder instanceof CraftingRecipe)
+                .filter(holder -> holder.getSerializer() == MPRecipeSerializerCore.NBTCraftingRecipe.get())
+                .map(holder -> (CraftingRecipe) holder)
                 .toList();
     }
 

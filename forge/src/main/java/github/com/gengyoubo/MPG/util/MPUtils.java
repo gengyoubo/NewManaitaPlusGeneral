@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.util;
 
+import net.minecraft.world.damagesource.DamageSource;
 import github.com.gengyoubo.common.entity.MPGEntityData;
 
 import github.com.gengyoubo.MPG.item.armor.MPGArmor;
@@ -46,7 +47,7 @@ public class MPUtils {
             ThreadLocal.withInitial(EntitiesWrapper::new);
 
     public static void godKill(Player player,boolean remove,boolean shiftKeyDown) {
-        Level level = player.level();
+        Level level = player.getLevel();
         if (level instanceof ServerLevel server) {
             List<Entity> tntities = new ArrayList<>();
             EntitiesWrapper wrapper = ENTITY_CACHE.get();
@@ -94,7 +95,7 @@ public class MPUtils {
             removeOnServer(target);
         } else {
             if (target instanceof LivingEntity living) {
-                living.hurt(living.damageSources().playerAttack(player), Float.MAX_VALUE);
+                living.hurt(DamageSource.playerAttack(player), Float.MAX_VALUE);
 
                 living.handleEntityEvent((byte) 2);
                 living.handleEntityEvent((byte) 47);
@@ -104,7 +105,7 @@ public class MPUtils {
                 living.handleEntityEvent((byte) 51);
                 living.handleEntityEvent((byte) 52);
 
-                living.die(living.damageSources().generic());
+                living.die(DamageSource.GENERIC);
             }
         }
     }
@@ -112,7 +113,7 @@ public class MPUtils {
 
 
     public static void removeOnServer(Entity target) {
-        if (target.level() instanceof ServerLevel serverLevel) {
+        if (target.getLevel() instanceof ServerLevel serverLevel) {
             target.unRide();
             target.stopRiding();
             target.remove(Entity.RemovalReason.DISCARDED);

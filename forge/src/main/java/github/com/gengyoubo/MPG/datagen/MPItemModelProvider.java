@@ -1,7 +1,7 @@
 package github.com.gengyoubo.MPG.datagen;
 
 import github.com.gengyoubo.MPG.MPG;
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -30,7 +30,7 @@ public class MPItemModelProvider extends ItemModelProvider {
             "netherite"
     };
 
-    public MPItemModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+    public MPItemModelProvider(DataGenerator output, ExistingFileHelper exFileHelper) {
         super(output, MPG.MODID, exFileHelper);
     }
 

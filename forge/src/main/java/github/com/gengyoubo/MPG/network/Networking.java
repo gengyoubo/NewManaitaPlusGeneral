@@ -7,56 +7,56 @@ import github.com.gengyoubo.common.network.MPGKeyPressLogic;
 import github.com.gengyoubo.common.network.payload.MPGChangeEntityDataPayload;
 import github.com.gengyoubo.common.network.payload.MPGDestroyBlockPayload;
 import github.com.gengyoubo.common.network.payload.MPGKeyPressPayload;
-import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
+import java.util.function.Supplier;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.SimpleChannel;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.simple.SimpleChannel;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 public class Networking {
-    public static final int VERSION = 1;
-    public static final SimpleChannel CHANNEL = ChannelBuilder
-            .named(ResourceLocation.fromNamespaceAndPath(MPG.MODID, "main"))
-            .networkProtocolVersion(VERSION)
-            .clientAcceptedVersions((status, version) -> true)
-            .serverAcceptedVersions((status, version) -> true)
-            .simpleChannel();
+    public static final String VERSION = "1";
+    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
+            new ResourceLocation(MPG.MODID, "main"), () -> VERSION, VERSION::equals, VERSION::equals);
 
     public static void registerMessage() {
-        CHANNEL.messageBuilder(MPGKeyPressPayload.class, 0)
-                .direction(PacketFlow.SERVERBOUND)
-                .codec(MPGKeyPressPayload.STREAM_CODEC)
+        CHANNEL.messageBuilder(MPGKeyPressPayload.class, 0, NetworkDirection.PLAY_TO_SERVER)
+                .encoder((packet, buf) -> MPGKeyPressPayload.STREAM_CODEC.encode(buf, packet))
+                .decoder(MPGKeyPressPayload.STREAM_CODEC::decode)
                 .consumerMainThread(Networking::handleKeyPress)
                 .add();
-        CHANNEL.messageBuilder(OpenBaublesPacket.class, 1)
-                .direction(PacketFlow.SERVERBOUND)
-                .codec(OpenBaublesPacket.STREAM_CODEC)
+        CHANNEL.messageBuilder(OpenBaublesPacket.class, 1, NetworkDirection.PLAY_TO_SERVER)
+                .encoder((packet, buf) -> OpenBaublesPacket.STREAM_CODEC.encode(buf, packet))
+                .decoder(OpenBaublesPacket.STREAM_CODEC::decode)
                 .consumerMainThread(OpenBaublesPacket::handle)
                 .add();
-        CHANNEL.messageBuilder(MPGDestroyBlockPayload.class, 2)
-                .direction(PacketFlow.CLIENTBOUND)
-                .codec(MPGDestroyBlockPayload.STREAM_CODEC)
+        CHANNEL.messageBuilder(MPGDestroyBlockPayload.class, 2, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder((packet, buf) -> MPGDestroyBlockPayload.STREAM_CODEC.encode(buf, packet))
+                .decoder(MPGDestroyBlockPayload.STREAM_CODEC::decode)
                 .consumerMainThread(Networking::handleDestroyBlock)
                 .add();
-        CHANNEL.messageBuilder(MPGChangeEntityDataPayload.class, 3)
-                .direction(PacketFlow.CLIENTBOUND)
-                .codec(MPGChangeEntityDataPayload.STREAM_CODEC)
+        CHANNEL.messageBuilder(MPGChangeEntityDataPayload.class, 3, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder((packet, buf) -> MPGChangeEntityDataPayload.STREAM_CODEC.encode(buf, packet))
+                .decoder(MPGChangeEntityDataPayload.STREAM_CODEC::decode)
                 .consumerMainThread(Networking::handleChangeEntityData)
                 .add();
     }
 
-    private static void handleKeyPress(MPGKeyPressPayload payload, CustomPayloadEvent.Context context) {
+    private static void handleKeyPress(MPGKeyPressPayload payload, Supplier<NetworkEvent.Context> contextSupplier) {
+        var context = contextSupplier.get();
         context.enqueueWork(() -> {
-            if (context.isClientSide() || !(context.getSender() instanceof ServerPlayer player)) {
+            if (context.getDirection().getReceptionSide().isClient() || context.getSender() == null) {
                 return;
             }
+            ServerPlayer player = context.getSender();
             if (payload.keyCode() == 0) {
                 ItemStack ring = PlayerHandler.getEquippedRing(player).orElse(ItemStack.EMPTY);
                 if (MPGKeyPressLogic.invoke(ring, player)) {
@@ -68,18 +68,20 @@ public class Networking {
         context.setPacketHandled(true);
     }
 
-    private static void handleDestroyBlock(MPGDestroyBlockPayload payload, CustomPayloadEvent.Context context) {
+    private static void handleDestroyBlock(MPGDestroyBlockPayload payload, Supplier<NetworkEvent.Context> contextSupplier) {
+        var context = contextSupplier.get();
         context.enqueueWork(() -> {
-            if (context.isClientSide()) {
+            if (context.getDirection().getReceptionSide().isClient()) {
                 ClientPacketHandlers.handleDestroyBlock(payload);
             }
         });
         context.setPacketHandled(true);
     }
 
-    private static void handleChangeEntityData(MPGChangeEntityDataPayload payload, CustomPayloadEvent.Context context) {
+    private static void handleChangeEntityData(MPGChangeEntityDataPayload payload, Supplier<NetworkEvent.Context> contextSupplier) {
+        var context = contextSupplier.get();
         context.enqueueWork(() -> {
-            if (context.isClientSide()) {
+            if (context.getDirection().getReceptionSide().isClient()) {
                 ClientPacketHandlers.handleChangeEntityData(payload);
             }
         });
@@ -87,8 +89,8 @@ public class Networking {
     }
 
     public static void sendToSameLevelPlayers(Level level, Object packet) {
-        if (level instanceof ServerLevel serverLevel && packet instanceof CustomPacketPayload payload) {
-            CHANNEL.send(payload, PacketDistributor.DIMENSION.with(serverLevel.dimension()));
+        if (level instanceof ServerLevel serverLevel) {
+            CHANNEL.send(PacketDistributor.DIMENSION.with(serverLevel::dimension), packet);
         }
     }
 
@@ -118,14 +120,12 @@ public class Networking {
     }
 
     public static void sendToServer(Object packet) {
-        if (packet instanceof CustomPacketPayload payload) {
-            CHANNEL.send(payload, PacketDistributor.SERVER.noArg());
-        }
+        CHANNEL.sendToServer(packet);
     }
 
     public static void sendToTrackBySeen(Level level, Player player, Object packet) {
-        if (level instanceof ServerLevel && packet instanceof CustomPacketPayload payload) {
-            CHANNEL.send(payload, PacketDistributor.TRACKING_ENTITY.with(player));
+        if (level instanceof ServerLevel) {
+            CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> player), packet);
         }
     }
 }

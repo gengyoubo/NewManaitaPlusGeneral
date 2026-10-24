@@ -1,13 +1,12 @@
 package github.com.gengyoubo.MPG.block;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.material.Material;
 import github.com.gengyoubo.MPG.block.entity.MPBrewingStandBlockEntity;
 import github.com.gengyoubo.MPG.core.MPGBlockCore;
 import github.com.gengyoubo.MPG.core.MPGBlockEntityCore;
 import github.com.gengyoubo.common.block.MPGBrewingStandBlockBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -17,19 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MPBrewingStandBlock extends MPGBrewingStandBlockBase {
-    public static final MapCodec<MPBrewingStandBlock> CODEC = simpleCodec(MPBrewingStandBlock::new);
 
     public MPBrewingStandBlock() {
-        this(BlockBehaviour.Properties.of().noOcclusion());
+        this(BlockBehaviour.Properties.of(Material.STONE).noOcclusion());
     }
 
     private MPBrewingStandBlock(BlockBehaviour.Properties properties) {
         super(properties, () -> MPGBlockCore.HookBlockItem.get());
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

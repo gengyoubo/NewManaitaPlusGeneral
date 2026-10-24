@@ -1,9 +1,7 @@
 package github.com.gengyoubo.MPG.baubles.common.container;
 
-import net.minecraft.core.HolderLookup;
 import github.com.gengyoubo.MPG.baubles.api.BaubleType;
 import github.com.gengyoubo.MPG.baubles.api.IBauble;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
@@ -88,7 +86,7 @@ public class InventoryBaubles extends ItemStackHandler {
                 continue;
             }
 
-            ItemStack equipped = sourceStack.copyWithCount(1);
+            ItemStack equipped = github.com.gengyoubo.common.util.MPGItemStackData.copyWithCount(sourceStack, 1);
             setStackInSlot(slot, equipped);
             sourceStack.shrink(1);
             return true;
@@ -133,7 +131,6 @@ public class InventoryBaubles extends ItemStackHandler {
     }
 
     public void copyFrom(InventoryBaubles other) {
-        HolderLookup.Provider provider = Objects.requireNonNull(owner, "owner").registryAccess();
-        deserializeNBT(provider, other.serializeNBT(provider));
+        deserializeNBT(other.serializeNBT());
     }
 }

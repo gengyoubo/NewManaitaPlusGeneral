@@ -45,7 +45,7 @@ public abstract class MPGTypedBlockItemBase extends BlockItem {
 
     @Override
     public @NotNull InteractionResult place(BlockPlaceContext context) {
-        if (!getBlock().isEnabled(context.getLevel().enabledFeatures()) || !context.canPlace()) {
+        if (!context.canPlace()) {
             return InteractionResult.FAIL;
         }
 

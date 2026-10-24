@@ -18,14 +18,9 @@ public class MPGBrewingStandMenu extends MPGBrewingStandMenuBase {
     }
 
     public MPGBrewingStandMenu(int id, Inventory inventory, Container container, ContainerData data) {
-        this(id, inventory, container, data, inventory.player.level().potionBrewing());
-    }
-
-    private MPGBrewingStandMenu(int id, Inventory inventory, Container container, ContainerData data,
-                                PotionBrewing potionBrewing) {
         super(MPGMenuCore.BrewingStandManaita.get(), id, inventory, container, data,
-                potionBrewing::isIngredient,
-                stack -> potionBrewing.isContainerIngredient(stack) || stack.is(Items.GLASS_BOTTLE),
+                PotionBrewing::isIngredient,
+                stack -> (stack.is(Items.POTION) || stack.is(Items.SPLASH_POTION) || stack.is(Items.LINGERING_POTION)) || stack.is(Items.GLASS_BOTTLE),
                 net.minecraftforge.event.ForgeEventFactory::onPlayerBrewedPotion);
     }
 }

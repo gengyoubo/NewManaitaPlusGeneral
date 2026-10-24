@@ -5,13 +5,10 @@ import github.com.gengyoubo.common.entity.MPGEntityData;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import github.com.gengyoubo.common.util.MPGItemStackData;
 import github.com.gengyoubo.common.util.MPText;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -33,29 +30,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MPGArmorItemBase extends ArmorItem {
-    public static final Holder<ArmorMaterial> MANAITA_ARMOR_MATERIAL = Holder.direct(
-            new ArmorMaterial(
-                    Map.of(
-                            Type.HELMET, 0,
-                            Type.CHESTPLATE, 0,
-                            Type.LEGGINGS, 0,
-                            Type.BOOTS, 0,
-                            Type.BODY, 0
-                    ),
-                    0,
-                    SoundEvents.ARMOR_EQUIP_TURTLE,
-                    () -> Ingredient.EMPTY,
-                    List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(
-                            "manaita_plus_general", "manaita_armor"))),
-                    0.0F,
-                    0.0F
-            )
-    );
+    public static final ArmorMaterial MANAITA_ARMOR_MATERIAL = new ArmorMaterial() {
+        public int getDurabilityForSlot(EquipmentSlot slot) { return 0; }
+        public int getDefenseForSlot(EquipmentSlot slot) { return 0; }
+        public int getEnchantmentValue() { return 0; }
+        public net.minecraft.sounds.SoundEvent getEquipSound() { return SoundEvents.ARMOR_EQUIP_TURTLE; }
+        public Ingredient getRepairIngredient() { return Ingredient.EMPTY; }
+        public String getName() { return "manaita_plus_general:manaita_armor"; }
+        public float getToughness() { return 0; }
+        public float getKnockbackResistance() { return 0; }
+    };
 
     private static final int FAST_REGENERATION_DURATION = 60;
+    /** 1.19.2 has no infinite effect duration; refresh long effects well before they expire. */
+    private static final int INFINITE_DURATION = 1_000_000;
     private static final int FAST_REGENERATION_AMPLIFIER = 4;
     private static final double[] BOOTS_JUMP_STRENGTH = {
             0.0D, 0.4635D, 0.6175D, 0.6850D, 0.8030D, 0.9095D, 1.0075D, 1.0985D, 1.1850D
@@ -67,17 +57,15 @@ public class MPGArmorItemBase extends ArmorItem {
     private static final String CHESTPLATE_FALL_TAG = "manaita_plus_general.chestplate_fall";
     private static final String CHESTPLATE_BIG_FALL_TAG = "manaita_plus_general.chestplate_big_fall";
     private static final String LEGGINGS_INVISIBILITY_TAG = "manaita_plus_general.leggings_invisibility";
-    private static final ResourceLocation BOOTS_SPEED_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(
-            "manaita_plus_general", "boots_speed");
-    private static final ResourceLocation BOOTS_JUMP_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(
-            "manaita_plus_general", "boots_jump");
+    private static final java.util.UUID BOOTS_SPEED_MODIFIER_ID = java.util.UUID.nameUUIDFromBytes("manaita_plus_general:boots_speed".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    private static final java.util.UUID BOOTS_JUMP_MODIFIER_ID = java.util.UUID.nameUUIDFromBytes("manaita_plus_general:boots_jump".getBytes(java.nio.charset.StandardCharsets.UTF_8));
 
-    protected MPGArmorItemBase(Holder<ArmorMaterial> material, Type type) {
-        super(material, type, new Item.Properties().fireResistant());
+    protected MPGArmorItemBase(ArmorMaterial material, EquipmentSlot slot) {
+        super(material, slot, new Item.Properties().fireResistant());
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                 List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(Component.literal(MPText.manaita_infinity.formatting(text("info.armor"))));
     }
@@ -88,7 +76,7 @@ public class MPGArmorItemBase extends ArmorItem {
         ItemStack leggings = player.getItemBySlot(EquipmentSlot.LEGS);
         ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
 
-        if (!player.level().isClientSide) {
+        if (!player.getLevel().isClientSide) {
             if (helmet.getItem() instanceof Helmet) {
                 applyHelmetEffects(player);
             } else {
@@ -129,7 +117,7 @@ public class MPGArmorItemBase extends ArmorItem {
                 && !hasManaitaHelmet(player)
                 && !hasManaitaChestplate(player)
                 && !hasManaitaBoots(player);
-        return !onlyLeggings || !source.is(DamageTypeTags.IS_FIRE) || !isTouchingFire(player);
+        return !onlyLeggings || !source.isFire() || !isTouchingFire(player);
     }
 
     private static void syncChestplate(Player player, ItemStack chestplate) {
@@ -160,14 +148,14 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     private static void syncChestplateLandingSound(Player player) {
-        if (!player.onGround() && player.fallDistance > 3.0F) {
+        if (!player.isOnGround() && player.fallDistance > 3.0F) {
             player.addTag(CHESTPLATE_FALL_TAG);
             if (player.fallDistance > 7.0F) {
                 player.addTag(CHESTPLATE_BIG_FALL_TAG);
             }
             return;
         }
-        if (player.onGround() && player.getTags().contains(CHESTPLATE_FALL_TAG)) {
+        if (player.isOnGround() && player.getTags().contains(CHESTPLATE_FALL_TAG)) {
             if (!hasManaitaBoots(player)) {
                 boolean bigFall = player.getTags().contains(CHESTPLATE_BIG_FALL_TAG);
                 player.playSound(bigFall ? SoundEvents.GENERIC_BIG_FALL : SoundEvents.GENERIC_SMALL_FALL,
@@ -179,9 +167,9 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     private static void removeHarmfulEffects(Player player) {
-        List<Holder<MobEffect>> harmfulEffects = new ArrayList<>();
+        List<MobEffect> harmfulEffects = new ArrayList<>();
         for (MobEffectInstance effect : player.getActiveEffects()) {
-            if (effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
+            if (effect.getEffect().getCategory() == MobEffectCategory.HARMFUL) {
                 harmfulEffects.add(effect.getEffect());
             }
         }
@@ -199,7 +187,7 @@ public class MPGArmorItemBase extends ArmorItem {
         }
 
         if (MPGConfigValues.leggings_invisibility_value) {
-            addHelmetEffect(player, MobEffects.INVISIBILITY, MobEffectInstance.INFINITE_DURATION,
+            addHelmetEffect(player, MobEffects.INVISIBILITY, INFINITE_DURATION,
                     0, LEGGINGS_INVISIBILITY_TAG);
         } else {
             removeHelmetEffect(player, MobEffects.INVISIBILITY, LEGGINGS_INVISIBILITY_TAG);
@@ -208,42 +196,42 @@ public class MPGArmorItemBase extends ArmorItem {
 
     private static boolean isTouchingFire(Player player) {
         return player.isInLava()
-                || player.level().getBlockState(player.blockPosition()).is(BlockTags.FIRE)
-                || player.level().getBlockState(player.blockPosition().above()).is(BlockTags.FIRE);
+                || player.getLevel().getBlockState(player.blockPosition()).is(BlockTags.FIRE)
+                || player.getLevel().getBlockState(player.blockPosition().above()).is(BlockTags.FIRE);
     }
 
     private static void syncBoots(Player player, ItemStack boots) {
         AttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        AttributeInstance jumpAttribute = player.getAttribute(Attributes.JUMP_STRENGTH);
-        if (!(boots.getItem() instanceof Boots bootsItem)) {
-            if (speedAttribute != null) {
-                speedAttribute.removeModifier(BOOTS_SPEED_MODIFIER_ID);
-            }
-            if (jumpAttribute != null) {
-                jumpAttribute.removeModifier(BOOTS_JUMP_MODIFIER_ID);
-            }
+        if (!(boots.getItem() instanceof Boots)) {
+            if (speedAttribute != null) speedAttribute.removeModifier(BOOTS_SPEED_MODIFIER_ID);
             return;
         }
-
-        int speedLevel = bootsItem.getSpeed(boots);
-        int jumpLevel = bootsItem.getJump(boots);
+        int speedLevel = Boots.getSpeed(boots);
         if (speedAttribute != null) {
-            speedAttribute.addOrUpdateTransientModifier(new AttributeModifier(
-                    BOOTS_SPEED_MODIFIER_ID, speedLevel * 0.2D,
-                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-        }
-        if (jumpAttribute != null) {
-            double jumpIncrease = BOOTS_JUMP_STRENGTH[jumpLevel] - 0.42D;
-            jumpAttribute.addOrUpdateTransientModifier(new AttributeModifier(
-                    BOOTS_JUMP_MODIFIER_ID, jumpIncrease, AttributeModifier.Operation.ADD_VALUE));
+            AttributeModifier current = speedAttribute.getModifier(BOOTS_SPEED_MODIFIER_ID);
+            double amount = speedLevel * 0.2D;
+            if (current == null || current.getAmount() != amount) {
+                speedAttribute.removeModifier(BOOTS_SPEED_MODIFIER_ID);
+                speedAttribute.addTransientModifier(new AttributeModifier(BOOTS_SPEED_MODIFIER_ID,
+                        "Manaita boots speed", amount, AttributeModifier.Operation.MULTIPLY_BASE));
+            }
         }
 
         if (MPGConfigValues.boots_auto_jump_value
-                && player.onGround()
+                && player.isOnGround()
                 && player.horizontalCollision
                 && !player.isShiftKeyDown()
                 && (Math.abs(player.xxa) > 0.01F || Math.abs(player.zza) > 0.01F)) {
             player.jumpFromGround();
+        }
+    }
+
+    public static void applyBootsJump(Player player) {
+        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+        if (boots.getItem() instanceof Boots) {
+            net.minecraft.world.phys.Vec3 velocity = player.getDeltaMovement();
+            double height = BOOTS_JUMP_STRENGTH[Boots.getJump(boots)] + player.getJumpBoostPower();
+            player.setDeltaMovement(velocity.x, height, velocity.z);
         }
     }
 
@@ -263,24 +251,24 @@ public class MPGArmorItemBase extends ArmorItem {
 
         addHelmetEffect(player, MobEffects.REGENERATION, FAST_REGENERATION_DURATION,
                 FAST_REGENERATION_AMPLIFIER, HELMET_REGENERATION_TAG);
-        addHelmetEffect(player, MobEffects.WATER_BREATHING, MobEffectInstance.INFINITE_DURATION,
+        addHelmetEffect(player, MobEffects.WATER_BREATHING, INFINITE_DURATION,
                 0, HELMET_WATER_BREATHING_TAG);
 
         if (MPGConfigValues.helmet_night_vision_value) {
-            addHelmetEffect(player, MobEffects.NIGHT_VISION, MobEffectInstance.INFINITE_DURATION,
+            addHelmetEffect(player, MobEffects.NIGHT_VISION, INFINITE_DURATION,
                     0, HELMET_NIGHT_VISION_TAG);
         } else {
             removeHelmetEffect(player, MobEffects.NIGHT_VISION, HELMET_NIGHT_VISION_TAG);
         }
     }
 
-    private static void addHelmetEffect(Player player, Holder<MobEffect> effect, int duration,
+    private static void addHelmetEffect(Player player, MobEffect effect, int duration,
                                         int amplifier, String ownerTag) {
         MobEffectInstance current = player.getEffect(effect);
         boolean needsRefresh = current == null
                 || current.getAmplifier() < amplifier
-                || duration == MobEffectInstance.INFINITE_DURATION && !current.isInfiniteDuration()
-                || duration != MobEffectInstance.INFINITE_DURATION && current.getDuration() <= 20;
+                || duration == INFINITE_DURATION && current.getDuration() < INFINITE_DURATION / 2
+                || duration != INFINITE_DURATION && current.getDuration() <= 20;
         if (needsRefresh) {
             player.addEffect(new MobEffectInstance(effect, duration, amplifier, false, false, true));
             player.addTag(ownerTag);
@@ -293,7 +281,7 @@ public class MPGArmorItemBase extends ArmorItem {
         removeHelmetEffect(player, MobEffects.NIGHT_VISION, HELMET_NIGHT_VISION_TAG);
     }
 
-    private static void removeHelmetEffect(Player player, Holder<MobEffect> effect, String ownerTag) {
+    private static void removeHelmetEffect(Player player, MobEffect effect, String ownerTag) {
         if (player.getTags().contains(ownerTag)) {
             player.removeEffect(effect);
             player.removeTag(ownerTag);
@@ -301,12 +289,12 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     public static class Helmet extends MPGArmorItemBase {
-        public Helmet(Holder<ArmorMaterial> material) {
-            super(material, Type.HELMET);
+        public Helmet(ArmorMaterial material) {
+            super(material, EquipmentSlot.HEAD);
         }
 
         @Override
-        public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+        public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                     List<Component> tooltip, @NotNull TooltipFlag flag) {
             tooltip.add(Component.literal(MPText.manaita_mode.formatting(
                     text("mode.nightvision") + ": "
@@ -323,8 +311,8 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     public static class Chestplate extends MPGArmorItemBase {
-        public Chestplate(Holder<ArmorMaterial> material) {
-            super(material, Type.CHESTPLATE);
+        public Chestplate(ArmorMaterial material) {
+            super(material, EquipmentSlot.CHEST);
         }
 
         @Override
@@ -335,8 +323,8 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     public static class Leggings extends MPGArmorItemBase {
-        public Leggings(Holder<ArmorMaterial> material) {
-            super(material, Type.LEGGINGS);
+        public Leggings(ArmorMaterial material) {
+            super(material, EquipmentSlot.LEGS);
         }
 
         @Override
@@ -345,7 +333,7 @@ public class MPGArmorItemBase extends ArmorItem {
         }
 
         @Override
-        public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+        public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                     List<Component> tooltip, @NotNull TooltipFlag flag) {
             tooltip.add(Component.literal(MPText.manaita_mode.formatting(
                     text("mode.invisibility") + ": "
@@ -356,8 +344,8 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     public static class Boots extends MPGArmorItemBase implements IMPGKey {
-        public Boots(Holder<ArmorMaterial> material) {
-            super(material, Type.BOOTS);
+        public Boots(ArmorMaterial material) {
+            super(material, EquipmentSlot.FEET);
         }
 
         @Override
@@ -391,7 +379,7 @@ public class MPGArmorItemBase extends ArmorItem {
         }
 
         @Override
-        public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+        public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                     List<Component> tooltip, @NotNull TooltipFlag flag) {
             tooltip.add(Component.literal(MPText.manaita_mode.formatting(
                     text("mode.autojump") + ": "

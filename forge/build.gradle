@@ -13,6 +13,7 @@ configurations {
         canBeConsumed = false
     }
     compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
 
     shadowBundle {
@@ -34,20 +35,17 @@ dependencies {
     compileOnly "mezz.jei:jei-$rootProject.minecraft_version-forge-api:$rootProject.jei_version"
     modRuntimeOnly "mezz.jei:jei-$rootProject.minecraft_version-forge:$rootProject.jei_version"
 
-    // Architectury API no longer exposes a Forge transform for 1.21.1. The
-    // common module is loader-neutral, so Forge can consume and bundle its
-    // named output directly.
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
-    shadowBundle project(path: ':common', configuration: 'namedElements')
+    shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 }
 
 processResources {
     def props = [
         minecraft_version: rootProject.minecraft_version,
-        minecraft_version_range: '[1.21.1,1.22)',
+        minecraft_version_range: '[1.19.2,1.20)',
         forge_version: rootProject.forge_version,
-        forge_version_range: '[52,)',
-        loader_version_range: '[52,)',
+        forge_version_range: '[43,)',
+        loader_version_range: '[43,)',
         mod_id: rootProject.mod_id,
         mod_name: rootProject.mod_name,
         mod_license: rootProject.mod_license,

@@ -1,22 +1,17 @@
 package github.com.gengyoubo.MPG.recipe.condition;
 
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.MapCodec;
-import github.com.gengyoubo.MPG.baubles.common.capability.BaublesCapability;
+import com.google.gson.JsonObject;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
 public record BuiltInBaublesCondition() implements ICondition {
-    public static final BuiltInBaublesCondition INSTANCE = new BuiltInBaublesCondition();
-    public static final MapCodec<BuiltInBaublesCondition> CODEC = MapCodec.unit(INSTANCE);
-
-    @Override
-    public boolean test(@NotNull IContext context, DynamicOps<?> ops) {
-        return BaublesCapability.isEnabled();
-    }
-
-    @Override
-    public @NotNull MapCodec<? extends ICondition> codec() {
-        return CODEC;
+    public static final ResourceLocation ID = new ResourceLocation("manaita_plus_general", "built_in_baubles");
+    @Override public ResourceLocation getID() { return ID; }
+    @Override public boolean test(IContext context) { return github.com.gengyoubo.MPG.baubles.common.capability.BaublesCapability.isEnabled(); }
+    public static class Serializer implements IConditionSerializer<BuiltInBaublesCondition> {
+        @Override public void write(JsonObject json, BuiltInBaublesCondition condition) {  }
+        @Override public BuiltInBaublesCondition read(JsonObject json) { return new BuiltInBaublesCondition(); }
+        @Override public ResourceLocation getID() { return ID; }
     }
 }

@@ -1,7 +1,7 @@
 package github.com.gengyoubo.MPG.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
@@ -10,12 +10,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.Item.TooltipContext;
+
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
@@ -59,9 +58,9 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
                 double f1 = Mth.sin(Mth.sqrt(swingProcess) * Mth.PI);
                 poseStack.translate(side * 0.56, -0.52 + equipProcess * -0.6, -0.72);
                 poseStack.translate(side * -0.1414214, 0.08, 0.1414214);
-                poseStack.mulPose(Axis.XP.rotationDegrees((float) (-102.25F - f1 * 80.0F)));
-                poseStack.mulPose(Axis.YP.rotationDegrees((float) (side * 13.365F - f * 20.0F)));
-                poseStack.mulPose(Axis.ZP.rotationDegrees((float) (side * 78.050003F - f1 * 20.0F)));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees((float) (-102.25F - f1 * 80.0F)));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees((float) (side * 13.365F - f * 20.0F)));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees((float) (side * 78.050003F - f1 * 20.0F)));
                 return true;
             }
             return false;
@@ -69,7 +68,7 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
     };
 
     public MPGGodSwordItem() {
-        super(new MPGToolTier(), new Item.Properties().fireResistant());
+        super(new MPGToolTier(), 3, -2.4F, new Item.Properties().fireResistant());
     }
 
     @Override
@@ -77,13 +76,10 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
         consumer.accept(CLIENT_EXTENSIONS);
     }
 
-
-
-
     @Override
     public boolean onDroppedByPlayer(ItemStack item, Player player) {
         MPGEntityData.manaita.remove(player);
-        Networking.sendToSameLevelPlayers(player.level(), new MPGChangeEntityDataPayload(player.getId(), -MPGEntityData.death.getFlag()));
+        Networking.sendToSameLevelPlayers(player.getLevel(), new MPGChangeEntityDataPayload(player.getId(), -MPGEntityData.death.getFlag()));
         return super.onDroppedByPlayer(item, player);
     }
 
@@ -136,7 +132,7 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack p_41421_, @NotNull TooltipContext context, @NotNull List<Component> p_41423_, @NotNull TooltipFlag p_41424_) {
+    public void appendHoverText(@NotNull ItemStack p_41421_, @NotNull net.minecraft.world.level.Level context, @NotNull List<Component> p_41423_, @NotNull TooltipFlag p_41424_) {
         super.appendHoverText(p_41421_, context, p_41423_, p_41424_);
         p_41423_.add(Component.literal(MPText.manaita_mode.formatting(I18n.get("mode.doubling") + ":" + (isDoubling(p_41421_) ? I18n.get("info.on") : I18n.get("info.off")))));
         p_41423_.add(Component.literal(MPText.manaita_mode.formatting(I18n.get("mode.remove.name") + ":" + (isRemove(p_41421_) ? I18n.get("info.on") : I18n.get("info.off")))));
@@ -150,7 +146,7 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack p_41454_, @NotNull LivingEntity entity) {
+    public int getUseDuration(@NotNull ItemStack p_41454_) {
         return 72000;
     }
 
@@ -197,7 +193,6 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
             MPUtils.chat(player, Component.literal(MPText.manaita_mode.formatting(String.format("[%s] %s: %s", I18n.get("item.manaita_sword_god.name"), I18n.get("mode.doubling"), (doubling ? I18n.get("info.on") : I18n.get("info.off"))))));
         }
     }
-
 
     public static boolean isRemove(ItemStack itemStack) {
         return MPGItemStackData.getBoolean(itemStack, MPGNBTData.Remove);

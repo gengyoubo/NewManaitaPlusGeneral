@@ -38,26 +38,29 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = MPG.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventHandler {
     @SubscribeEvent
+    public static void onLivingJump(net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent event) {
+        if (event.getEntity() instanceof Player player) MPGArmorItemBase.applyBootsJump(player);
+    }
+
+    @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
         MPGEventLogic.filterKeyItemTooltip(event.getItemStack(), event.getToolTip());
     }
 
     @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        if (event.getAction() == PlayerInteractEvent.LeftClickBlock.Action.START) {
-            Player player = event.getEntity();
-            ItemStack stack = player.getMainHandItem();
-            if (stack.getItem() instanceof IMPGDestroy destroyItem && !destroyItem.canHarvest(stack)) {
+        Player player = event.getEntity();
+        ItemStack stack = player.getMainHandItem();
+        if (stack.getItem() instanceof IMPGDestroy destroyItem && !destroyItem.canHarvest(stack)) {
+            event.setCanceled(true);
+            return;
+        }
+        if (event.getLevel() instanceof ServerLevel level && player instanceof ServerPlayer serverPlayer) {
+            MPGToolMiningLogic.Result result = MPGToolMiningLogic.destroyBlocks(level, serverPlayer, stack,
+                    event.getPos(), event.getFace(), MPGConfig.destroy_doubling_value,
+                    MPGConfig.creative_range_destroy_value);
+            if (result != MPGToolMiningLogic.Result.PASS) {
                 event.setCanceled(true);
-                return;
-            }
-            if (event.getLevel() instanceof ServerLevel level && player instanceof ServerPlayer serverPlayer) {
-                MPGToolMiningLogic.Result result = MPGToolMiningLogic.destroyBlocks(level, serverPlayer, stack,
-                        event.getPos(), event.getFace(), MPGConfig.destroy_doubling_value,
-                        MPGConfig.creative_range_destroy_value);
-                if (result != MPGToolMiningLogic.Result.PASS) {
-                    event.setCanceled(true);
-                }
             }
         }
     }
@@ -72,7 +75,7 @@ public class EventHandler {
     public static void onLivingDrops(LivingDropsEvent event) {
         MPGEventLogic.findKiller(event.getEntity(), event.getSource().getEntity()).ifPresent(player -> {
             MPGEventLogic.createBeheadingDrop(event.getEntity(), player).ifPresent(stack ->
-                    event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(event.getEntity().level(),
+                    event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(event.getEntity().getLevel(),
                             event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), stack)));
             MPGEventLogic.multiplyDrops(player, event.getDrops(), MPGConfig.item_drops_doubling_value);
         });
@@ -133,7 +136,8 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent.Post event) {
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
         MPGArmorItemBase.syncArmorState(event.player);
     }
 

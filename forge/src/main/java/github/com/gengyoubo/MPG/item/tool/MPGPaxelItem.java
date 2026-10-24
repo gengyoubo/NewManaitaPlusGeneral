@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.item.tool;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.TooltipContext;
+
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     public static final TagKey<Block> MINEABLE =
-            BlockTags.create(ResourceLocation.withDefaultNamespace("mineable"));
+            BlockTags.create(new ResourceLocation("mineable"));
     public MPGPaxelItem() {
         super(MINEABLE, MPGToolProfile.PAXEL);
     }
@@ -46,7 +47,7 @@ public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         MPGEntityData.death.add(entity);
-        entity.hurt(entity.damageSources().playerAttack(player), 10000);
+        entity.hurt(DamageSource.playerAttack(player), 10000);
         if (entity instanceof LivingEntity living) {
             living.setHealth(0F);
         }
@@ -54,7 +55,7 @@ public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(Component.empty());
         tooltip.add(Component.literal(MPText.manaita_infinity.formatting(I18n.get("info.attack"))));

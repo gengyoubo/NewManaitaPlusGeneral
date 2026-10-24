@@ -17,7 +17,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -32,7 +33,7 @@ public abstract class MPGCraftingBlockBase extends BaseEntityBlock {
     private final Supplier<? extends Item> hookItem;
 
     protected MPGCraftingBlockBase(Supplier<? extends Item> hookItem) {
-        this(BlockBehaviour.Properties.of().noOcclusion(), hookItem);
+        this(BlockBehaviour.Properties.of(Material.STONE).noOcclusion(), hookItem);
     }
 
     protected MPGCraftingBlockBase(BlockBehaviour.Properties properties, Supplier<? extends Item> hookItem) {
@@ -60,13 +61,13 @@ public abstract class MPGCraftingBlockBase extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootParams.@NotNull Builder params) {
+    public @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootContext.@NotNull Builder params) {
         return MPGTypedBlockDrops.create(state, hookItem);
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level,
-                                                         @NotNull BlockPos pos, @NotNull Player player,
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level,
+                                                         @NotNull BlockPos pos, @NotNull Player player, net.minecraft.world.InteractionHand hand,
                                                          @NotNull BlockHitResult hitResult) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;

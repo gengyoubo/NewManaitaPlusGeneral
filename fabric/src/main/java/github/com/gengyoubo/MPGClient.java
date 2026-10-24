@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,11 +45,13 @@ public class MPGClient implements ClientModInitializer {
         BlockEntityRenderers.register(MPBlockEntityCore.FURNACE_BLOCK_ENTITY.get(), RenderMPFurnaceBlockEntity::new);
         BlockEntityRenderers.register(MPBlockEntityCore.BREWING_BLOCK_ENTITY.get(), RenderMPBrewingBlockEntity::new);
         registerEntityRenderers();
-        ClientPlayNetworking.registerGlobalReceiver(MPNetworking.DESTROY_BLOCK.type(), (payload, context) -> {
-            context.client().execute(() -> MPGClientPayloadHandler.handleDestroyBlock(payload));
+        ClientPlayNetworking.registerGlobalReceiver(MPNetworking.DESTROY_BLOCK.type(), (client, handler, buf, responseSender) -> {
+            var payload = MPNetworking.DESTROY_BLOCK.codec().decode(buf);
+            client.execute(() -> MPGClientPayloadHandler.handleDestroyBlock(payload));
         });
-        ClientPlayNetworking.registerGlobalReceiver(MPNetworking.CHANGE_ENTITY_DATA.type(), (payload, context) -> {
-            context.client().execute(() -> MPGClientPayloadHandler.handleChangeEntityData(payload));
+        ClientPlayNetworking.registerGlobalReceiver(MPNetworking.CHANGE_ENTITY_DATA.type(), (client, handler, buf, responseSender) -> {
+            var payload = MPNetworking.CHANGE_ENTITY_DATA.codec().decode(buf);
+            client.execute(() -> MPGClientPayloadHandler.handleChangeEntityData(payload));
         });
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> registerTypePredicates());
     }
@@ -61,7 +63,7 @@ public class MPGClient implements ClientModInitializer {
 
         for (String itemPath : MPGRegistryIds.TYPED_ITEM_IDS) {
             ResourceLocation id = github.com.gengyoubo.util.MPResource.id(MPG.MODID, itemPath);
-            Item item = BuiltInRegistries.ITEM.get(id);
+            Item item = Registry.ITEM.get(id);
             if (item == net.minecraft.world.item.Items.AIR) {
                 MPG.LOGGER.warn("Skipped predicate registration for missing item {}", id);
                 continue;

@@ -8,8 +8,6 @@ import github.com.gengyoubo.common.util.MPGNBTData;
 import github.com.gengyoubo.common.util.MPText;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -18,7 +16,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -78,7 +75,7 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
         level.setBlockAndUpdate(pos, maxAgeState);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, maxAgeState));
         if (player != null) {
-            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
+            itemStack.hurtAndBreak(1, player, entity -> entity.broadcastBreakEvent(context.getHand()));
         }
         return true;
     }
@@ -98,17 +95,11 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
     }
 
     private void addToolEnchantments(Level level, Player player, ItemStack itemStack) {
-        Holder.Reference<Enchantment> fortune = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
-                .getOrThrow(Enchantments.FORTUNE);
-        Holder.Reference<Enchantment> silkTouch = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
-                .getOrThrow(Enchantments.SILK_TOUCH);
-        boolean hasSilkTouch = EnchantmentHelper.getItemEnchantmentLevel(silkTouch, itemStack) > 0;
-        EnchantmentHelper.updateEnchantments(itemStack, mutable -> {
-            mutable.set(fortune, 10);
-            if (!hasSilkTouch) {
-                mutable.set(silkTouch, 1);
-            }
-        });
+        boolean hasSilkTouch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, itemStack) > 0;
+        java.util.Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(itemStack);
+        enchantments.put(Enchantments.BLOCK_FORTUNE, 10);
+        if (!hasSilkTouch) enchantments.put(Enchantments.SILK_TOUCH, 1);
+        EnchantmentHelper.setEnchantments(enchantments, itemStack);
         showMessage(player, Component.literal(MPText.manaita_enchantment.formatting(
                 itemStack.getDisplayName().getString() + text("info.enchantment") + ": "
                         + text(hasSilkTouch ? "enchantments.fortune" : "enchantments.silktouch"))));
@@ -136,7 +127,7 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                 @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         int range = getRange(stack);

@@ -1,8 +1,7 @@
 package github.com.gengyoubo.common.menu;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,10 +13,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -105,7 +103,7 @@ public abstract class MPGBrewingStandMenuBase extends AbstractContainerMenu {
         }
 
         if (moving.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
+            slot.set(ItemStack.EMPTY);
         } else {
             slot.setChanged();
         }
@@ -193,12 +191,10 @@ public abstract class MPGBrewingStandMenuBase extends AbstractContainerMenu {
 
         @Override
         public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
-            Optional<Holder<Potion>> potion = stack
-                    .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
-                    .potion();
-            if (potion.isPresent() && player instanceof ServerPlayer serverPlayer) {
+            Potion potion = net.minecraft.world.item.alchemy.PotionUtils.getPotion(stack);
+            if (player instanceof ServerPlayer serverPlayer) {
                 brewedPotionHook.accept(player, stack);
-                CriteriaTriggers.BREWED_POTION.trigger(serverPlayer, potion.get());
+                CriteriaTriggers.BREWED_POTION.trigger(serverPlayer, potion);
             }
             super.onTake(player, stack);
         }

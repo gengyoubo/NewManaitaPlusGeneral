@@ -1,17 +1,16 @@
 package github.com.gengyoubo.item.armor;
 
 import github.com.gengyoubo.common.item.armor.MPGArmorItemBase;
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 
 public class MPArmor extends MPGArmorItemBase {
-    private static final Holder<ArmorMaterial> MATERIAL = MANAITA_ARMOR_MATERIAL;
+    private static final ArmorMaterial MATERIAL = MANAITA_ARMOR_MATERIAL;
 
-    protected MPArmor(Type type) {
-        super(MATERIAL, type);
+    protected MPArmor(EquipmentSlot slot) {
+        super(MATERIAL, slot);
     }
 
     public static class Helmet extends MPGArmorItemBase.Helmet {

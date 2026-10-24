@@ -1,7 +1,6 @@
 package github.com.gengyoubo.common.block.entity;
 
 import github.com.gengyoubo.common.util.MPGItemStackData;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +20,7 @@ public abstract class MPGPortableFurnaceBlockEntityBase extends MPGFurnaceBlockE
         this.backingStack = backingStack;
         CompoundTag tag = MPGItemStackData.getTag(backingStack);
         if (tag != null) {
-            loadAdditional(tag, owner.registryAccess());
+            load(tag);
         }
     }
 
@@ -29,7 +28,7 @@ public abstract class MPGPortableFurnaceBlockEntityBase extends MPGFurnaceBlockE
     public void setItem(int slot, @NotNull ItemStack stack) {
         super.setItem(slot, stack);
         if (!getItem(0).isEmpty()) {
-            processAll(owner.level());
+            processAll(owner.getLevel());
         }
         saveToBackingStack();
     }
@@ -42,7 +41,7 @@ public abstract class MPGPortableFurnaceBlockEntityBase extends MPGFurnaceBlockE
 
     private void saveToBackingStack() {
         CompoundTag tag = MPGItemStackData.getOrCreateTag(backingStack);
-        saveAdditional(tag, owner.registryAccess());
+        saveAdditional(tag);
         MPGItemStackData.setTag(backingStack, tag);
     }
 }

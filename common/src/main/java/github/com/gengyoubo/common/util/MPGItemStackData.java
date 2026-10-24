@@ -1,39 +1,33 @@
 package github.com.gengyoubo.common.util;
 
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-/** Loader-independent access to Minecraft 1.21 item custom data. */
+/** Loader-independent access to Minecraft 1.19.2 item NBT. */
 public final class MPGItemStackData {
     private MPGItemStackData() {
     }
 
-    public static boolean hasTag(ItemStack stack) {
-        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        return data != null && !data.isEmpty();
-    }
+    public static boolean hasTag(ItemStack stack) { return stack.hasTag(); }
 
-    public static @Nullable CompoundTag getTag(ItemStack stack) {
-        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        return data == null || data.isEmpty() ? null : data.copyTag();
-    }
+    public static @Nullable CompoundTag getTag(ItemStack stack) { return stack.getTag(); }
 
-    public static CompoundTag getOrCreateTag(ItemStack stack) {
-        CompoundTag tag = getTag(stack);
-        return tag == null ? new CompoundTag() : tag;
-    }
+    public static CompoundTag getOrCreateTag(ItemStack stack) { return stack.getOrCreateTag(); }
 
-    public static void setTag(ItemStack stack, @Nullable CompoundTag tag) {
-        if (tag == null || tag.isEmpty()) {
-            stack.remove(DataComponents.CUSTOM_DATA);
-            return;
+    public static void setTag(ItemStack stack, @Nullable CompoundTag tag) { stack.setTag(tag); }
+
+    /** 1.19.2 has no {@code ItemStack#copyWithCount}. */
+    public static ItemStack copyWithCount(ItemStack stack, int count) {
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
         }
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag.copy()));
+        ItemStack copy = stack.copy();
+        copy.setCount(count);
+        return copy;
     }
 
     public static void editTag(ItemStack stack, Consumer<CompoundTag> editor) {

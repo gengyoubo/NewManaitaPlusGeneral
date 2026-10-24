@@ -2,7 +2,7 @@ package github.com.gengyoubo.common.integration.jei;
 
 import github.com.gengyoubo.common.util.MPGItemStackData;
 import github.com.gengyoubo.common.util.MPGNBTData;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,9 +26,9 @@ public final class MPGJeiRecipeFactory {
 
         List<ItemStack> inputs = new ArrayList<>();
         inputs.add(source.getDefaultInstance());
-        BuiltInRegistries.ITEM.stream()
+        Registry.ITEM.stream()
                 .filter(item -> !excluded.contains(item))
-                .sorted(Comparator.comparing(item -> BuiltInRegistries.ITEM.getKey(item).toString()))
+                .sorted(Comparator.comparing(item -> Registry.ITEM.getKey(item).toString()))
                 .map(Item::getDefaultInstance)
                 .filter(stack -> !stack.isEmpty())
                 .forEach(inputs::add);

@@ -1,10 +1,7 @@
 package github.com.gengyoubo.common.item.tier;
 
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -37,9 +34,7 @@ public class MPGToolTierBase implements Tier {
     }
 
     @Override
-    public @NotNull TagKey<Block> getIncorrectBlocksForDrops() {
-        return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
-    }
+    public int getLevel() { return 4; }
 
     @Override
     public @NotNull Ingredient getRepairIngredient() {

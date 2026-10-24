@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix4f;
 
 import java.util.Random;
 
@@ -92,16 +92,16 @@ public class MPGLightningBoltRendererBase<T extends MPGLightningBoltBase> extend
                              float alpha, float upperRadius, float lowerRadius,
                              boolean xLowerPositive, boolean zLowerPositive,
                              boolean xUpperPositive, boolean zUpperPositive) {
-        consumer.addVertex(matrix, x + (xLowerPositive ? lowerRadius : -lowerRadius), segment * 16.0F,
-                z + (zLowerPositive ? lowerRadius : -lowerRadius)).setColor(red, green, blue, alpha);
-        consumer.addVertex(matrix, previousX + (xLowerPositive ? upperRadius : -upperRadius),
+        consumer.vertex(matrix, x + (xLowerPositive ? lowerRadius : -lowerRadius), segment * 16.0F,
+                z + (zLowerPositive ? lowerRadius : -lowerRadius)).color(red, green, blue, alpha).endVertex();
+        consumer.vertex(matrix, previousX + (xLowerPositive ? upperRadius : -upperRadius),
                 (segment + 1) * 16.0F, previousZ + (zLowerPositive ? upperRadius : -upperRadius))
-                .setColor(red, green, blue, alpha);
-        consumer.addVertex(matrix, previousX + (xUpperPositive ? upperRadius : -upperRadius),
+                .color(red, green, blue, alpha).endVertex();
+        consumer.vertex(matrix, previousX + (xUpperPositive ? upperRadius : -upperRadius),
                 (segment + 1) * 16.0F, previousZ + (zUpperPositive ? upperRadius : -upperRadius))
-                .setColor(red, green, blue, alpha);
-        consumer.addVertex(matrix, x + (xUpperPositive ? lowerRadius : -lowerRadius), segment * 16.0F,
-                z + (zUpperPositive ? lowerRadius : -lowerRadius)).setColor(red, green, blue, alpha);
+                .color(red, green, blue, alpha).endVertex();
+        consumer.vertex(matrix, x + (xUpperPositive ? lowerRadius : -lowerRadius), segment * 16.0F,
+                z + (zUpperPositive ? lowerRadius : -lowerRadius)).color(red, green, blue, alpha).endVertex();
     }
 
     @Override

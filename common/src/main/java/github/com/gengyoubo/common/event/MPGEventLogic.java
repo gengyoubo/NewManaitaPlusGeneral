@@ -3,7 +3,6 @@ package github.com.gengyoubo.common.event;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,8 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.ResolvableProfile;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import github.com.gengyoubo.common.item.MPGSwordItemBase;
@@ -99,7 +97,8 @@ public final class MPGEventLogic {
         ItemStack head;
         if (target instanceof Player playerTarget) {
             head = new ItemStack(Items.PLAYER_HEAD);
-            head.set(DataComponents.PROFILE, new ResolvableProfile(playerTarget.getGameProfile()));
+            head.getOrCreateTag().put("SkullOwner", net.minecraft.nbt.NbtUtils.writeGameProfile(
+                    new net.minecraft.nbt.CompoundTag(), playerTarget.getGameProfile()));
         } else if (target.getType() == EntityType.WITHER_SKELETON) {
             head = new ItemStack(Items.WITHER_SKELETON_SKULL);
         } else if (target.getType() == EntityType.SKELETON) {
@@ -108,8 +107,6 @@ public final class MPGEventLogic {
             head = new ItemStack(Items.ZOMBIE_HEAD);
         } else if (target.getType() == EntityType.CREEPER) {
             head = new ItemStack(Items.CREEPER_HEAD);
-        } else if (target.getType() == EntityType.PIGLIN || target.getType() == EntityType.PIGLIN_BRUTE) {
-            head = new ItemStack(Items.PIGLIN_HEAD);
         } else if (target.getType() == EntityType.ENDER_DRAGON) {
             head = new ItemStack(Items.DRAGON_HEAD);
         } else {
@@ -119,7 +116,7 @@ public final class MPGEventLogic {
     }
 
     public static void handleFabricDeathDrops(LivingEntity target, DamageSource source, int multiplier) {
-        if (!(target.level() instanceof ServerLevel level)) {
+        if (!(target.getLevel() instanceof ServerLevel level)) {
             return;
         }
         findKiller(target, source.getEntity()).ifPresent(player -> {

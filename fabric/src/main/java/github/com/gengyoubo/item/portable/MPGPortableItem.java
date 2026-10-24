@@ -19,10 +19,10 @@ public abstract class MPGPortableItem extends MPGPortableItemBase {
 
     protected final void openPortableScreen(ServerPlayer serverPlayer, ItemStack itemInHand, Level level,
                                             String titleKey, PortableMenuFactory menuFactory) {
-        serverPlayer.openMenu(new ExtendedScreenHandlerFactory<BlockPos>() {
+        serverPlayer.openMenu(new ExtendedScreenHandlerFactory() {
             @Override
-            public BlockPos getScreenOpeningData(ServerPlayer player) {
-                return BlockPos.ZERO;
+            public void writeScreenOpeningData(ServerPlayer player, net.minecraft.network.FriendlyByteBuf buf) {
+                buf.writeBlockPos(BlockPos.ZERO);
             }
 
             @Override

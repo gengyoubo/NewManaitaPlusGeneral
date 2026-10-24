@@ -51,7 +51,8 @@ public class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent.Post event) {
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
         MPGClientEventLogic.tickDevWorldAutoLoad(FMLEnvironment.production, MPG.LOGGER);
     }
 }

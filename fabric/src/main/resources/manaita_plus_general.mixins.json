@@ -4,7 +4,11 @@
   "package": "github.com.gengyoubo.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "PlayerMixin"
+    "PlayerMixin",
+    "LivingEntityMixin"
+  ],
+  "client": [
+    "HumanoidArmorLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

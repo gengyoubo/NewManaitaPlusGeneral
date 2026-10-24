@@ -7,8 +7,6 @@ import github.com.gengyoubo.common.util.MPGNBTData;
 import github.com.gengyoubo.common.util.MPText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +20,6 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +30,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
     private static final int MAX_ATTACK_AREA = 27;
 
     protected MPGSwordItemBase() {
-        super(new ItemManaitaSwordTier(), new Item.Properties().fireResistant());
+        super(new ItemManaitaSwordTier(), 3, -2.4F, new Item.Properties().fireResistant());
     }
 
     @Override
@@ -44,7 +41,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                 @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(modeLine("mode.doubling", isDoubling(stack)));
@@ -83,7 +80,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
 
     /** Called only from player attack hooks; mobs receive the normal weapon attack without execution. */
     public final void performPlayerAttack(Player player, ItemStack stack, LivingEntity primaryTarget) {
-        if (player.level().isClientSide) {
+        if (player.getLevel().isClientSide) {
             return;
         }
 
@@ -93,7 +90,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
         if (radius > 0) {
             AABB attackBox = player.getBoundingBox().inflate(radius, Math.max(4, radius), radius);
             boolean attackFriendly = attacksFriendlyMobs(stack);
-            for (LivingEntity target : player.level().getEntitiesOfClass(LivingEntity.class, attackBox,
+            for (LivingEntity target : player.getLevel().getEntitiesOfClass(LivingEntity.class, attackBox,
                     target -> target != player && target != primaryTarget && target.isAlive())) {
                 if (!attackFriendly && !(target instanceof Enemy)) {
                     continue;
@@ -102,7 +99,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
             }
         }
 
-        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+        player.getLevel().playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.PLAYER_ATTACK_SWEEP, player.getSoundSource(), 1.0F, 1.0F);
     }
 
@@ -110,7 +107,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
         if (target == null || !target.isAlive()) {
             return;
         }
-        DamageSource source = target.damageSources().playerAttack(player);
+        DamageSource source = DamageSource.playerAttack(player);
         target.hurt(source, Math.max(0.0F, target.getHealth()));
         if (!target.isDeadOrDying()) {
             target.setHealth(0.0F);
@@ -214,8 +211,6 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
         }
 
         @Override
-        public @NotNull TagKey<Block> getIncorrectBlocksForDrops() {
-            return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
-        }
+        public int getLevel() { return 4; }
     }
 }

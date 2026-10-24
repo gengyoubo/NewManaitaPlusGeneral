@@ -1,10 +1,8 @@
 package github.com.gengyoubo.common.recipe;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -19,19 +17,20 @@ public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     private final IntSupplier multiplier;
     private final Supplier<? extends RecipeSerializer<?>> serializer;
 
-    protected MPGSourceCopyRecipeBase(CraftingBookCategory category, Supplier<? extends Item> sourceItem,
+    protected MPGSourceCopyRecipeBase(net.minecraft.resources.ResourceLocation id, Supplier<? extends Item> sourceItem,
                                       IntSupplier multiplier, Supplier<? extends RecipeSerializer<?>> serializer) {
-        super(category);
+        super(id);
         this.sourceItem = sourceItem;
         this.multiplier = multiplier;
         this.serializer = serializer;
     }
 
     @Override
-    public boolean matches(CraftingInput input, @NotNull Level level) {
+    public boolean matches(CraftingContainer input, @NotNull Level level) {
         int sourceCount = 0;
         int nonEmptyCount = 0;
-        for (ItemStack stack : input.items()) {
+        for (int slot = 0; slot < input.getContainerSize(); slot++) {
+            ItemStack stack = input.getItem(slot);
             if (!stack.isEmpty()) {
                 nonEmptyCount++;
                 if (stack.is(sourceItem.get())) {
@@ -43,9 +42,10 @@ public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingInput input, @NotNull HolderLookup.Provider provider) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer input) {
         boolean consumedSource = false;
-        for (ItemStack stack : input.items()) {
+        for (int slot = 0; slot < input.getContainerSize(); slot++) {
+            ItemStack stack = input.getItem(slot);
             if (stack.isEmpty()) {
                 continue;
             }
@@ -66,7 +66,7 @@ public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
+    public @NotNull ItemStack getResultItem() {
         return sourceItem.get().getDefaultInstance();
     }
 

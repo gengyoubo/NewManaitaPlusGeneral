@@ -15,10 +15,10 @@ import org.jetbrains.annotations.NotNull;
 public class MPSourceItem extends MPGSourceItemBase {
     @Override
     protected void openCraftingMenu(ServerPlayer player, Level level) {
-        player.openMenu(new ExtendedScreenHandlerFactory<BlockPos>() {
+        player.openMenu(new ExtendedScreenHandlerFactory() {
             @Override
-            public BlockPos getScreenOpeningData(ServerPlayer player) {
-                return BlockPos.ZERO;
+            public void writeScreenOpeningData(ServerPlayer player, net.minecraft.network.FriendlyByteBuf buf) {
+                buf.writeBlockPos(BlockPos.ZERO);
             }
 
             @Override

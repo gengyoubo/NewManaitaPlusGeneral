@@ -1,7 +1,8 @@
 package github.com.gengyoubo.common.entity;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -25,6 +26,11 @@ public abstract class MPGLightningBoltBase extends Entity {
     }
 
     @Override
+    public @NotNull Packet<?> getAddEntityPacket() {
+        return new ClientboundAddEntityPacket(this);
+    }
+
+    @Override
     public @NotNull SoundSource getSoundSource() {
         return SoundSource.WEATHER;
     }
@@ -32,10 +38,10 @@ public abstract class MPGLightningBoltBase extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (life == 2 && level().isClientSide()) {
-            level().playLocalSound(getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER,
+        if (life == 2 && getLevel().isClientSide()) {
+            getLevel().playLocalSound(getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER,
                     SoundSource.WEATHER, 10000.0F, 0.8F + random.nextFloat() * 0.2F, false);
-            level().playLocalSound(getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT,
+            getLevel().playLocalSound(getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT,
                     SoundSource.WEATHER, 2.0F, 0.5F + random.nextFloat() * 0.2F, false);
         }
 
@@ -50,8 +56,8 @@ public abstract class MPGLightningBoltBase extends Entity {
             }
         }
 
-        if (life >= 0 && !(level() instanceof ServerLevel)) {
-            level().setSkyFlashTime(2);
+        if (life >= 0 && !(getLevel() instanceof ServerLevel)) {
+            getLevel().setSkyFlashTime(2);
         }
     }
 
@@ -62,7 +68,7 @@ public abstract class MPGLightningBoltBase extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    protected void defineSynchedData() {
     }
 
     @Override

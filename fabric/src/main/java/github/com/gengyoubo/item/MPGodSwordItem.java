@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item;
 
+import net.minecraft.world.damagesource.DamageSource;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import github.com.gengyoubo.item.tier.MPToolTier;
@@ -37,7 +38,7 @@ import java.util.Random;
 
 public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     public MPGodSwordItem() {
-        super(new MPToolTier(), new Item.Properties().fireResistant());
+        super(new MPToolTier(), 3, -2.4F, new Item.Properties().fireResistant());
     }
 
     @Override
@@ -62,7 +63,7 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
 
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
-        if (attacker instanceof Player player && !player.level().isClientSide) {
+        if (attacker instanceof Player player && !player.getLevel().isClientSide) {
             attack(target, player, isRemove(stack));
             godKill(player, isRemove(stack), player.isShiftKeyDown());
         }
@@ -70,7 +71,7 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.doubling").getString() + ":" + (isDoubling(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
         tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.remove.name").getString() + ":" + (isRemove(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
@@ -136,7 +137,7 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     }
 
     private static void godKill(Player player, boolean remove, boolean includeEverything) {
-        if (!(player.level() instanceof ServerLevel serverLevel)) {
+        if (!(player.getLevel() instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -175,19 +176,19 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
         }
 
         MPGEntityData.death.add(target);
-        MPNetworking.sendToSameLevelPlayers(player.level(), new MPGChangeEntityDataPayload(target.getId(), MPGEntityData.death.getFlag()));
+        MPNetworking.sendToSameLevelPlayers(player.getLevel(), new MPGChangeEntityDataPayload(target.getId(), MPGEntityData.death.getFlag()));
 
         if (remove) {
             MPGEntityData.remove.add(target);
-            MPNetworking.sendToSameLevelPlayers(player.level(), new MPGChangeEntityDataPayload(target.getId(), MPGEntityData.remove.getFlag()));
+            MPNetworking.sendToSameLevelPlayers(player.getLevel(), new MPGChangeEntityDataPayload(target.getId(), MPGEntityData.remove.getFlag()));
             target.discard();
             return;
         }
 
         if (target instanceof LivingEntity living) {
-            living.hurt(living.damageSources().playerAttack(player), Float.MAX_VALUE);
+            living.hurt(DamageSource.playerAttack(player), Float.MAX_VALUE);
             living.setHealth(0.0F);
-            living.die(living.damageSources().generic());
+            living.die(DamageSource.GENERIC);
         } else {
             target.discard();
         }

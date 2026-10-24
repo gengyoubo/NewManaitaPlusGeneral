@@ -1,7 +1,7 @@
 package github.com.gengyoubo.common.client.gui;
 
 import github.com.gengyoubo.common.menu.MPGFurnaceMenuBase;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
 import net.minecraft.client.gui.screens.recipebook.SmeltingRecipeBookComponent;
 import net.minecraft.network.chat.Component;
@@ -10,25 +10,20 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class MPGFurnaceScreenBase<M extends MPGFurnaceMenuBase> extends AbstractFurnaceScreen<M> {
     private static final ResourceLocation TEXTURE =
-            ResourceLocation.withDefaultNamespace("textures/gui/container/furnace.png");
-    private static final ResourceLocation LIT_PROGRESS_SPRITE =
-            ResourceLocation.withDefaultNamespace("container/furnace/lit_progress");
-    private static final ResourceLocation BURN_PROGRESS_SPRITE =
-            ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
+            new ResourceLocation("textures/gui/container/furnace.png");
 
     private final String doublingText;
 
     public MPGFurnaceScreenBase(M menu, Inventory inventory, Component title, int doublingValue) {
-        super(menu, new SmeltingRecipeBookComponent(), inventory, title,
-                TEXTURE, LIT_PROGRESS_SPRITE, BURN_PROGRESS_SPRITE);
+        super(menu, new SmeltingRecipeBookComponent(), inventory, title, TEXTURE);
         this.doublingText = doublingValue + "x";
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, title, titleLabelX, titleLabelY, 4210752, false);
-        guiGraphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752, false);
-        guiGraphics.drawString(font, getDoublingComponent(), 118, 22, 4210752, false);
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+        font.draw(poseStack, title, titleLabelX, titleLabelY, 4210752);
+        font.draw(poseStack, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752);
+        font.draw(poseStack, getDoublingComponent(), 118, 22, 4210752);
     }
 
     protected Component getDoublingComponent() {

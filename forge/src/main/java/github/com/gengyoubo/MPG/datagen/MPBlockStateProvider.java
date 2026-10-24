@@ -4,7 +4,7 @@ import github.com.gengyoubo.MPG.MPG;
 import github.com.gengyoubo.MPG.block.data.MPGBlockData;
 import github.com.gengyoubo.MPG.core.MPGBlockCore;
 import net.minecraft.core.Direction;
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
@@ -26,7 +26,7 @@ public class MPBlockStateProvider extends BlockStateProvider {
             "netherite"
     };
 
-    public MPBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+    public MPBlockStateProvider(DataGenerator output, ExistingFileHelper exFileHelper) {
         super(output, MPG.MODID, exFileHelper);
     }
 

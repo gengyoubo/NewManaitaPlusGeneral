@@ -38,7 +38,7 @@ public abstract class MPGRingItem extends MPGPortableItem implements IBauble, IM
     @Override
     public void onManaitaKeyPress(ItemStack itemStack, Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            openPortableMenu(serverPlayer, itemStack, player.level());
+            openPortableMenu(serverPlayer, itemStack, player.getLevel());
         }
     }
 }

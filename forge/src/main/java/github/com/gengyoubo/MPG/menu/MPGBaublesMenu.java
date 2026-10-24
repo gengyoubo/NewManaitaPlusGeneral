@@ -8,17 +8,17 @@ import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
-import net.minecraft.world.item.Equipable;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +46,7 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
     };
 
     private final InventoryBaubles baublesInventory;
-    private final TransientCraftingContainer craftSlots = new TransientCraftingContainer(this, 2, 2);
+    private final CraftingContainer craftSlots = new CraftingContainer(this, 2, 2);
     private final ResultContainer resultSlots = new ResultContainer();
     private final Player player;
 
@@ -74,8 +74,7 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(playerInventory, ARMOR_SLOT_INDEXES[slot], 8, 8 + slot * 18) {
                 @Override
                 public boolean mayPlace(@NotNull ItemStack stack) {
-                    Equipable equipable = Equipable.get(stack);
-                    return equipable != null && equipable.getEquipmentSlot() == equipmentSlot;
+                    return stack.canEquip(equipmentSlot, playerInventory.player);
                 }
 
                 @Override
@@ -108,17 +107,14 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
 
     @Override
     public void slotsChanged(@NotNull Container container) {
-        if (!this.player.level().isClientSide && this.player instanceof ServerPlayer serverPlayer) {
+        if (!this.player.getLevel().isClientSide && this.player instanceof ServerPlayer serverPlayer) {
             ItemStack result = ItemStack.EMPTY;
-            Optional<RecipeHolder<CraftingRecipe>> optional = serverPlayer.server.getRecipeManager()
-                    .getRecipeFor(RecipeType.CRAFTING, this.craftSlots.asCraftInput(), this.player.level());
+            Optional<CraftingRecipe> optional = serverPlayer.server.getRecipeManager()
+                    .getRecipeFor(RecipeType.CRAFTING, this.craftSlots, this.player.getLevel());
             if (optional.isPresent()) {
-                RecipeHolder<CraftingRecipe> recipeHolder = optional.get();
+                CraftingRecipe recipeHolder = optional.get();
                 this.resultSlots.setRecipeUsed(recipeHolder);
-                ItemStack assembled = recipeHolder.value().assemble(this.craftSlots.asCraftInput(), this.player.level().registryAccess());
-                if (assembled.isItemEnabled(this.player.level().enabledFeatures())) {
-                    result = assembled;
-                }
+                result = recipeHolder.assemble(this.craftSlots);
             }
 
             this.resultSlots.setItem(0, result);
@@ -171,7 +167,7 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
         }
 
         if (source.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
+            slot.set(ItemStack.EMPTY);
         } else {
             slot.setChanged();
         }
@@ -193,11 +189,10 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
     }
 
     private boolean moveToArmor(ItemStack stack) {
-        Equipable equipable = Equipable.get(stack);
-        if (equipable == null) {
+        EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(stack);
+        if (equipmentSlot.getType() != EquipmentSlot.Type.ARMOR) {
             return false;
         }
-        EquipmentSlot equipmentSlot = equipable.getEquipmentSlot();
         for (int slot = ARMOR_SLOT_START; slot < ARMOR_SLOT_END; slot++) {
             int armorIndex = slot - ARMOR_SLOT_START;
             if (ARMOR_SLOT_TYPES[armorIndex] != equipmentSlot || this.slots.get(slot).hasItem()) {

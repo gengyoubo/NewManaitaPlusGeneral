@@ -4,7 +4,7 @@ import github.com.gengyoubo.common.config.MPGConfigValues;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -12,14 +12,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
+
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,7 +36,7 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
     private static final int[] SLOTS_FOR_SIDES = {1};
 
     private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
-    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
+    private final RecipeManager.CachedCheck<net.minecraft.world.Container, net.minecraft.world.item.crafting.SmeltingRecipe> quickCheck;
 
     protected MPGFurnaceBlockEntityBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state, RecipeType.SMELTING);
@@ -55,21 +54,21 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void load(@NotNull CompoundTag tag) {
+        super.load(tag);
         items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, items, provider);
+        github.com.gengyoubo.common.util.MPGInventoryData.loadAllItems(tag, items);
         recipesUsed.clear();
         CompoundTag recipesTag = tag.getCompound("RecipesUsed");
         for (String key : recipesTag.getAllKeys()) {
-            recipesUsed.put(ResourceLocation.parse(key), recipesTag.getInt(key));
+            recipesUsed.put(new ResourceLocation(key), recipesTag.getInt(key));
         }
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        super.saveAdditional(tag, provider);
-        ContainerHelper.saveAllItems(tag, items, provider);
+    protected void saveAdditional(@NotNull CompoundTag tag) {
+        super.saveAdditional(tag);
+        github.com.gengyoubo.common.util.MPGInventoryData.saveAllItems(tag, items);
         CompoundTag recipesTag = new CompoundTag();
         recipesUsed.forEach((id, count) -> recipesTag.putInt(id.toString(), count));
         tag.put("RecipesUsed", recipesTag);
@@ -85,8 +84,8 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
         boolean changed = false;
         ItemStack input = items.get(0);
         if (!input.isEmpty()) {
-            RecipeHolder<? extends AbstractCookingRecipe> recipe = quickCheck
-                    .getRecipeFor(new SingleRecipeInput(input), level)
+            AbstractCookingRecipe recipe = quickCheck
+                    .getRecipeFor(new net.minecraft.world.SimpleContainer(input), level)
                     .orElse(null);
             while (canBurn(level.registryAccess(), recipe)) {
                 burn(level.registryAccess(), recipe);
@@ -97,7 +96,7 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
         return changed;
     }
 
-    private boolean canBurn(RegistryAccess registryAccess, @Nullable RecipeHolder<?> recipe) {
+    private boolean canBurn(RegistryAccess registryAccess, @Nullable net.minecraft.world.item.crafting.Recipe<?> recipe) {
         ItemStack input = items.get(0);
         if (input.isEmpty()) {
             return false;
@@ -107,7 +106,7 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
             return false;
         }
         ItemStack output = items.get(2);
-        if (!output.isEmpty() && !ItemStack.isSameItemSameComponents(output, assembled)) {
+        if (!output.isEmpty() && !ItemStack.isSameItemSameTags(output, assembled)) {
             return false;
         }
         long added = (long) assembled.getCount() * MPGConfigValues.furnace_doubling_value;
@@ -115,7 +114,7 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
                 && (output.isEmpty() || (long) output.getCount() + added <= Integer.MAX_VALUE);
     }
 
-    private void burn(RegistryAccess registryAccess, RecipeHolder<?> recipe) {
+    private void burn(RegistryAccess registryAccess, net.minecraft.world.item.crafting.Recipe<?> recipe) {
         ItemStack result = MPGFurnaceLogic.assemble(recipe, items.get(0), registryAccess);
         int resultCount = Math.multiplyExact(result.getCount(), MPGConfigValues.furnace_doubling_value);
         ItemStack output = items.get(2);
@@ -147,7 +146,7 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
     @Override
     public void setItem(int slot, ItemStack stack) {
         ItemStack current = items.get(slot);
-        boolean same = !stack.isEmpty() && ItemStack.isSameItemSameComponents(current, stack);
+        boolean same = !stack.isEmpty() && ItemStack.isSameItemSameTags(current, stack);
         items.set(slot, stack);
         if (slot == 0 && !same) {
             setChanged();
@@ -165,9 +164,9 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
     }
 
     @Override
-    public void setRecipeUsed(@Nullable RecipeHolder<?> recipe) {
+    public void setRecipeUsed(@Nullable net.minecraft.world.item.crafting.Recipe<?> recipe) {
         if (recipe != null) {
-            recipesUsed.addTo(recipe.id(), 1);
+            recipesUsed.addTo(recipe.getId(), 1);
         }
     }
 
@@ -177,7 +176,7 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
     }
 
     @Override
-    public @NotNull List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(@NotNull ServerLevel level,
+    public @NotNull List<net.minecraft.world.item.crafting.Recipe<?>> getRecipesToAwardAndPopExperience(@NotNull ServerLevel level,
                                                                             @NotNull Vec3 pos) {
         return MPGFurnaceLogic.recipesAndExperience(level, pos, recipesUsed);
     }

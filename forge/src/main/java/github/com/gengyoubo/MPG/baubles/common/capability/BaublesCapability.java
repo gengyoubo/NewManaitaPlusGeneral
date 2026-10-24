@@ -4,7 +4,7 @@ import github.com.gengyoubo.MPG.MPG;
 import github.com.gengyoubo.MPG.baubles.api.BaubleType;
 import github.com.gengyoubo.MPG.baubles.common.container.InventoryBaubles;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -29,7 +29,7 @@ import java.util.Optional;
 @Mod.EventBusSubscriber(modid = MPG.MODID)
 public final class BaublesCapability {
     public static final Capability<InventoryBaubles> BAUBLES = CapabilityManager.get(new CapabilityToken<>() {});
-    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MPG.MODID, "baubles_inventory");
+    private static final ResourceLocation ID = new ResourceLocation(MPG.MODID, "baubles_inventory");
 
     private BaublesCapability() {
     }
@@ -68,7 +68,7 @@ public final class BaublesCapability {
     @SubscribeEvent
     @SuppressWarnings("unused")
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (!isEnabled() || event.phase != TickEvent.Phase.END || event.player.level().isClientSide) {
+        if (!isEnabled() || event.phase != TickEvent.Phase.END || event.player.getLevel().isClientSide) {
             return;
         }
         find(event.player).ifPresent(inventory -> inventory.tick(event.player));
@@ -94,14 +94,14 @@ public final class BaublesCapability {
 
         @Override
         @SuppressWarnings("deprecation")
-        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-            return ((INBTSerializable<CompoundTag>) inventory).serializeNBT(provider);
+        public CompoundTag serializeNBT() {
+            return ((INBTSerializable<CompoundTag>) inventory).serializeNBT();
         }
 
         @Override
         @SuppressWarnings("deprecation")
-        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-            ((INBTSerializable<CompoundTag>) inventory).deserializeNBT(provider, nbt);
+        public void deserializeNBT(CompoundTag nbt) {
+            ((INBTSerializable<CompoundTag>) inventory).deserializeNBT(nbt);
         }
     }
 }

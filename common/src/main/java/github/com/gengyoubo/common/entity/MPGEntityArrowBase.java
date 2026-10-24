@@ -19,7 +19,7 @@ public abstract class MPGEntityArrowBase extends AbstractArrow {
     }
 
     protected MPGEntityArrowBase(EntityType<? extends AbstractArrow> type, LivingEntity owner, Level level) {
-        super(type, owner, level, ItemStack.EMPTY, ItemStack.EMPTY);
+        super(type, owner, level);
     }
 
     @Override
@@ -28,24 +28,19 @@ public abstract class MPGEntityArrowBase extends AbstractArrow {
     }
 
     @Override
-    protected @NotNull ItemStack getDefaultPickupItem() {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     protected void onHitEntity(EntityHitResult hitResult) {
         Entity target = unwrapTarget(hitResult.getEntity());
         super.onHitEntity(hitResult);
-        if (level().isClientSide) {
+        if (getLevel().isClientSide) {
             return;
         }
 
         Entity owner = getOwner();
         DamageSource damageSource = null;
         if (owner instanceof Player player) {
-            damageSource = target.damageSources().playerAttack(player);
+            damageSource = DamageSource.playerAttack(player);
         } else if (owner instanceof LivingEntity livingEntity) {
-            damageSource = target.damageSources().mobAttack(livingEntity);
+            damageSource = DamageSource.mobAttack(livingEntity);
         }
         if (damageSource != null) {
             target.hurt(damageSource, 100000.0F);

@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +21,7 @@ public abstract class MPGPortableBrewingBlockEntityBase extends MPGBrewingStandB
         this.backingStack = backingStack;
         CompoundTag tag = MPGItemStackData.getTag(backingStack);
         if (tag != null) {
-            loadAdditional(tag, owner.registryAccess());
+            load(tag);
         }
     }
 
@@ -34,12 +33,12 @@ public abstract class MPGPortableBrewingBlockEntityBase extends MPGBrewingStandB
                 fuel = 20;
                 items.get(4).shrink(1);
             }
-            PotionBrewing potionBrewing = owner.level().potionBrewing();
-            if (isBrewable(potionBrewing, items) && fuel > 0) {
+            
+            if (isBrewable(items) && fuel > 0) {
                 fuel--;
                 brewTime = BREW_TIME;
                 ingredient = items.get(3).getItem();
-                performBrew(owner.level(), owner.getX(), owner.getY(), owner.getZ());
+                performBrew(owner.getLevel(), owner.getX(), owner.getY(), owner.getZ());
                 brewTime = 0;
             }
         }
@@ -59,7 +58,7 @@ public abstract class MPGPortableBrewingBlockEntityBase extends MPGBrewingStandB
 
     private void saveToBackingStack() {
         CompoundTag tag = MPGItemStackData.getOrCreateTag(backingStack);
-        saveAdditional(tag, owner.registryAccess());
+        saveAdditional(tag);
         MPGItemStackData.setTag(backingStack, tag);
     }
 }

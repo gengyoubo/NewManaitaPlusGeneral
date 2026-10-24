@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MPBrewingStandBlock extends MPGBrewingStandBlockBase {
-    private static final MapCodec<MPBrewingStandBlock> CODEC = MapCodec.unit(MPBrewingStandBlock::new);
+    private static final MapCodec<MPBrewingStandBlock> CODEC = simpleCodec(MPBrewingStandBlock::new);
 
     public MPBrewingStandBlock(BlockBehaviour.Properties properties) {
         super(properties, () -> MPBlockCore.HookBlockItem.get());

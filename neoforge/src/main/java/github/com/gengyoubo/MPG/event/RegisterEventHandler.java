@@ -54,7 +54,7 @@ public class RegisterEventHandler {
 
     @SubscribeEvent
     public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(MPGGodSwordItem.CLIENT_EXTENSIONS, MPGItemCore.ManaitaSwordGod.get());
+        event.registerItem(github.com.gengyoubo.MPG.client.MPGGodSwordClientExtensions.INSTANCE, MPGItemCore.ManaitaSwordGod.get());
     }
 
     @SubscribeEvent

@@ -27,3 +27,10 @@ type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="curios"
+type="optional"
+versionRange="[15.0.0-beta.2+26.1.2,)"
+ordering="AFTER"
+side="BOTH"

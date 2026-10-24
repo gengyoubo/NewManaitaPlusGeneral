@@ -1,0 +1,31 @@
+{
+  "type": "manaita_plus_general:manaita_crafting_type",
+  "category": "misc",
+  "pattern": [
+    "XY ",
+    "YY ",
+    "   "
+  ],
+  "key": {
+    "X": {
+      "item": "manaita_plus_general:manaita_furnace_portable",
+      "type": 0
+    },
+    "Y": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "manaita_plus_general:manaita_furnace_ring",
+    "count": 1,
+    "nbt": {
+      "ManaitaType": 0
+    }
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "curios"
+    }
+  ]
+}

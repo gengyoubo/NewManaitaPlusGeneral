@@ -17,17 +17,17 @@ import static github.com.gengyoubo.MPG.ITEMS;
 import static github.com.gengyoubo.common.registry.MPGRegistryIds.*;
 
 public class MPBlockCore {
-    public static final RegistryObject<Block> CraftingBlock = BLOCKS.register(CRAFTING_BLOCK, MPCraftingBlock::new);
-    public static final RegistryObject<Item> CraftingBlockItem = ITEMS.register(CRAFTING_BLOCK, MPCraftingBlockItem::new);
+    public static final RegistryObject<Block> CraftingBlock = MPRegistrations.block(CRAFTING_BLOCK, MPCraftingBlock::new);
+    public static final RegistryObject<Item> CraftingBlockItem = MPRegistrations.item(CRAFTING_BLOCK, MPCraftingBlockItem::new);
 
-    public static final RegistryObject<Block> FurnaceBlock = BLOCKS.register(FURNACE_BLOCK, MPFurnaceBlock::new);
-    public static final RegistryObject<Item> FurnaceBlockItem = ITEMS.register(FURNACE_BLOCK, MPFurnaceBlockItem::new);
+    public static final RegistryObject<Block> FurnaceBlock = MPRegistrations.block(FURNACE_BLOCK, MPFurnaceBlock::new);
+    public static final RegistryObject<Item> FurnaceBlockItem = MPRegistrations.item(FURNACE_BLOCK, MPFurnaceBlockItem::new);
 
-    public static final RegistryObject<Block> BrewingBlock = BLOCKS.register(BREWING_BLOCK, MPBrewingStandBlock::new);
-    public static final RegistryObject<Item> BrewingBlockItem = ITEMS.register(BREWING_BLOCK, MPBrewingBlockItem::new);
+    public static final RegistryObject<Block> BrewingBlock = MPRegistrations.block(BREWING_BLOCK, MPBrewingStandBlock::new);
+    public static final RegistryObject<Item> BrewingBlockItem = MPRegistrations.item(BREWING_BLOCK, MPBrewingBlockItem::new);
 
-    public static final RegistryObject<Block> HookBlock = BLOCKS.register(HOOK_BLOCK, MPHookBlock::new);
-    public static final RegistryObject<Item> HookBlockItem = ITEMS.register(HOOK_BLOCK, MPHookBlockItem::new);
+    public static final RegistryObject<Block> HookBlock = MPRegistrations.block(HOOK_BLOCK, MPHookBlock::new);
+    public static final RegistryObject<Item> HookBlockItem = MPRegistrations.item(HOOK_BLOCK, MPHookBlockItem::new);
 
     public static void init() {
     }

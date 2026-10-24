@@ -37,7 +37,7 @@ public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, net.neoforged.neoforge.common.ItemAbility toolAction) {
+    public boolean canPerformAction(net.minecraft.world.item.ItemInstance stack, net.neoforged.neoforge.common.ItemAbility toolAction) {
         return true;
     }
 
@@ -65,8 +65,8 @@ public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean selected) {
-        super.inventoryTick(stack, level, entity, slot, selected);
+    public void inventoryTick(ItemStack stack, @NotNull net.minecraft.server.level.ServerLevel level, @NotNull Entity entity, @Nullable net.minecraft.world.entity.EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
         stack.setPopTime(0);
     }
 

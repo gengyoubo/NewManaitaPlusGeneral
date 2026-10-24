@@ -7,7 +7,7 @@ import github.com.gengyoubo.network.MPNetworking;
 import github.com.gengyoubo.common.network.payload.MPGKeyPressPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
@@ -17,23 +17,23 @@ public final class MPGKeyBindings {
     }
 
     public static void init() {
-        MPKeyBoardCore.MESSAGE_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        MPKeyBoardCore.MESSAGE_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.manaita",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_X,
-                "key.categories.misc"
+                KeyMapping.Category.MISC
         ));
-        MPKeyBoardCore.MESSAGE_ARMOR_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        MPKeyBoardCore.MESSAGE_ARMOR_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.manaita.armor",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_V,
-                "key.categories.misc"
+                KeyMapping.Category.MISC
         ));
-        MPKeyBoardCore.PAXEL_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        MPKeyBoardCore.PAXEL_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.manaita.doubling",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_C,
-                "key.categories.misc"
+                KeyMapping.Category.MISC
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(MPGKeyBindings::onClientTick);

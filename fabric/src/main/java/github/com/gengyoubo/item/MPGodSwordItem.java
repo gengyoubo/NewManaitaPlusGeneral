@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import net.minecraft.world.item.component.TooltipDisplay;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
-import github.com.gengyoubo.item.tier.MPToolTier;
 import github.com.gengyoubo.network.MPNetworking;
 import github.com.gengyoubo.common.network.payload.MPGChangeEntityDataPayload;
 import github.com.gengyoubo.common.entity.MPGEntityData;
@@ -26,9 +25,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
+import github.com.gengyoubo.common.item.tier.MPGToolMaterials;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
@@ -38,13 +37,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
-    public MPGodSwordItem() {
-        super(new MPToolTier(), new Item.Properties().fireResistant());
+public class MPGodSwordItem extends Item implements IMPGKey, IMPGDoubling {
+    public MPGodSwordItem(Item.Properties properties) {
+        super(MPGToolMaterials.sword(properties).enchantable(1));
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean selected) {
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @org.jetbrains.annotations.Nullable net.minecraft.world.entity.EquipmentSlot slot) {
         if (entity instanceof Player player) {
             player.getAbilities().mayfly = true;
             player.setHealth(player.getMaxHealth());
@@ -64,12 +63,12 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         if (attacker instanceof Player player && !player.level().isClientSide()) {
             attack(target, player, isRemove(stack));
             godKill(player, isRemove(stack), player.isShiftKeyDown());
         }
-        return super.hurtEnemy(stack, target, attacker);
+        super.hurtEnemy(stack, target, attacker);
     }
 
     @Override
@@ -87,13 +86,14 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
         return Component.literal(MPText.manaita_infinity.formatting(Component.translatable("item.manaita_sword_god.name").getString()));
     }
 
-    public int getUseDuration(@NotNull ItemStack stack) {
+    @Override
+    public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity) {
         return 72000;
     }
 
     @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
-        return UseAnim.BLOCK;
+    public @NotNull ItemUseAnimation getUseAnimation(@NotNull ItemStack stack) {
+        return ItemUseAnimation.BLOCK;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
         if (!github.com.gengyoubo.common.util.MPGItemStackData.hasTag(itemStack)) {
             return false;
         }
-        return github.com.gengyoubo.common.util.MPGItemStackData.getTag(itemStack) != null && github.com.gengyoubo.common.util.MPGItemStackData.getTag(itemStack).getBoolean(MPGNBTData.Remove);
+        return github.com.gengyoubo.common.util.MPGItemStackData.getTag(itemStack) != null && github.com.gengyoubo.common.util.MPGItemStackData.getTag(itemStack).getBooleanOr(MPGNBTData.Remove, false);
     }
 
     public static void setRemove(ItemStack itemStack, boolean remove) {

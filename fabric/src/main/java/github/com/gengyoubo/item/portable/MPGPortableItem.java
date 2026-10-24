@@ -2,7 +2,7 @@ package github.com.gengyoubo.item.portable;
 
 import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.item.MPGPortableItemBase;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +20,7 @@ public abstract class MPGPortableItem extends MPGPortableItemBase {
 
     protected final void openPortableScreen(ServerPlayer serverPlayer, ItemStack itemInHand, Level level,
                                             String titleKey, PortableMenuFactory menuFactory) {
-        serverPlayer.openMenu(new ExtendedScreenHandlerFactory<BlockPos>() {
+        serverPlayer.openMenu(new ExtendedMenuProvider<BlockPos>() {
             @Override
             public BlockPos getScreenOpeningData(ServerPlayer player) {
                 return BlockPos.ZERO;

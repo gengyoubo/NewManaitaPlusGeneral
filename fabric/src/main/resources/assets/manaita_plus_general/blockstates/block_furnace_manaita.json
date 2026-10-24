@@ -1,76 +1,31 @@
 {
-  "multipart": [
-    {
-      "when": {
-        "types": "0"
-      },
-      "apply": {
-        "model": "manaita_plus_general:block/block_furnace_manaita"
-      }
+  "variants": {
+    "types=0": {
+      "model": "manaita_plus_general:block/particle/furnace_0"
     },
-    {
-      "when": {
-        "types": "1"
-      },
-      "apply": {
-        "model": "manaita_plus_general:item/furnace/furnace_manaita.1"
-      }
+    "types=1": {
+      "model": "manaita_plus_general:block/particle/furnace_1"
     },
-    {
-      "when": {
-        "types": "2"
-      },
-      "apply": {
-        "model": "manaita_plus_general:item/furnace/furnace_manaita.2"
-      }
+    "types=2": {
+      "model": "manaita_plus_general:block/particle/furnace_2"
     },
-    {
-      "when": {
-        "types": "3"
-      },
-      "apply": {
-        "model": "manaita_plus_general:item/furnace/furnace_manaita.3"
-      }
+    "types=3": {
+      "model": "manaita_plus_general:block/particle/furnace_3"
     },
-    {
-      "when": {
-        "types": "4"
-      },
-      "apply": {
-        "model": "manaita_plus_general:item/furnace/furnace_manaita.4"
-      }
+    "types=4": {
+      "model": "manaita_plus_general:block/particle/furnace_4"
     },
-    {
-      "when": {
-        "types": "5"
-      },
-      "apply": {
-        "model": "manaita_plus_general:item/furnace/furnace_manaita.5"
-      }
+    "types=5": {
+      "model": "manaita_plus_general:block/particle/furnace_5"
     },
-    {
-      "when": {
-        "types": "6"
-      },
-      "apply": {
-        "model": "manaita_plus_general:item/furnace/furnace_manaita.6"
-      }
+    "types=6": {
+      "model": "manaita_plus_general:block/particle/furnace_6"
     },
-    {
-      "when": {
-        "types": "7"
-      },
-      "apply": {
-        "model": "manaita_plus_general:item/furnace/furnace_manaita.7"
-      }
+    "types=7": {
+      "model": "manaita_plus_general:block/particle/furnace_7"
     },
-    {
-      "when": {
-        "types": "8"
-      },
-      "apply": {
-        "model": "manaita_plus_general:item/furnace/furnace_manaita.8"
-      }
+    "types=8": {
+      "model": "manaita_plus_general:block/particle/furnace_8"
     }
-  ]
+  }
 }

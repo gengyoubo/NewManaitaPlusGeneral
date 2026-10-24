@@ -1,6 +1,13 @@
 {
   "pack": {
-    "description": "manaita_plus resources",
-    "pack_format": 34
+    "description": "Manaita Plus General resources",
+    "min_format": [
+      84,
+      0
+    ],
+    "max_format": [
+      101,
+      1
+    ]
   }
 }

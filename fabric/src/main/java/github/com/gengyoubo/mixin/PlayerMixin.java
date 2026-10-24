@@ -17,8 +17,8 @@ public abstract class PlayerMixin {
         MPGArmorItemBase.syncArmorState((Player) (Object) this);
     }
 
-    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
-    private void manaitaPlusGeneral$cancelHelmetAttack(DamageSource source, float amount,
+    @Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
+    private void manaitaPlusGeneral$cancelHelmetAttack(net.minecraft.server.level.ServerLevel level, DamageSource source, float amount,
                                                         CallbackInfoReturnable<Boolean> cir) {
         Player player = (Player) (Object) this;
         if (MPGArmorItemBase.shouldCancelDamage(player, source)) {
@@ -28,7 +28,7 @@ public abstract class PlayerMixin {
     }
 
     @Inject(method = "actuallyHurt", at = @At("HEAD"), cancellable = true)
-    private void manaitaPlusGeneral$cancelHelmetHurt(DamageSource source, float amount, CallbackInfo ci) {
+    private void manaitaPlusGeneral$cancelHelmetHurt(net.minecraft.server.level.ServerLevel level, DamageSource source, float amount, CallbackInfo ci) {
         Player player = (Player) (Object) this;
         if (MPGArmorItemBase.shouldCancelDamage(player, source)) {
             MPGEventLogic.resetPlayerDamageState(player);
@@ -46,7 +46,7 @@ public abstract class PlayerMixin {
     }
 
     @Inject(method = "causeFallDamage", at = @At("HEAD"), cancellable = true)
-    private void manaitaPlusGeneral$cancelBootsLanding(float fallDistance, float damageMultiplier,
+    private void manaitaPlusGeneral$cancelBootsLanding(double fallDistance, float damageMultiplier,
                                                        DamageSource source,
                                                        CallbackInfoReturnable<Boolean> cir) {
         Player player = (Player) (Object) this;

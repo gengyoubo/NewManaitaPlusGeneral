@@ -187,7 +187,7 @@ public abstract class MPGBrewingStandBlockEntityBase extends BaseContainerBlockE
     protected void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
         items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(input, items);
+        github.com.gengyoubo.common.util.MPGInventoryData.loadAllItems(input, items);
         brewTime = input.getShortOr("BrewTime", (short) 0);
         ingredient = brewTime > 0 ? items.get(INGREDIENT_SLOT).getItem() : null;
         fuel = input.getByteOr("Fuel", (byte) 0);
@@ -197,7 +197,7 @@ public abstract class MPGBrewingStandBlockEntityBase extends BaseContainerBlockE
     protected void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
         output.putShort("BrewTime", (short) brewTime);
-        ContainerHelper.saveAllItems(output, items);
+        github.com.gengyoubo.common.util.MPGInventoryData.saveAllItems(output, items);
         output.putByte("Fuel", (byte) fuel);
     }
 

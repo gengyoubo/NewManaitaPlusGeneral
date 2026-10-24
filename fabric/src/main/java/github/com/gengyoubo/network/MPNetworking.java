@@ -28,9 +28,9 @@ public final class MPNetworking {
             return;
         }
 
-        PayloadTypeRegistry.playC2S().register(KEY_PRESS.type(), KEY_PRESS.codec());
-        PayloadTypeRegistry.playS2C().register(DESTROY_BLOCK.type(), DESTROY_BLOCK.codec());
-        PayloadTypeRegistry.playS2C().register(CHANGE_ENTITY_DATA.type(), CHANGE_ENTITY_DATA.codec());
+        PayloadTypeRegistry.serverboundPlay().register(KEY_PRESS.type(), KEY_PRESS.codec());
+        PayloadTypeRegistry.clientboundPlay().register(DESTROY_BLOCK.type(), DESTROY_BLOCK.codec());
+        PayloadTypeRegistry.clientboundPlay().register(CHANGE_ENTITY_DATA.type(), CHANGE_ENTITY_DATA.codec());
         payloadsRegistered = true;
     }
 

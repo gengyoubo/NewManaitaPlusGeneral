@@ -23,20 +23,15 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class MPGClient implements ClientModInitializer {
-    private static final Identifier TYPE_PREDICATE = github.com.gengyoubo.util.MPResource.id(MPG.MODID, MPGNBTData.Type);
-    private static boolean predicatesRegistered;
-
     @Override
     public void onInitializeClient() {
         MPNetworking.initCommon();
-        registerTypePredicates();
         MPGKeyBindings.init();
         MenuScreens.register(MPMenuCore.CraftingManaita.get(), MPCraftingScreen::new);
         MenuScreens.register(MPMenuCore.FurnaceManaita.get(), MPFurnaceScreen::new);
@@ -51,26 +46,6 @@ public class MPGClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(MPNetworking.CHANGE_ENTITY_DATA.type(), (payload, context) -> {
             context.client().execute(() -> MPGClientPayloadHandler.handleChangeEntityData(payload));
         });
-        ClientLifecycleEvents.CLIENT_STARTED.register(client -> registerTypePredicates());
-    }
-
-    private static void registerTypePredicates() {
-        if (predicatesRegistered) {
-            return;
-        }
-
-        for (String itemPath : MPGRegistryIds.TYPED_ITEM_IDS) {
-            Identifier id = github.com.gengyoubo.util.MPResource.id(MPG.MODID, itemPath);
-            Item item = BuiltInRegistries.ITEM.get(id);
-            if (item == net.minecraft.world.item.Items.AIR) {
-                MPG.LOGGER.warn("Skipped predicate registration for missing item {}", id);
-                continue;
-            }
-            ItemProperties.register(item, TYPE_PREDICATE, MPGClient::readTypeValue);
-            MPG.LOGGER.info("Registered type predicate {} for {}", TYPE_PREDICATE, id);
-        }
-
-        predicatesRegistered = true;
     }
 
     private static void registerEntityRenderers() {
@@ -78,7 +53,4 @@ public class MPGClient implements ClientModInitializer {
         EntityRendererRegistry.register(MPEntityCore.ManaitaLightningBolt.get(), MPLightningBoltRenderer::new);
     }
 
-    private static float readTypeValue(ItemStack stack, net.minecraft.client.multiplayer.ClientLevel level, net.minecraft.world.entity.LivingEntity entity, int seed) {
-        return MPGTypeHelper.toModelPredicate(MPGItemStackData.getInt(stack, MPGNBTData.ItemType));
-    }
 }

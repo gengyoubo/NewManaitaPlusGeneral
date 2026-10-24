@@ -30,11 +30,11 @@ public class MPPaxelItem extends MPToolBase {
         super(properties, MINEABLE, MPGToolProfile.PAXEL);
     }
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         MPGEntityData.death.add(target);
         target.hurt(target.damageSources().mobAttack(attacker), 10000);
         target.setHealth(0F);
-        return super.hurtEnemy(stack, target, attacker);
+        super.hurtEnemy(stack, target, attacker);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class MPPaxelItem extends MPToolBase {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean selected) {
-        super.inventoryTick(stack, level, entity, slot, selected);
+    public void inventoryTick(ItemStack stack, @NotNull net.minecraft.server.level.ServerLevel level, @NotNull Entity entity, @Nullable net.minecraft.world.entity.EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
         stack.setPopTime(0);
     }
 

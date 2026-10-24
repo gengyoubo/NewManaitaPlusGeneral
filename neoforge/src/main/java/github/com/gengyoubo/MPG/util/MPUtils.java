@@ -57,7 +57,6 @@ public class MPUtils {
             List<Entity> tntities = new ArrayList<>();
             EntitiesWrapper wrapper = ENTITY_CACHE.get();
             wrapper.addIterable(server.getAllEntities());
-            wrapper.addIterable(server.getPartEntities());
             Entity[] entities = wrapper.getEntities();
             for (int i = 0; i < wrapper.size(); i++) {
                 Entity entity = entities[i];
@@ -69,7 +68,6 @@ public class MPUtils {
                 if (!shiftKeyDown && target.getType().getCategory() != MobCategory.MONSTER) continue;
                 attack(target, player,remove);
             }
-            server.getPartEntities().clear();
             wrapper.reset();
             for (Entity tntity : tntities) {
                 if (tntity instanceof ItemEntity item) {
@@ -173,9 +171,9 @@ public class MPUtils {
 
     public static void popResource(Level p_49841_, BlockPos p_49842_, ItemStack p_49843_) {
         double d0 = (double) EntityType.ITEM.getHeight() / 2.0D;
-        double d1 = (double)p_49842_.getX() + 0.5D + Mth.nextDouble(p_49841_.random, -0.25D, 0.25D);
-        double d2 = (double)p_49842_.getY() + 0.5D + Mth.nextDouble(p_49841_.random, -0.25D, 0.25D) - d0;
-        double d3 = (double)p_49842_.getZ() + 0.5D + Mth.nextDouble(p_49841_.random, -0.25D, 0.25D);
+        double d1 = (double)p_49842_.getX() + 0.5D + Mth.nextDouble(p_49841_.getRandom(), -0.25D, 0.25D);
+        double d2 = (double)p_49842_.getY() + 0.5D + Mth.nextDouble(p_49841_.getRandom(), -0.25D, 0.25D) - d0;
+        double d3 = (double)p_49842_.getZ() + 0.5D + Mth.nextDouble(p_49841_.getRandom(), -0.25D, 0.25D);
         popResource(p_49841_, () -> new ItemEntity(p_49841_, d1, d2, d3, p_49843_), p_49843_);
     }
 
@@ -274,7 +272,7 @@ public class MPUtils {
                 level.capturedBlockSnapshots.add(blockSnapshot);
             }
 
-            BlockState blockstate = levelchunk.setBlockState(p_46605_, p_46606_, false);
+            BlockState blockstate = levelchunk.setBlockState(p_46605_, p_46606_, p_46607_);
             if (blockstate == null) {
                 if (blockSnapshot != null) level.capturedBlockSnapshots.remove(blockSnapshot);
                 return false;
@@ -301,7 +299,7 @@ public class MPUtils {
                     serverPlayer.connection.send(new ClientboundBlockUpdatePacket(pos, serverLevel.getFluidState(pos).createLegacyBlock()));
                 }
 
-                boolean removed = blockState.onDestroyedByPlayer(level, pos, player, false, level.getFluidState(pos));
+                boolean removed = blockState.onDestroyedByPlayer(level, pos, player, player.getMainHandItem(), false, level.getFluidState(pos));
                 if (removed)
                     block.destroy(level, pos, blockState);
 

@@ -16,7 +16,7 @@ public class MPGSwordItem extends MPGSwordItemBase {
     }
 
     @Override
-    public boolean canPerformAction(@NotNull ItemStack stack, @NotNull ItemAbility itemAbility) {
+    public boolean canPerformAction(@NotNull net.minecraft.world.item.ItemInstance stack, @NotNull ItemAbility itemAbility) {
         return true;
     }
 

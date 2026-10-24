@@ -23,7 +23,7 @@ public class MPGHoeItem extends ManaitaPlusLegacyTaggedToolItem {
     }
 
     @Override
-    public boolean canPerformAction(@NotNull ItemStack stack, net.neoforged.neoforge.common.@NotNull ItemAbility toolAction) {
+    public boolean canPerformAction(@NotNull net.minecraft.world.item.ItemInstance stack, net.neoforged.neoforge.common.@NotNull ItemAbility toolAction) {
         return net.neoforged.neoforge.common.ItemAbilities.DEFAULT_HOE_ACTIONS.contains(toolAction);
     }
 }

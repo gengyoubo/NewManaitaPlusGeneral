@@ -57,7 +57,6 @@ public class MPJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        registration.addRecipes(RecipeTypes.CRAFTING, getManaitaCraftingRecipes());
         registration.addRecipes(MPGSourceCopyRecipeCategory.TYPE, createSourceCopyRecipes());
         registration.addItemStackInfo(MPItemCore.ManaitaSource.get().getDefaultInstance(),
                 Component.translatable("jei.manaita_plus_general.source.info.1"),
@@ -82,20 +81,6 @@ public class MPJeiPlugin implements IModPlugin {
     private static List<MPGSourceCopyRecipe> createSourceCopyRecipes() {
         return MPGJeiRecipeFactory.createSourceCopyRecipes(MPItemCore.ManaitaSource.get(),
                 MPGConfig.source_doubling_value, typedItems(), typedStacks());
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<RecipeHolder<CraftingRecipe>> getManaitaCraftingRecipes() {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.level == null) {
-            return List.of();
-        }
-        return minecraft.level.getRecipeManager().getRecipes().stream()
-                .filter(holder -> MPG.MODID.equals(holder.id().getNamespace()))
-                .filter(holder -> holder.value() instanceof CraftingRecipe)
-                .filter(holder -> holder.value().getSerializer() == MPRecipeSerializerCore.NBTCraftingRecipe.get())
-                .map(holder -> (RecipeHolder<CraftingRecipe>) holder)
-                .toList();
     }
 
     private static List<Item> typedItems() {

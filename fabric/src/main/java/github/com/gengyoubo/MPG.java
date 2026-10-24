@@ -3,7 +3,7 @@ package github.com.gengyoubo;
 import github.com.gengyoubo.common.MPGCommon;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -81,7 +81,7 @@ public class MPG implements ModInitializer {
         BLOCK_ENTITY_TYPES.registerAll();
         RECIPE_SERIALIZER_DEFERRED_REGISTER.registerAll();
 
-        MANAITA_PLUS_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, github.com.gengyoubo.util.MPResource.id(MODID, "manaita_plus_tab"), FabricItemGroup.builder()
+        MANAITA_PLUS_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, github.com.gengyoubo.util.MPResource.id(MODID, "manaita_plus_tab"), FabricCreativeModeTab.builder()
             .icon(() -> MPBlockCore.CraftingBlockItem.get().getDefaultInstance())
             .title(Component.translatable("itemGroup.ManaitaPlusTab"))
             .displayItems((context, entries) -> {

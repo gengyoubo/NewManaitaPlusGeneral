@@ -3,7 +3,7 @@ package github.com.gengyoubo.item;
 import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.item.MPGSourceItemBase;
 import github.com.gengyoubo.menu.MPCraftingMenu;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +20,7 @@ public class MPSourceItem extends MPGSourceItemBase {
 
     @Override
     protected void openCraftingMenu(ServerPlayer player, Level level) {
-        player.openMenu(new ExtendedScreenHandlerFactory<BlockPos>() {
+        player.openMenu(new ExtendedMenuProvider<BlockPos>() {
             @Override
             public BlockPos getScreenOpeningData(ServerPlayer player) {
                 return BlockPos.ZERO;

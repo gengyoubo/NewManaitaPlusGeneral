@@ -16,7 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.function.IntConsumer;
 
 public final class MPToolActionHelper {
-    private static final HoeItem VANILLA_HOE = new HoeItem(Tiers.WOOD, new Item.Properties());
-    private static final AxeItem VANILLA_AXE = new AxeItem(Tiers.WOOD, new Item.Properties());
-    private static final ShovelItem VANILLA_SHOVEL = new ShovelItem(Tiers.WOOD, new Item.Properties());
+    private static final Item VANILLA_HOE = Items.WOODEN_HOE;
+    private static final Item VANILLA_AXE = Items.WOODEN_AXE;
+    private static final Item VANILLA_SHOVEL = Items.WOODEN_SHOVEL;
 
     private MPToolActionHelper() {
     }
@@ -133,7 +133,7 @@ public final class MPToolActionHelper {
 
     private static void damageHeldItem(UseOnContext context, Player player, ItemStack itemStack) {
         if (player != null) {
-            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
+            itemStack.hurtAndBreak(1, player, context.getHand().asEquipmentSlot());
         }
     }
 }

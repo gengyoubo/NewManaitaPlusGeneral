@@ -22,12 +22,12 @@ public final class MPStackData {
     }
 
     public static int getInt(ItemStack stack, String key) {
-        return getTag(stack).getInt(key);
+        return getTag(stack).getIntOr(key, 0);
     }
 
     public static int getInt(ItemStack stack, String key, int fallback) {
         CompoundTag tag = getTag(stack);
-        return tag.contains(key) ? tag.getInt(key) : fallback;
+        return tag.getIntOr(key, fallback);
     }
 
     public static void putInt(ItemStack stack, String key, int value) {
@@ -35,12 +35,12 @@ public final class MPStackData {
     }
 
     public static boolean getBoolean(ItemStack stack, String key) {
-        return getTag(stack).getBoolean(key);
+        return getTag(stack).getBooleanOr(key, false);
     }
 
     public static boolean getBoolean(ItemStack stack, String key, boolean fallback) {
         CompoundTag tag = getTag(stack);
-        return tag.contains(key) ? tag.getBoolean(key) : fallback;
+        return tag.getBooleanOr(key, fallback);
     }
 
     public static void putBoolean(ItemStack stack, String key, boolean value) {

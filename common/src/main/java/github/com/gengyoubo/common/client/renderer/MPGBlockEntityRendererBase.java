@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -33,16 +34,15 @@ public abstract class MPGBlockEntityRendererBase<T extends BlockEntity>
     private static final BlockDisplayContext HOOK_DISPLAY_CONTEXT = BlockDisplayContext.create();
     private final ItemModelResolver itemModelResolver;
     private final BlockModelResolver blockModelResolver;
-    private final ItemStack displayStack;
+    private final Item displayItem;
     private final BlockState hookBlockTemplate;
 
-    protected MPGBlockEntityRendererBase(BlockEntityRendererProvider.Context context, ItemStack displayStack,
+    protected MPGBlockEntityRendererBase(BlockEntityRendererProvider.Context context, Item displayItem,
                                          BlockState hookBlockTemplate) {
         this.itemModelResolver = context.itemModelResolver();
         this.blockModelResolver = context.blockModelResolver();
-        this.displayStack = displayStack;
+        this.displayItem = displayItem;
         this.hookBlockTemplate = hookBlockTemplate;
-        MPGItemStackData.setTag(displayStack, new CompoundTag());
     }
 
     @Override
@@ -59,6 +59,7 @@ public abstract class MPGBlockEntityRendererBase<T extends BlockEntity>
         state.facing = blockState.getValue(MPGBlockData.FACING);
         state.wall = blockState.getValue(MPGBlockData.WALL);
 
+        ItemStack displayStack = new ItemStack(displayItem);
         MPGItemStackData.putInt(displayStack, MPGNBTData.ItemType, blockState.getValue(MPGBlockData.TYPES));
         itemModelResolver.updateForTopItem(state.item, displayStack, ItemDisplayContext.FIXED,
                 blockEntity.getLevel(), null, 0);

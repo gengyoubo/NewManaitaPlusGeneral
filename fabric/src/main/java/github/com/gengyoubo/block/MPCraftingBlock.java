@@ -6,7 +6,7 @@ import github.com.gengyoubo.block.entity.MPCraftingBlockEntity;
 import github.com.gengyoubo.common.block.MPGCraftingBlockBase;
 import github.com.gengyoubo.core.MPBlockCore;
 import github.com.gengyoubo.menu.MPCraftingMenu;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class MPCraftingBlock extends MPGCraftingBlockBase {
-    private static final MapCodec<MPCraftingBlock> CODEC = MapCodec.unit(MPCraftingBlock::new);
+    private static final MapCodec<MPCraftingBlock> CODEC = simpleCodec(MPCraftingBlock::new);
     private static final Component CONTAINER_TITLE = Component.translatable("container.crafting_manaita");
 
     public MPCraftingBlock(BlockBehaviour.Properties properties) {
@@ -35,7 +35,7 @@ public class MPCraftingBlock extends MPGCraftingBlockBase {
 
     @Override
     public MenuProvider getMenuProvider(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
-        return new ExtendedScreenHandlerFactory<BlockPos>() {
+        return new ExtendedMenuProvider<BlockPos>() {
             @Override
             public @NotNull Component getDisplayName() {
                 return CONTAINER_TITLE;

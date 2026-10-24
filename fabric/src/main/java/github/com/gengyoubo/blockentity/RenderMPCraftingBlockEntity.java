@@ -7,6 +7,6 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderMPCraftingBlockEntity extends AbstractRenderMPBlockEntity<MPCraftingBlockEntity> {
     public RenderMPCraftingBlockEntity(BlockEntityRendererProvider.Context context) {
-        super(context, new ItemStack(MPBlockCore.CraftingBlockItem.get()));
+        super(context, MPBlockCore.CraftingBlockItem.get());
     }
 }

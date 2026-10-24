@@ -1,30 +1,35 @@
-# ManaitaPlusGeneral Architectury workspace
+# ManaitaPlusGeneral — Minecraft 26.1.2
 
-This workspace consolidates the Minecraft 1.21.1 Fabric, Forge, and NeoForge
-sources into one Gradle build.
-
-## Regarding Source Code Prior to Version 3.0
-This is the source code repository for version 3.0 and later. If you want to view the source code repository for versions prior to 3.0, please follow this link:
-https://github.com/gengyoubo/ManaitaPlusGeneral
+This branch targets **Fabric and NeoForge** on Minecraft 26.1.2.
 
 ## Modules
 
-- `common`: shared Architectury bootstrap and future shared game logic.
-- `fabric`: the existing Fabric implementation, connected to `common`.
-- `neoforge`: the existing NeoForge implementation, connected to `common`.
-- `forge`: the existing Forge implementation built by Architectury Loom.
+- `common`: shared gameplay, inventories, menus, recipes, data components and rendering.
+- `fabric`: Fabric registration, events, networking and JEI integration.
+- `neoforge`: NeoForge registration, events, networking, JEI and optional Curios integration.
 
-Architectury API 13 does not publish/support a Forge 1.21.1 platform module.
-For that reason the Forge implementation participates in the same root build
-but does not consume `common` or Architectury API. Fabric and NeoForge use the
-official Architectury API artifacts.
+Minecraft 26.1.2 requires Java 25 and uses unobfuscated names. Platform release
+jars are produced by `shadowJar`; there is no remapping step or Architectury API
+runtime dependency.
 
 ## Build
 
-Java 21 is required.
+Install Java 25 and run:
 
 ```powershell
 .\gradlew.bat build
 ```
 
-Platform jars are written under each platform module's `build/libs` directory.
+Use the jars without `-dev` or `-sources` under `fabric/build/libs` and
+`neoforge/build/libs`. The build also runs compatibility tests for inventory
+persistence, tier model data and recipe decoding/network transfer.
+
+Development dependencies are Fabric Loader 0.19.5, Fabric API 0.155.3+26.1.2,
+NeoForge 26.1.2.122 and JEI 29.47.0.111. JEI is optional for players.
+
+On NeoForge, rings are registered, displayed and craftable only with Curios
+15.0.0-beta.2+26.1.2 installed. Curios remains optional; development runs can
+include it with `-PwithAccessories`.
+
+The original repository for releases before version 3.0 is
+[ManaitaPlusGeneral](https://github.com/gengyoubo/ManaitaPlusGeneral).

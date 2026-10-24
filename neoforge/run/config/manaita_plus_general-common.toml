@@ -7,7 +7,7 @@ easy_mode = false
 # Range: > 1
 experience_drops_doubling_value = 4
 #ItemDropsDoubling
-# Default: 4
+# Default: 64
 # Range: > 1
 item_drops_doubling_value = 4
 #CraftingDoubling
@@ -23,10 +23,24 @@ furnace_doubling_value = 64
 # Range: > 1
 brewing_doubling_value = 64
 #DestroyDoubling
-# Default: 4
+# Default: 64
 # Range: > 1
 destroy_doubling_value = 4
 #SourceDoubling
 # Default: 64
 # Range: > 1
 source_doubling_value = 64
+#Enables night vision while wearing the Manaita helmet
+helmet_night_vision = false
+#Enables invisibility while wearing the Manaita leggings
+leggings_invisibility = false
+#Makes the Manaita boots jump automatically when walking into an obstacle
+boots_auto_jump = false
+#Initial Manaita boots speed level (1-8)
+# Default: 1
+# Range: 1 ~ 8
+boots_speed_level = 1
+#Initial Manaita boots jump level (1-8)
+# Default: 1
+# Range: 1 ~ 8
+boots_jump_level = 1

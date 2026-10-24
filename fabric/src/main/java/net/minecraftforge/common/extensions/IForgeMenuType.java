@@ -1,6 +1,6 @@
 package net.minecraftforge.common.extensions;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -11,7 +11,7 @@ public final class IForgeMenuType {
     }
 
     public static <T extends AbstractContainerMenu> MenuType<T> create(MenuFactory<T> factory) {
-        return new ExtendedScreenHandlerType<>(factory::create, BlockPos.STREAM_CODEC);
+        return new ExtendedMenuType<>(factory::create, BlockPos.STREAM_CODEC);
     }
 
     @FunctionalInterface

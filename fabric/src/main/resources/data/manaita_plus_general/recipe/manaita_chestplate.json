@@ -1,4 +1,4 @@
-﻿{
+{
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "# #",
@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "manaita_plus_general:manaita_block_eq"
-    }
+    "#": "#manaita_plus_general:manaita_block_eq"
   },
   "result": {
     "id": "manaita_plus_general:manaita_chestplate",

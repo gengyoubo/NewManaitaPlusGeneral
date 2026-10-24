@@ -7,6 +7,6 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderMPBrewingBlockEntity extends AbstractRenderMPBlockEntity<MPBrewingStandBlockEntity> {
     public RenderMPBrewingBlockEntity(BlockEntityRendererProvider.Context context) {
-        super(context, new ItemStack(MPBlockCore.BrewingBlockItem.get()));
+        super(context, MPBlockCore.BrewingBlockItem.get());
     }
 }

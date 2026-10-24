@@ -18,7 +18,7 @@ public final class EasyModeResourceCondition implements ResourceCondition {
     }
 
     @Override
-    public boolean test(HolderLookup.Provider registryLookup) {
+    public boolean test(net.minecraft.resources.RegistryOps.RegistryInfoLookup registryLookup) {
         return MPGConfig.easy_mode_value;
     }
 }

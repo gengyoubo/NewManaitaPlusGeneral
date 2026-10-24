@@ -1,7 +1,6 @@
 package github.com.gengyoubo.MPG.item.tool.base;
 
 import net.minecraft.world.item.Item;
-import github.com.gengyoubo.MPG.item.tier.MPGToolTier;
 import github.com.gengyoubo.common.item.tool.MPGToolItemBase;
 import github.com.gengyoubo.common.item.tool.MPGToolProfile;
 import net.minecraft.tags.TagKey;

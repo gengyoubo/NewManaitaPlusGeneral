@@ -3,7 +3,6 @@ package github.com.gengyoubo.item.tool.base;
 import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.item.tool.MPGTaggedToolItemBase;
 import github.com.gengyoubo.common.item.tool.MPGToolProfile;
-import github.com.gengyoubo.item.tier.MPToolTier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 

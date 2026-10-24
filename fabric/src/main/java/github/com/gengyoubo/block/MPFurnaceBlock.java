@@ -16,7 +16,7 @@ import github.com.gengyoubo.core.MPBlockEntityCore;
 import org.jetbrains.annotations.Nullable;
 
 public class MPFurnaceBlock extends MPGFurnaceBlockBase {
-    private static final MapCodec<MPFurnaceBlock> CODEC = MapCodec.unit(MPFurnaceBlock::new);
+    private static final MapCodec<MPFurnaceBlock> CODEC = simpleCodec(MPFurnaceBlock::new);
 
     public MPFurnaceBlock(BlockBehaviour.Properties properties) {
         super(properties, () -> MPBlockCore.HookBlockItem.get());

@@ -14,12 +14,12 @@ public class MPSwordItem extends MPGSwordItemBase {
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target,
+    public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target,
                              @NotNull LivingEntity attacker) {
         if (attacker instanceof Player player) {
             performPlayerAttack(player, stack, target);
         }
-        return super.hurtEnemy(stack, target, attacker);
+        super.hurtEnemy(stack, target, attacker);
     }
 
     @Override

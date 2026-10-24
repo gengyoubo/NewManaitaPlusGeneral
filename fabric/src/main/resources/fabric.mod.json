@@ -22,6 +22,9 @@
     ],
     "client": [
       "github.com.gengyoubo.MPGClient"
+    ],
+    "jei_mod_plugin": [
+      "github.com.gengyoubo.jei.MPJeiPlugin"
     ]
   },
   "mixins": [

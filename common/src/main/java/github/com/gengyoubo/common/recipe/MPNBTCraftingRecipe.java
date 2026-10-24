@@ -73,12 +73,12 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
     private final int width;
     private final int height;
     private final IngredientSpec[] ingredients;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final boolean showNotification;
     private @Nullable PlacementInfo placementInfo;
 
     public MPNBTCraftingRecipe(String group, CraftingBookCategory category, int width, int height,
-                               IngredientSpec[] ingredients, ItemStack result, boolean showNotification) {
+                               IngredientSpec[] ingredients, ItemStackTemplate result, boolean showNotification) {
         this.group = group;
         this.category = category;
         this.width = width;
@@ -144,7 +144,7 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
 
     @Override
     public @NotNull ItemStack assemble(@NotNull CraftingInput input) {
-        return result.copy();
+        return result.create();
     }
 
     @Override
@@ -158,12 +158,9 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
 
     @Override
     public @NotNull List<RecipeDisplay> display() {
-        if (result.isEmpty()) {
-            return List.of();
-        }
         return List.of(new ShapedCraftingRecipeDisplay(width, height,
                 Arrays.stream(ingredients).map(IngredientSpec::display).toList(),
-                new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(result)),
+                new SlotDisplay.ItemStackSlotDisplay(result),
                 new SlotDisplay.ItemSlotDisplay(Items.CRAFTING_TABLE)));
     }
 
@@ -176,7 +173,7 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
         for (int i = 0; i < ingredients.length; i++) {
             ingredients[i] = IngredientSpec.STREAM_CODEC.decode(buf);
         }
-        ItemStack result = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+        ItemStackTemplate result = ItemStackTemplate.STREAM_CODEC.decode(buf);
         boolean showNotification = buf.readBoolean();
         return new MPNBTCraftingRecipe(group, category, width, height, ingredients, result, showNotification);
     }
@@ -189,7 +186,7 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
         for (IngredientSpec ingredient : recipe.ingredients) {
             IngredientSpec.STREAM_CODEC.encode(buf, ingredient);
         }
-        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, recipe.result);
+        ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.result);
         buf.writeBoolean(recipe.showNotification);
     }
 
@@ -208,7 +205,7 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
             int height = pattern.length;
             Map<Character, IngredientSpec> key = keyFromJson(ops, GsonHelper.getAsJsonObject(json, "key"));
             IngredientSpec[] ingredients = dissolvePattern(pattern, key, width, height);
-            ItemStack result = resultFromJson(GsonHelper.getAsJsonObject(json, "result"));
+            ItemStackTemplate result = resultFromJson(ops, GsonHelper.getAsJsonObject(json, "result"));
             boolean showNotification = GsonHelper.getAsBoolean(json, "show_notification", true);
             return DataResult.success(new MPNBTCraftingRecipe(group, category, width, height, ingredients, result,
                     showNotification));
@@ -237,41 +234,65 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
         builder.add("category", ops.createString(recipe.category.getSerializedName()));
         builder.add("pattern", JsonOps.INSTANCE.convertTo(ops, pattern));
         builder.add("key", JsonOps.INSTANCE.convertTo(ops, key));
-        builder.add("result", JsonOps.INSTANCE.convertTo(ops, encodeResult(recipe.result)));
+        builder.add("result", ItemStackTemplate.CODEC.encodeStart(ops, recipe.result).getOrThrow(JsonSyntaxException::new));
         builder.add("show_notification", ops.createBoolean(recipe.showNotification));
         return builder;
     }
 
-    private static JsonObject encodeResult(ItemStack stack) {
-        JsonObject result = new JsonObject();
-        result.addProperty("item", BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
-        result.addProperty("count", stack.getCount());
-        int type = MPGItemStackData.getInt(stack, MPGNBTData.ItemType);
-        if (type != 0) {
-            JsonObject nbt = new JsonObject();
-            nbt.addProperty(MPGNBTData.ItemType, type);
-            result.add("nbt", nbt);
+    private static <T> ItemStackTemplate resultFromJson(DynamicOps<T> ops, JsonObject json) {
+        JsonObject normalized = json.deepCopy();
+        if (normalized.has("item")) {
+            normalized.add("id", normalized.remove("item"));
         }
-        return result;
-    }
-
-    private static ItemStack resultFromJson(JsonObject json) {
-        String itemId = GsonHelper.getAsString(json, json.has("item") ? "item" : "id");
-        Identifier resultId = Identifier.tryParse(itemId);
-        Optional<Item> item = resultId == null ? Optional.empty() : BuiltInRegistries.ITEM.getOptional(resultId);
-        if (item.isEmpty()) {
-            org.slf4j.LoggerFactory.getLogger(MPGCommon.MOD_ID)
-                    .warn("Skipping custom recipe result for missing item {}", itemId);
-            return ItemStack.EMPTY;
-        }
-        ItemStack stack = new ItemStack(item.get(), GsonHelper.getAsInt(json, "count", 1));
         if (json.has("nbt")) {
             int type = readType(GsonHelper.getAsJsonObject(json, "nbt"));
             if (type >= 0) {
-                MPGItemStackData.putInt(stack, MPGNBTData.ItemType, type);
+                JsonObject components = normalized.has("components")
+                        ? normalized.getAsJsonObject("components") : new JsonObject();
+                JsonObject data = components.has("minecraft:custom_data")
+                        ? components.getAsJsonObject("minecraft:custom_data") : new JsonObject();
+                data.addProperty(MPGNBTData.ItemType, type);
+                components.add("minecraft:custom_data", data);
+                if (type > 0) {
+                    JsonObject model = new JsonObject();
+                    JsonArray floats = new JsonArray();
+                    floats.add(type);
+                    model.add("floats", floats);
+                    components.add("minecraft:custom_model_data", model);
+                }
+                normalized.add("components", components);
             }
         }
-        return stack;
+        return ItemStackTemplate.CODEC.parse(ops, JsonOps.INSTANCE.convertTo(ops, normalized))
+                .getOrThrow(JsonSyntaxException::new);
+    }
+
+    private static net.minecraft.core.component.DataComponentPatch tierComponents(int type) {
+        net.minecraft.nbt.CompoundTag data = new net.minecraft.nbt.CompoundTag();
+        data.putInt(MPGNBTData.ItemType, type);
+        var patch = net.minecraft.core.component.DataComponentPatch.builder()
+                .set(net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+                        net.minecraft.world.item.component.CustomData.of(data));
+        if (type > 0) {
+            patch.set(net.minecraft.core.component.DataComponents.CUSTOM_MODEL_DATA,
+                    new net.minecraft.world.item.component.CustomModelData(List.of((float) type),
+                            List.of(), List.of(), List.of()));
+        }
+        return patch.build();
+    }
+
+    private static JsonElement normalizeIngredient(JsonElement value) {
+        if (value.isJsonArray()) {
+            JsonArray result = new JsonArray();
+            value.getAsJsonArray().forEach(element -> result.add(normalizeIngredient(element)));
+            return result;
+        }
+        if (value.isJsonObject()) {
+            JsonObject object = value.getAsJsonObject();
+            if (object.has("item")) return new JsonPrimitive(GsonHelper.getAsString(object, "item"));
+            if (object.has("tag")) return new JsonPrimitive("#" + GsonHelper.getAsString(object, "tag"));
+        }
+        return value;
     }
 
     private static int readType(JsonObject json) {
@@ -434,9 +455,8 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
             }
             List<SlotDisplay> typedStacks = new ArrayList<>();
             ingredient.items().forEach(item -> {
-                ItemStack stack = new ItemStack(item);
-                MPGItemStackData.putInt(stack, MPGNBTData.ItemType, requiredType);
-                typedStacks.add(new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(stack)));
+                typedStacks.add(new SlotDisplay.ItemStackSlotDisplay(
+                        new ItemStackTemplate(item, 1, tierComponents(requiredType))));
             });
             return typedStacks.size() == 1 ? typedStacks.getFirst() : new SlotDisplay.Composite(typedStacks);
         }
@@ -475,7 +495,7 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
                     throw new JsonSyntaxException("Ingredient needs an 'item', 'tag' or 'ingredient' entry");
                 }
             }
-            Ingredient ingredient = Ingredient.CODEC.parse(ops, JsonOps.INSTANCE.convertTo(ops, value))
+            Ingredient ingredient = Ingredient.CODEC.parse(ops, JsonOps.INSTANCE.convertTo(ops, normalizeIngredient(value)))
                     .getOrThrow(JsonSyntaxException::new);
             return new IngredientSpec(ingredient, requiredType);
         }

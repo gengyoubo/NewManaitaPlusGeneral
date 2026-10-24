@@ -64,7 +64,7 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
     protected void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
         items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(input, items);
+        github.com.gengyoubo.common.util.MPGInventoryData.loadAllItems(input, items);
         recipesUsed.clear();
         recipesUsed.putAll(input.read("RecipesUsed", RECIPES_USED_CODEC).orElse(Map.of()));
     }
@@ -72,7 +72,7 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
     @Override
     protected void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        ContainerHelper.saveAllItems(output, items);
+        github.com.gengyoubo.common.util.MPGInventoryData.saveAllItems(output, items);
         output.store("RecipesUsed", RECIPES_USED_CODEC, recipesUsed);
     }
 

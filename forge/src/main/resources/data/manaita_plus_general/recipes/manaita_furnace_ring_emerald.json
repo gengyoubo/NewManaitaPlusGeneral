@@ -1,7 +1,8 @@
 {
   "conditions": [
     {
-      "type": "manaita_plus_general:built_in_baubles"
+      "type": "forge:mod_loaded",
+      "modid": "curios"
     }
   ],
   "type": "manaita_plus_general:manaita_crafting_type",

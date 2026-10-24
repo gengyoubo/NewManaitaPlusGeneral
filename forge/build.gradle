@@ -35,6 +35,10 @@ dependencies {
     compileOnly "mezz.jei:jei-$rootProject.minecraft_version-forge-api:$rootProject.jei_version"
     modRuntimeOnly "mezz.jei:jei-$rootProject.minecraft_version-forge:$rootProject.jei_version"
 
+    // Optional accessory slots: Manaita rings only exist when Curios is installed.
+    modCompileOnly "top.theillusivec4.curios:curios-forge:$rootProject.minecraft_version-$rootProject.curios_version:api"
+    modRuntimeOnly "top.theillusivec4.curios:curios-forge:$rootProject.minecraft_version-$rootProject.curios_version"
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 }

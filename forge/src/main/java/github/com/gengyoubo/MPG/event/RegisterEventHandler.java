@@ -2,7 +2,6 @@ package github.com.gengyoubo.MPG.event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import github.com.gengyoubo.MPG.MPG;
-import github.com.gengyoubo.MPG.baubles.common.capability.BaublesCapability;
 import github.com.gengyoubo.MPG.core.*;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -19,7 +18,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import github.com.gengyoubo.MPG.gui.BrewingStandScreen;
-import github.com.gengyoubo.MPG.gui.BaublesScreen;
 import github.com.gengyoubo.MPG.gui.CraftingManaitaScreen;
 import github.com.gengyoubo.MPG.gui.FurnaceManaitaScreen;
 import github.com.gengyoubo.MPG.blockEntity.RenderBrewingManaitaBlockEntity;
@@ -43,9 +41,6 @@ public class RegisterEventHandler {
             MenuScreens.register(MPGMenuCore.CraftingManaita.get(), CraftingManaitaScreen::new);
             MenuScreens.register(MPGMenuCore.FurnaceManaita.get(), FurnaceManaitaScreen::new);
             MenuScreens.register(MPGMenuCore.BrewingStandManaita.get(), BrewingStandScreen::new);
-            if (BaublesCapability.isEnabled()) {
-                MenuScreens.register(MPGMenuCore.Baubles.get(), BaublesScreen::new);
-            }
             acceptTypePropertyFunction(
                     MPGBlockCore.CraftingBlockItem.get(),
                     MPGBlockCore.FurnaceBlockItem.get(),
@@ -53,11 +48,15 @@ public class RegisterEventHandler {
                     MPGBlockCore.HookBlockItem.get(),
                     MPGItemCore.ManaitaCraftingPortable.get(),
                     MPGItemCore.ManaitaFurnacePortable.get(),
-                    MPGItemCore.ManaitaBrewingPortable.get(),
-                    MPGItemCore.ManaitaCraftingRing.get(),
-                    MPGItemCore.ManaitaFurnaceRing.get(),
-                    MPGItemCore.ManaitaBrewingRing.get()
+                    MPGItemCore.ManaitaBrewingPortable.get()
             );
+            if (MPGItemCore.isCuriosLoaded()) {
+                acceptTypePropertyFunction(
+                        MPGItemCore.ManaitaCraftingRing.get(),
+                        MPGItemCore.ManaitaFurnaceRing.get(),
+                        MPGItemCore.ManaitaBrewingRing.get()
+                );
+            }
         });
     }
 
@@ -80,10 +79,6 @@ public class RegisterEventHandler {
         event.register(MPGKeyBoardCore.MESSAGE_KEY);
         event.register(MPGKeyBoardCore.MESSAGE_ARMOR_KEY);
         event.register(MPGKeyBoardCore.PAXEL_KEY);
-        if (BaublesCapability.isEnabled()) {
-            MPGKeyBoardCore.BAUBLES_KEY = new KeyMapping("key.manaita.baubles", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, 66, "key.categories.misc");
-            event.register(MPGKeyBoardCore.BAUBLES_KEY);
-        }
     }
 
     @SuppressWarnings("deprecation")

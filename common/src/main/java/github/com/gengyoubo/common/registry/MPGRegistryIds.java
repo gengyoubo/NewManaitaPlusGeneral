@@ -34,13 +34,17 @@ public final class MPGRegistryIds {
     public static final String CRAFTING_MENU = "manaita_crafting";
     public static final String FURNACE_MENU = "manaita_furnace";
     public static final String BREWING_MENU = "manaita_brewing";
-    public static final String BAUBLES_MENU = "manaita_baubles";
     public static final String CRAFTING_RECIPE = "manaita_crafting";
     public static final String NBT_CRAFTING_RECIPE = "manaita_crafting_type";
 
     public static final String[] TYPED_ITEM_IDS = {
             CRAFTING_BLOCK, FURNACE_BLOCK, BREWING_BLOCK, HOOK_BLOCK,
             CRAFTING_PORTABLE, FURNACE_PORTABLE, BREWING_PORTABLE
+    };
+
+    /** Typed accessory items; only registered when an accessory-slot mod is installed. */
+    public static final String[] RING_ITEM_IDS = {
+            CRAFTING_RING, FURNACE_RING, BREWING_RING
     };
 
     private MPGRegistryIds() {

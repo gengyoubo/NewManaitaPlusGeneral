@@ -24,3 +24,11 @@ mandatory=true
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+
+# Optional: Manaita rings are only registered when Curios provides accessory slots.
+[[dependencies.${mod_id}]]
+modId="curios"
+mandatory=false
+versionRange="[5.1,)"
+ordering="NONE"
+side="BOTH"

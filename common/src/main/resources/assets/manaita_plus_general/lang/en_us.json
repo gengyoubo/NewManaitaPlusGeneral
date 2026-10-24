@@ -5,7 +5,6 @@
   "container.crafting_manaita": "Crafting Cutting Board",
   "container.furnace_manaita": "Furnace Cutting Board",
   "container.brewing_manaita": "Brewing Cutting Board",
-  "container.manaita_baubles": "Cutting Board Accessories",
 
   "block.crafting.name": "Crafting Cutting Board",
   "block.crafting.wooden.name": "Wooden Crafting Cutting Board",
@@ -158,7 +157,6 @@
   "key.manaita":"Cutting Board",
   "key.manaita.armor":"Cutting Board Armor",
   "key.manaita.doubling":"Cutting Board Doubling",
-  "key.manaita.baubles":"Cutting Board Accessories",
 
   "enchantments.fortune": "Fortune",
   "enchantments.silktouch": "Silktouch"

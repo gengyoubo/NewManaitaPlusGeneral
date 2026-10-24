@@ -1,0 +1,33 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "trinkets"
+      ]
+    }
+  ],
+  "type": "manaita_plus_general:manaita_crafting_type",
+  "category": "misc",
+  "pattern": [
+    "XY ",
+    "YY ",
+    "   "
+  ],
+  "key": {
+    "X": {
+      "item": "manaita_plus_general:manaita_brewing_portable",
+      "type": 8
+    },
+    "Y": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "manaita_plus_general:manaita_brewing_ring",
+    "count": 1,
+    "nbt": {
+      "ManaitaType": 8
+    }
+  }
+}

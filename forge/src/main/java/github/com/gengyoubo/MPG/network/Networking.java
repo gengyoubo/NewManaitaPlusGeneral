@@ -1,8 +1,8 @@
 package github.com.gengyoubo.MPG.network;
 
 import github.com.gengyoubo.MPG.MPG;
-import github.com.gengyoubo.MPG.baubles.common.lib.PlayerHandler;
-import github.com.gengyoubo.MPG.network.client.OpenBaublesPacket;
+import github.com.gengyoubo.MPG.compat.CuriosCompat;
+import github.com.gengyoubo.MPG.core.MPGItemCore;
 import github.com.gengyoubo.common.network.MPGKeyPressLogic;
 import github.com.gengyoubo.common.network.payload.MPGChangeEntityDataPayload;
 import github.com.gengyoubo.common.network.payload.MPGDestroyBlockPayload;
@@ -33,11 +33,6 @@ public class Networking {
                 .decoder(MPGKeyPressPayload.STREAM_CODEC::decode)
                 .consumerMainThread(Networking::handleKeyPress)
                 .add();
-        CHANNEL.messageBuilder(OpenBaublesPacket.class, 1, NetworkDirection.PLAY_TO_SERVER)
-                .encoder((packet, buf) -> OpenBaublesPacket.STREAM_CODEC.encode(buf, packet))
-                .decoder(OpenBaublesPacket.STREAM_CODEC::decode)
-                .consumerMainThread(OpenBaublesPacket::handle)
-                .add();
         CHANNEL.messageBuilder(MPGDestroyBlockPayload.class, 2, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder((packet, buf) -> MPGDestroyBlockPayload.STREAM_CODEC.encode(buf, packet))
                 .decoder(MPGDestroyBlockPayload.STREAM_CODEC::decode)
@@ -57,8 +52,8 @@ public class Networking {
                 return;
             }
             ServerPlayer player = context.getSender();
-            if (payload.keyCode() == 0) {
-                ItemStack ring = PlayerHandler.getEquippedRing(player).orElse(ItemStack.EMPTY);
+            if (payload.keyCode() == 0 && MPGItemCore.isCuriosLoaded()) {
+                ItemStack ring = CuriosCompat.findEquippedRing(player);
                 if (MPGKeyPressLogic.invoke(ring, player)) {
                     return;
                 }

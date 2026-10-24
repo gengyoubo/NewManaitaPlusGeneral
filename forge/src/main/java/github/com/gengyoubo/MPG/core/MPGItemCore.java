@@ -6,12 +6,15 @@ import github.com.gengyoubo.MPG.item.portable.*;
 import github.com.gengyoubo.MPG.item.ring.*;
 import github.com.gengyoubo.MPG.item.tool.*;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.RegistryObject;
 
 import static github.com.gengyoubo.MPG.MPG.ITEMS;
 import static github.com.gengyoubo.common.registry.MPGRegistryIds.*;
 
 public class MPGItemCore {
+    private static final boolean CURIOS_LOADED = ModList.get().isLoaded("curios");
+
     public static final RegistryObject<Item> ManaitaSwordGod = ITEMS.register(GOD_SWORD, MPGGodSwordItem::new);
     public static final RegistryObject<Item> ManaitaSword = ITEMS.register(SWORD, MPGSwordItem::new);
     public static final RegistryObject<Item> ManaitaBow = ITEMS.register(BOW, MPGBowItem::new);
@@ -30,9 +33,14 @@ public class MPGItemCore {
     public static final RegistryObject<Item> ManaitaCraftingPortable = ITEMS.register(CRAFTING_PORTABLE, MPGCraftingPortable::new);
     public static final RegistryObject<Item> ManaitaFurnacePortable = ITEMS.register(FURNACE_PORTABLE, MPGFurnacePortable::new);
     public static final RegistryObject<Item> ManaitaBrewingPortable = ITEMS.register(BREWING_PORTABLE, MPGBrewingPortable::new);
-    public static final RegistryObject<Item> ManaitaCraftingRing = ITEMS.register(CRAFTING_RING, MPGCraftingRing::new);
-    public static final RegistryObject<Item> ManaitaFurnaceRing = ITEMS.register(FURNACE_RING, MPGFurnaceRing::new);
-    public static final RegistryObject<Item> ManaitaBrewingRing = ITEMS.register(BREWING_RING, MPGBrewingRing::new);
+    // Rings are accessories; they only exist when Curios provides the ring slot.
+    public static final RegistryObject<Item> ManaitaCraftingRing = CURIOS_LOADED ? ITEMS.register(CRAFTING_RING, MPGCraftingRing::new) : null;
+    public static final RegistryObject<Item> ManaitaFurnaceRing = CURIOS_LOADED ? ITEMS.register(FURNACE_RING, MPGFurnaceRing::new) : null;
+    public static final RegistryObject<Item> ManaitaBrewingRing = CURIOS_LOADED ? ITEMS.register(BREWING_RING, MPGBrewingRing::new) : null;
+
+    public static boolean isCuriosLoaded() {
+        return CURIOS_LOADED;
+    }
 
     public static void init() {
     }

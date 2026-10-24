@@ -1,6 +1,8 @@
 package github.com.gengyoubo.network;
 
 import github.com.gengyoubo.common.network.MPGKeyPressLogic;
+import github.com.gengyoubo.compat.TrinketsCompat;
+import github.com.gengyoubo.core.MPItemCore;
 import github.com.gengyoubo.common.network.payload.MPGChangeEntityDataPayload;
 import github.com.gengyoubo.common.network.payload.MPGDestroyBlockPayload;
 import github.com.gengyoubo.common.network.payload.MPGKeyPressPayload;
@@ -35,7 +37,13 @@ public final class MPNetworking {
         initCommon();
         ServerPlayNetworking.registerGlobalReceiver(KEY_PRESS.type(), (server, player, handler, buf, responseSender) -> {
             MPGKeyPressPayload payload = KEY_PRESS.codec().decode(buf);
-            server.execute(() -> MPGKeyPressLogic.handle(player, payload.keyCode()));
+            server.execute(() -> {
+                if (payload.keyCode() == 0 && MPItemCore.isTrinketsLoaded()
+                        && MPGKeyPressLogic.invoke(TrinketsCompat.findEquippedRing(player), player)) {
+                    return;
+                }
+                MPGKeyPressLogic.handle(player, payload.keyCode());
+            });
         });
     }
 

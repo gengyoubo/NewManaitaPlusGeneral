@@ -87,11 +87,15 @@ public class JEIPlugin implements IModPlugin {
     }
 
     private static List<Item> typedItems() {
-        return List.of(MPGBlockCore.CraftingBlockItem.get(), MPGBlockCore.FurnaceBlockItem.get(),
+        List<Item> items = new ArrayList<>(List.of(MPGBlockCore.CraftingBlockItem.get(), MPGBlockCore.FurnaceBlockItem.get(),
                 MPGBlockCore.BrewingBlockItem.get(), MPGBlockCore.HookBlockItem.get(),
                 MPGItemCore.ManaitaCraftingPortable.get(), MPGItemCore.ManaitaFurnacePortable.get(),
-                MPGItemCore.ManaitaBrewingPortable.get(), MPGItemCore.ManaitaCraftingRing.get(),
-                MPGItemCore.ManaitaFurnaceRing.get(), MPGItemCore.ManaitaBrewingRing.get());
+                MPGItemCore.ManaitaBrewingPortable.get()));
+        if (MPGItemCore.isCuriosLoaded()) {
+            items.addAll(List.of(MPGItemCore.ManaitaCraftingRing.get(),
+                    MPGItemCore.ManaitaFurnaceRing.get(), MPGItemCore.ManaitaBrewingRing.get()));
+        }
+        return items;
     }
 
     private static List<ItemStack> typedStacks() {

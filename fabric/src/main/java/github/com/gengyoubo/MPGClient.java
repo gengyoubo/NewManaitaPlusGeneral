@@ -5,6 +5,7 @@ import github.com.gengyoubo.blockentity.RenderMPCraftingBlockEntity;
 import github.com.gengyoubo.blockentity.RenderMPFurnaceBlockEntity;
 import github.com.gengyoubo.core.MPBlockEntityCore;
 import github.com.gengyoubo.core.MPEntityCore;
+import github.com.gengyoubo.core.MPItemCore;
 import github.com.gengyoubo.core.MPMenuCore;
 import github.com.gengyoubo.entity.MPLightningBoltRenderer;
 import github.com.gengyoubo.entity.RenderMPGArrow;
@@ -61,7 +62,11 @@ public class MPGClient implements ClientModInitializer {
             return;
         }
 
-        for (String itemPath : MPGRegistryIds.TYPED_ITEM_IDS) {
+        java.util.List<String> itemPaths = new java.util.ArrayList<>(java.util.List.of(MPGRegistryIds.TYPED_ITEM_IDS));
+        if (MPItemCore.isTrinketsLoaded()) {
+            itemPaths.addAll(java.util.List.of(MPGRegistryIds.RING_ITEM_IDS));
+        }
+        for (String itemPath : itemPaths) {
             ResourceLocation id = github.com.gengyoubo.util.MPResource.id(MPG.MODID, itemPath);
             Item item = Registry.ITEM.get(id);
             if (item == net.minecraft.world.item.Items.AIR) {

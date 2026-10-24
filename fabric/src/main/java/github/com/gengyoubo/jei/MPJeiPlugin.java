@@ -94,10 +94,15 @@ public class MPJeiPlugin implements IModPlugin {
     }
 
     private static List<Item> typedItems() {
-        return List.of(MPBlockCore.CraftingBlockItem.get(), MPBlockCore.FurnaceBlockItem.get(),
+        List<Item> items = new ArrayList<>(List.of(MPBlockCore.CraftingBlockItem.get(), MPBlockCore.FurnaceBlockItem.get(),
                 MPBlockCore.BrewingBlockItem.get(), MPBlockCore.HookBlockItem.get(),
                 MPItemCore.ManaitaCraftingPortable.get(), MPItemCore.ManaitaFurnacePortable.get(),
-                MPItemCore.ManaitaBrewingPortable.get());
+                MPItemCore.ManaitaBrewingPortable.get()));
+        if (MPItemCore.isTrinketsLoaded()) {
+            items.addAll(List.of(MPItemCore.ManaitaCraftingRing.get(),
+                    MPItemCore.ManaitaFurnaceRing.get(), MPItemCore.ManaitaBrewingRing.get()));
+        }
+        return items;
     }
 
     private static List<ItemStack> typedStacks() {

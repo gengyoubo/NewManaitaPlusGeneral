@@ -1,10 +1,8 @@
 package github.com.gengyoubo.MPG.event;
 
 import github.com.gengyoubo.MPG.MPG;
-import github.com.gengyoubo.MPG.baubles.common.capability.BaublesCapability;
 import github.com.gengyoubo.MPG.core.MPGKeyBoardCore;
 import github.com.gengyoubo.MPG.network.Networking;
-import github.com.gengyoubo.MPG.network.client.OpenBaublesPacket;
 import github.com.gengyoubo.common.event.MPGClientEventLogic;
 import github.com.gengyoubo.common.network.payload.MPGKeyPressPayload;
 import net.minecraft.client.Minecraft;
@@ -42,11 +40,6 @@ public class ClientEventHandler {
         while (MPGKeyBoardCore.PAXEL_KEY != null && MPGKeyBoardCore.PAXEL_KEY.consumeClick()) {
             MPGClientEventLogic.handlePaxelKey(MINECRAFT.player);
             Networking.sendToServer(new MPGKeyPressPayload((byte) 2));
-        }
-        while (BaublesCapability.isEnabled()
-                && MPGKeyBoardCore.BAUBLES_KEY != null
-                && MPGKeyBoardCore.BAUBLES_KEY.consumeClick()) {
-            Networking.sendToServer(new OpenBaublesPacket());
         }
     }
 

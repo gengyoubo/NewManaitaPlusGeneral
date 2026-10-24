@@ -23,7 +23,8 @@ import github.com.gengyoubo.MPG.core.*;
 import github.com.gengyoubo.MPG.network.Networking;
 import github.com.gengyoubo.common.util.MPGItemStackData;
 import github.com.gengyoubo.common.util.MPGNBTData;
-import github.com.gengyoubo.MPG.baubles.common.capability.BaublesCapability;
+import github.com.gengyoubo.MPG.compat.CuriosCompat;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
 @Mod(MPG.MODID)
 public class MPG {
@@ -52,7 +53,7 @@ public class MPG {
             acceptMPGType(MPGItemCore.ManaitaCraftingPortable.get(), output, 8);
             acceptMPGType(MPGItemCore.ManaitaFurnacePortable.get(), output, 8);
             acceptMPGType(MPGItemCore.ManaitaBrewingPortable.get(), output, 8);
-            if (BaublesCapability.isEnabled()) {
+            if (MPGItemCore.isCuriosLoaded()) {
                 acceptMPGType(MPGItemCore.ManaitaCraftingRing.get(), output, 8);
                 acceptMPGType(MPGItemCore.ManaitaFurnaceRing.get(), output, 8);
                 acceptMPGType(MPGItemCore.ManaitaBrewingRing.get(), output, 8);
@@ -100,6 +101,9 @@ public class MPG {
         MENU_TYPES.register(modEventBus);
         BLOCK_ENTITY_TYPES.register(modEventBus);
         RECIPE_SERIALIZER_DEFERRED_REGISTER.register(modEventBus);
+        if (MPGItemCore.isCuriosLoaded()) {
+            modEventBus.addListener((InterModEnqueueEvent event) -> CuriosCompat.registerSlots());
+        }
 
         net.minecraftforge.fml.ModLoadingContext.get().registerConfig(Type.COMMON, MPGConfig.SPEC);
     }

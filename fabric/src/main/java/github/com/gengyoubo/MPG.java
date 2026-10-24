@@ -89,6 +89,11 @@ public class MPG implements ModInitializer {
                 acceptMPGType(MPItemCore.ManaitaCraftingPortable.get(), entries, 8);
                 acceptMPGType(MPItemCore.ManaitaFurnacePortable.get(), entries, 8);
                 acceptMPGType(MPItemCore.ManaitaBrewingPortable.get(), entries, 8);
+                if (MPItemCore.isTrinketsLoaded()) {
+                    acceptMPGType(MPItemCore.ManaitaCraftingRing.get(), entries, 8);
+                    acceptMPGType(MPItemCore.ManaitaFurnaceRing.get(), entries, 8);
+                    acceptMPGType(MPItemCore.ManaitaBrewingRing.get(), entries, 8);
+                }
 
                 entries.add(new ItemStack(MPItemCore.ManaitaSword.get()));
                 entries.add(new ItemStack(MPItemCore.ManaitaSwordGod.get()));

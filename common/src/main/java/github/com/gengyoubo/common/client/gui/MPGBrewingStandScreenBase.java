@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 /** Shared brewing stand screen for all loaders. */
 public class MPGBrewingStandScreenBase<M extends MPGBrewingStandMenuBase> extends AbstractContainerScreen<M> {
     private static final ResourceLocation BREWING_STAND_LOCATION =
-            ResourceLocation.withDefaultNamespace("textures/gui/container/brewing_stand.png");
+            new ResourceLocation("textures/gui/container/brewing_stand.png");
     private static final int[] BUBBLE_LENGTHS = {29, 24, 20, 16, 11, 6, 0};
     private final String doublingText;
 
@@ -31,7 +31,7 @@ public class MPGBrewingStandScreenBase<M extends MPGBrewingStandMenuBase> extend
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics, mouseX, mouseY, partialTick);
+        renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
     }

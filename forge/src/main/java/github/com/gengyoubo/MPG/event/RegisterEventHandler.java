@@ -88,7 +88,7 @@ public class RegisterEventHandler {
 
     @SuppressWarnings("deprecation")
     private static void acceptTypePropertyFunction(Item... items) {
-        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(MPG.MODID, MPGNBTData.Type);
+        ResourceLocation location = new ResourceLocation(MPG.MODID, MPGNBTData.Type);
         ItemPropertyFunction typePropertyFunction = (stack, level, entity, seed) ->
                 MPGTypeHelper.toModelPredicate(MPGItemStackData.getInt(stack, MPGNBTData.ItemType));
         for (Item item : items) {

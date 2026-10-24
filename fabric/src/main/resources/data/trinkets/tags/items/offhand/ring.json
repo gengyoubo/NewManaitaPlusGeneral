@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "manaita_plus_general:manaita_crafting_ring",
+    "manaita_plus_general:manaita_furnace_ring",
+    "manaita_plus_general:manaita_brewing_ring"
+  ]
+}

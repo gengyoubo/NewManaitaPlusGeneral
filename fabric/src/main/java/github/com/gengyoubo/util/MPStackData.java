@@ -1,24 +1,22 @@
 package github.com.gengyoubo.util;
 
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 
 public final class MPStackData {
     private MPStackData() {
     }
 
     public static CompoundTag getTag(ItemStack stack) {
-        return stack.getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        return stack.hasTag() ? stack.getTag() : new CompoundTag();
     }
 
     public static boolean hasTag(ItemStack stack) {
-        return !stack.getComponents().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).isEmpty();
+        return stack.hasTag();
     }
 
     public static void setTag(ItemStack stack, CompoundTag tag) {
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        stack.setTag(tag);
     }
 
     public static int getInt(ItemStack stack, String key) {
@@ -31,7 +29,7 @@ public final class MPStackData {
     }
 
     public static void putInt(ItemStack stack, String key, int value) {
-        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(key, value));
+        stack.getOrCreateTag().putInt(key, value);
     }
 
     public static boolean getBoolean(ItemStack stack, String key) {
@@ -44,6 +42,6 @@ public final class MPStackData {
     }
 
     public static void putBoolean(ItemStack stack, String key, boolean value) {
-        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean(key, value));
+        stack.getOrCreateTag().putBoolean(key, value);
     }
 }

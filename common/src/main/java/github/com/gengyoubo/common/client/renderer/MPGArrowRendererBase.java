@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /** Shared renderer for the custom arrow entity. */
 public class MPGArrowRendererBase<T extends AbstractArrow> extends ArrowRenderer<T> {
     private static final ResourceLocation ARROW_TEXTURE =
-            ResourceLocation.withDefaultNamespace("textures/entity/projectiles/arrow.png");
+            new ResourceLocation("textures/entity/projectiles/arrow.png");
 
     public MPGArrowRendererBase(EntityRendererProvider.Context context) {
         super(context);

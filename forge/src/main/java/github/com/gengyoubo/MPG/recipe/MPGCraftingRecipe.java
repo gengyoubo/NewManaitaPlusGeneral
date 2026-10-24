@@ -8,8 +8,8 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 
 public class MPGCraftingRecipe extends MPGSourceCopyRecipeBase {
-    public MPGCraftingRecipe(CraftingBookCategory category) {
-        super(category, MPGItemCore.ManaitaSource, () -> MPGConfig.source_doubling_value,
+    public MPGCraftingRecipe(net.minecraft.resources.ResourceLocation id, CraftingBookCategory category) {
+        super(id, category, MPGItemCore.ManaitaSource, () -> MPGConfig.source_doubling_value,
                 () -> MPGRecipeSerializerCore.CraftingRecipe.get());
     }
 

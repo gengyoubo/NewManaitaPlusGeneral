@@ -89,6 +89,6 @@ public class MPGSourceCopyRecipeCategory implements IRecipeCategory<MPGSourceCop
 
     @Override
     public ResourceLocation getRegistryName(MPGSourceCopyRecipe recipe) {
-        return ResourceLocation.fromNamespaceAndPath(MPGCommon.MOD_ID, "source_copying");
+        return new ResourceLocation(MPGCommon.MOD_ID, "source_copying");
     }
 }

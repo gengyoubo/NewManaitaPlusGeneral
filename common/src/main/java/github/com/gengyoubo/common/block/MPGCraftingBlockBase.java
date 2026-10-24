@@ -65,8 +65,8 @@ public abstract class MPGCraftingBlockBase extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level,
-                                                         @NotNull BlockPos pos, @NotNull Player player,
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level,
+                                                         @NotNull BlockPos pos, @NotNull Player player, net.minecraft.world.InteractionHand hand,
                                                          @NotNull BlockHitResult hitResult) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;

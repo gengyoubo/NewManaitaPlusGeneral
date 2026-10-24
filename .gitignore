@@ -1,5 +1,6 @@
 .gradle
 .idea
+/.architectury-transformer/
 _sources
 build
 fabric/.gradle

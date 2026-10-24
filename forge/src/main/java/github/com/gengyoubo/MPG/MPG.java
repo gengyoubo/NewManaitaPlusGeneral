@@ -14,9 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -54,7 +52,7 @@ public class MPG {
                 acceptMPGType(MPGItemCore.ManaitaCraftingPortable.get(), output, 8);
                 acceptMPGType(MPGItemCore.ManaitaFurnacePortable.get(), output, 8);
                 acceptMPGType(MPGItemCore.ManaitaBrewingPortable.get(), output, 8);
-                if (BaublesCapability.isEnabled()) {
+                if (github.com.gengyoubo.MPG.integration.MPGAccessories.isEnabled()) {
                     acceptMPGType(MPGItemCore.ManaitaCraftingRing.get(), output, 8);
                     acceptMPGType(MPGItemCore.ManaitaFurnaceRing.get(), output, 8);
                     acceptMPGType(MPGItemCore.ManaitaBrewingRing.get(), output, 8);
@@ -81,8 +79,10 @@ public class MPG {
     public MPG() {
         MPGCommon.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModContainer modContainer = FMLJavaModLoadingContext.get().getContainer();
+
         Networking.registerMessage();
+        modEventBus.addListener((net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent event) ->
+                event.enqueueWork(github.com.gengyoubo.MPG.integration.MPGAccessories::register));
 
         // Force-load all registry holder classes before RegisterEvent starts firing.
         MPGBlockCore.init();
@@ -102,9 +102,8 @@ public class MPG {
         MENU_TYPES.register(modEventBus);
         BLOCK_ENTITY_TYPES.register(modEventBus);
         RECIPE_SERIALIZER_DEFERRED_REGISTER.register(modEventBus);
-        MPGConditionCore.CONDITION_CODECS.register(modEventBus);
 
-        modContainer.addConfig(new ModConfig(Type.COMMON, MPGConfig.SPEC, modContainer));
+        net.minecraftforge.fml.ModLoadingContext.get().registerConfig(Type.COMMON, MPGConfig.SPEC);
     }
 
     private static void acceptMPGType(Item item, CreativeModeTab.Output output, int maxType) {

@@ -20,7 +20,7 @@ public abstract class MPGBowItemBase extends Item implements IMPGKey, IMPGDoubli
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                 List<Component> tooltip, @NotNull TooltipFlag flag) {
         String state = isDoubling(stack) ? translate("info.on") : translate("info.off");
         tooltip.add(Component.literal(MPText.manaita_mode.formatting(translate("mode.doubling") + ":" + state)));

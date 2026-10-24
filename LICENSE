@@ -1,0 +1,56 @@
+MIT License (Code)
+
+This license applies only to source code not derived from Baubles.
+Copyright (c) 2019-2026 Rikuto0204, RealSenPhent, gengyoubo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Third-Party (Baubles)
+
+This project includes code and resource derived from Baubles.
+
+Original author: Azanor
+Original license: CC BY-NC-SA 3.0
+http://creativecommons.org/licenses/by-nc-sa/3.0/
+
+These portions include the Baubles compatibility API, related classes,
+and graphical user interface assets, and are licensed under CC BY-NC-SA 3.0.
+
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (Assets)
+
+© 2019-2026 Rikuto0204, RealSenPhent
+
+All artwork in this project (including textures, models, UI elements,
+and other visual assets) is licensed under the Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0 International License.
+
+You are free to:
+
+Share — copy and redistribute the material
+Adapt — remix, transform, and build upon the material
+
+Under the following terms:
+
+Attribution — You must give appropriate credit
+NonCommercial — You may not use the material for commercial purposes
+ShareAlike — You must distribute your contributions under the same license
+
+Full license text:
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+This license applies to all non-code assets unless otherwise specified.

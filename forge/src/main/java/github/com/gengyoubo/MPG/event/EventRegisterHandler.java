@@ -1,6 +1,5 @@
 package github.com.gengyoubo.MPG.event;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -17,15 +16,14 @@ import github.com.gengyoubo.MPG.loottable.MPGLootTable;
 public class EventRegisterHandler {
     @SubscribeEvent
     public static void onEntityAttributeModification(EntityAttributeModificationEvent event) {
-        event.getTypes().forEach(entityType -> event.add(entityType, MPGAttributeCore.Type.getHolder().orElseThrow()));
+        event.getTypes().forEach(entityType -> event.add(entityType, MPGAttributeCore.Type.get()));
     }
-
 
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
 
-        gen.addProvider(event.includeServer(), new MPGLootTable(gen.getPackOutput(), event.getLookupProvider()));
+        gen.addProvider(event.includeServer(), new MPGLootTable(gen.getPackOutput()));
 
         PackOutput packOutput = gen.getPackOutput();
         gen.addProvider(event.includeClient(), new MPBlockStateProvider(packOutput, event.getExistingFileHelper()));

@@ -18,9 +18,9 @@ import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /** Shared 3x3 crafting menu and doubled-result behavior. */
-public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
+public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingContainer> {
     private final CraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
     private final ResultContainer resultSlots = new ResultContainer();
     private final ContainerLevelAccess access;
@@ -68,13 +68,13 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingInput, 
         }
         ServerPlayer serverPlayer = (ServerPlayer) player;
         ItemStack result = ItemStack.EMPTY;
-        CraftingInput input = CraftingInput.of(craftSlots.getWidth(), craftSlots.getHeight(), craftSlots.getItems());
-        Optional<RecipeHolder<CraftingRecipe>> recipe = level.getServer().getRecipeManager()
+        CraftingContainer input = craftSlots;
+        Optional<CraftingRecipe> recipe = level.getServer().getRecipeManager()
                 .getRecipeFor(RecipeType.CRAFTING, input, level);
         if (recipe.isPresent()) {
-            RecipeHolder<CraftingRecipe> holder = recipe.get();
+            CraftingRecipe holder = recipe.get();
             resultSlots.setRecipeUsed(holder);
-            ItemStack assembled = holder.value().assemble(input, level.registryAccess());
+            ItemStack assembled = holder.assemble(input, level.registryAccess());
             if (assembled.isItemEnabled(level.enabledFeatures())) {
                 long multiplied = (long) assembled.getCount() * MPGConfigValues.crafting_doubling_value;
                 assembled.setCount((int) Math.min(Integer.MAX_VALUE, multiplied));
@@ -104,9 +104,9 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingInput, 
     }
 
     @Override
-    public boolean recipeMatches(RecipeHolder<CraftingRecipe> recipe) {
-        CraftingInput input = CraftingInput.of(craftSlots.getWidth(), craftSlots.getHeight(), craftSlots.getItems());
-        return recipe.value().matches(input, player.level());
+    public boolean recipeMatches(net.minecraft.world.item.crafting.Recipe<? super CraftingContainer> recipe) {
+        CraftingContainer input = craftSlots;
+        return recipe.matches(input, player.level());
     }
 
     @Override

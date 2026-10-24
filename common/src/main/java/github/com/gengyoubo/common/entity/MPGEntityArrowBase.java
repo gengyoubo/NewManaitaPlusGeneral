@@ -19,16 +19,11 @@ public abstract class MPGEntityArrowBase extends AbstractArrow {
     }
 
     protected MPGEntityArrowBase(EntityType<? extends AbstractArrow> type, LivingEntity owner, Level level) {
-        super(type, owner, level, ItemStack.EMPTY, ItemStack.EMPTY);
+        super(type, owner, level);
     }
 
     @Override
     protected @NotNull ItemStack getPickupItem() {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    protected @NotNull ItemStack getDefaultPickupItem() {
         return ItemStack.EMPTY;
     }
 

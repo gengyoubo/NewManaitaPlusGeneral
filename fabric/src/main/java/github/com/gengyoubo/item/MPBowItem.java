@@ -61,6 +61,6 @@ public class MPBowItem extends MPGBowItemBase {
         arrow.setBaseDamage(isDoubling(stack) ? 40.0D : 20.0D);
         arrow.setSilent(true);
         level.addFreshEntity(arrow);
-        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+        stack.hurtAndBreak(1, player, entity -> entity.broadcastBreakEvent(hand));
     }
 }

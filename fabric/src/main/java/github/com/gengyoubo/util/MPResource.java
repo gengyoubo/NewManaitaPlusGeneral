@@ -8,7 +8,7 @@ public final class MPResource {
     }
 
     public static ResourceLocation id(String namespace, String path) {
-        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+        return new ResourceLocation(namespace, path);
     }
 
     public static ResourceLocation id(String path) {
@@ -16,7 +16,7 @@ public final class MPResource {
     }
 
     public static ResourceLocation parse(String id) {
-        return ResourceLocation.parse(id);
+        return new ResourceLocation(id);
     }
 }
 

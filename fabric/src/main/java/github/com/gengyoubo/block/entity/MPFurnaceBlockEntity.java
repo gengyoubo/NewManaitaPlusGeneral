@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class MPFurnaceBlockEntity extends MPGFurnaceBlockEntityBase
-        implements ExtendedScreenHandlerFactory<BlockPos> {
+        implements ExtendedScreenHandlerFactory {
     public MPFurnaceBlockEntity(BlockPos pos, BlockState state) {
         super(MPBlockEntityCore.FURNACE_BLOCK_ENTITY.get(), pos, state);
     }
@@ -24,9 +24,9 @@ public class MPFurnaceBlockEntity extends MPGFurnaceBlockEntityBase
     }
 
     @Override
-    public BlockPos getScreenOpeningData(ServerPlayer player) {
-        return worldPosition;
-    }
+    public void writeScreenOpeningData(ServerPlayer player, net.minecraft.network.FriendlyByteBuf buf) {
+                buf.writeBlockPos(worldPosition);
+            }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, MPFurnaceBlockEntity entity) {
         MPGFurnaceBlockEntityBase.serverTick(level, pos, state, entity);

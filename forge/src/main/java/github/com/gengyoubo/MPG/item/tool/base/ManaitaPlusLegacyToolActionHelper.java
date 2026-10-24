@@ -4,8 +4,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -83,18 +81,14 @@ public final class ManaitaPlusLegacyToolActionHelper {
             return;
         }
 
-        Holder.Reference<net.minecraft.world.item.enchantment.Enchantment> fortune =
-                level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
-        Holder.Reference<net.minecraft.world.item.enchantment.Enchantment> silkTouch =
-                level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH);
+        var fortune = Enchantments.BLOCK_FORTUNE;
+        var silkTouch = Enchantments.SILK_TOUCH;
         boolean hasSilkTouch = EnchantmentHelper.getItemEnchantmentLevel(silkTouch, itemInHand) > 0;
         String enchantName = I18n.get("enchantments.fortune");
-        EnchantmentHelper.updateEnchantments(itemInHand, mutable -> {
-            mutable.set(fortune, 10);
-            if (!hasSilkTouch) {
-                mutable.set(silkTouch, 1);
-            }
-        });
+        var enchantments = EnchantmentHelper.getEnchantments(itemInHand);
+        enchantments.put(fortune, 10);
+        if (!hasSilkTouch) enchantments.put(silkTouch, 1);
+        EnchantmentHelper.setEnchantments(enchantments, itemInHand);
         if (!hasSilkTouch) {
             enchantName = I18n.get("enchantments.silktouch");
         }
@@ -201,7 +195,7 @@ public final class ManaitaPlusLegacyToolActionHelper {
             EquipmentSlot slot = context.getHand() == net.minecraft.world.InteractionHand.MAIN_HAND
                     ? EquipmentSlot.MAINHAND
                     : EquipmentSlot.OFFHAND;
-            itemStack.hurtAndBreak(1, player, slot);
+            itemStack.hurtAndBreak(1, player, entity -> entity.broadcastBreakEvent(slot));
         }
     }
 }

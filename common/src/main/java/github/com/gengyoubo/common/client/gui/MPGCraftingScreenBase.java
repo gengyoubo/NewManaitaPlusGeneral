@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public class MPGCraftingScreenBase<M extends MPGCraftingMenuBase> extends AbstractContainerScreen<M>
         implements RecipeUpdateListener {
     private static final ResourceLocation CRAFTING_TABLE_LOCATION =
-            ResourceLocation.withDefaultNamespace("textures/gui/container/crafting_table.png");
+            new ResourceLocation("textures/gui/container/crafting_table.png");
     private final RecipeBookComponent recipeBookComponent = new RecipeBookComponent();
     private final String doublingText;
     private boolean widthTooNarrow;
@@ -35,7 +35,7 @@ public class MPGCraftingScreenBase<M extends MPGCraftingMenuBase> extends Abstra
         recipeBookComponent.init(width, height, minecraft, widthTooNarrow, menu);
         leftPos = recipeBookComponent.updateScreenPosition(width, imageWidth);
         addRenderableWidget(new ImageButton(leftPos + 5, height / 2 - 49, 20, 18,
-                RecipeBookComponent.RECIPE_BUTTON_SPRITES, button -> {
+                0, 0, 19, new ResourceLocation("textures/gui/recipe_button.png"), button -> {
                     recipeBookComponent.toggleVisibility();
                     leftPos = recipeBookComponent.updateScreenPosition(width, imageWidth);
                     button.setPosition(leftPos + 5, height / 2 - 49);
@@ -53,7 +53,7 @@ public class MPGCraftingScreenBase<M extends MPGCraftingMenuBase> extends Abstra
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (recipeBookComponent.isVisible() && widthTooNarrow) {
-            renderBackground(graphics, mouseX, mouseY, partialTick);
+            renderBackground(graphics);
             recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
         } else {
             super.render(graphics, mouseX, mouseY, partialTick);

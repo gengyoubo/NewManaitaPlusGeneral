@@ -85,7 +85,7 @@ public final class MPGClientEventLogic {
         if (minecraft.level != null || !(minecraft.screen instanceof TitleScreen) || summaries.isEmpty()) {
             return;
         }
-        logger.info("Dev auto-loading first world: {}", summaries.getFirst().getLevelId());
+        logger.info("Dev auto-loading first world: {}", summaries.get(0).getLevelId());
         logger.info("Skipping dev auto-load on 1.21.1 until WorldOpenFlows migration is finished");
     }
 }

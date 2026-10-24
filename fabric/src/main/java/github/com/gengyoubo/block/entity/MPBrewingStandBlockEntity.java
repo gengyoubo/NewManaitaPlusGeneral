@@ -11,20 +11,19 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class MPBrewingStandBlockEntity extends MPGBrewingStandBlockEntityBase
-        implements ExtendedScreenHandlerFactory<BlockPos> {
+        implements ExtendedScreenHandlerFactory {
     public MPBrewingStandBlockEntity(BlockPos pos, BlockState state) {
         super(MPBlockEntityCore.BREWING_BLOCK_ENTITY.get(), pos, state);
     }
 
     @Override
-    protected boolean isPotionInput(PotionBrewing potionBrewing, ItemStack stack) {
-        return potionBrewing.isContainerIngredient(stack) || stack.is(Items.GLASS_BOTTLE);
+    protected boolean isPotionInput(ItemStack stack) {
+        return (stack.is(Items.POTION) || stack.is(Items.SPLASH_POTION) || stack.is(Items.LINGERING_POTION)) || stack.is(Items.GLASS_BOTTLE);
     }
 
     @Override
@@ -38,9 +37,9 @@ public class MPBrewingStandBlockEntity extends MPGBrewingStandBlockEntityBase
     }
 
     @Override
-    public BlockPos getScreenOpeningData(ServerPlayer player) {
-        return worldPosition;
-    }
+    public void writeScreenOpeningData(ServerPlayer player, net.minecraft.network.FriendlyByteBuf buf) {
+                buf.writeBlockPos(worldPosition);
+            }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, MPBrewingStandBlockEntity entity) {
         MPGBrewingStandBlockEntityBase.serverTick(level, pos, state, entity);

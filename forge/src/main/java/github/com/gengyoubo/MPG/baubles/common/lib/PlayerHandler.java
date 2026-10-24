@@ -18,11 +18,11 @@ public final class PlayerHandler {
     }
 
     public static boolean equipItem(Player player, ItemStack stack) {
-        return BaublesCapability.isEnabled() && getPlayerBaubles(player).equip(stack, player);
+        return github.com.gengyoubo.MPG.integration.MPGAccessories.equip(player, stack);
     }
 
     public static Optional<ItemStack> getEquippedRing(Player player) {
-        return BaublesCapability.findPrimaryRing(player);
+        return github.com.gengyoubo.MPG.integration.MPGAccessories.equippedRing(player);
     }
 
     public static Optional<ItemStack> findFirstMatching(Player player, BaubleType type, Predicate<ItemStack> predicate) {

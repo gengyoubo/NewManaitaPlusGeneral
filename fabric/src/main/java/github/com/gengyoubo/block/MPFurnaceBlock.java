@@ -1,10 +1,8 @@
 package github.com.gengyoubo.block;
 
-import com.mojang.serialization.MapCodec;
 import github.com.gengyoubo.common.block.MPGFurnaceBlockBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -15,15 +13,9 @@ import github.com.gengyoubo.core.MPBlockEntityCore;
 import org.jetbrains.annotations.Nullable;
 
 public class MPFurnaceBlock extends MPGFurnaceBlockBase {
-    private static final MapCodec<MPFurnaceBlock> CODEC = MapCodec.unit(MPFurnaceBlock::new);
 
     public MPFurnaceBlock() {
         super(() -> MPBlockCore.HookBlockItem.get());
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends AbstractFurnaceBlock> codec() {
-        return CODEC;
     }
 
     @Override
@@ -37,5 +29,4 @@ public class MPFurnaceBlock extends MPGFurnaceBlockBase {
         return p_153273_.isClientSide ? null : createTickerHelper(p_153275_, MPBlockEntityCore.FURNACE_BLOCK_ENTITY.get(), MPFurnaceBlockEntity::serverTick);
     }
 }
-
 

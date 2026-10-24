@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class BaublesScreen extends AbstractContainerScreen<MPGBaublesMenu> {
-    private static final ResourceLocation INVENTORY_TEXTURE = ResourceLocation.fromNamespaceAndPath(MPG.MODID, "textures/gui/expanded_inventory.png");
+    private static final ResourceLocation INVENTORY_TEXTURE = new ResourceLocation(MPG.MODID, "textures/gui/expanded_inventory.png");
 
     public BaublesScreen(MPGBaublesMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -36,24 +36,14 @@ public class BaublesScreen extends AbstractContainerScreen<MPGBaublesMenu> {
         int top = this.topPos;
         guiGraphics.blit(INVENTORY_TEXTURE, left, top, 0, 0, this.imageWidth, this.imageHeight);
         if (this.minecraft != null && this.minecraft.player != null) {
-            InventoryScreen.renderEntityInInventoryFollowsMouse(
-                    guiGraphics,
-                    left + 26,
-                    top + 8,
-                    left + 77,
-                    top + 79,
-                    30,
-                    0.0F,
-                    mouseX,
-                    mouseY,
-                    this.minecraft.player
-            );
+            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 51, top + 75,
+                    30, left + 51 - mouseX, top + 25 - mouseY, this.minecraft.player);
         }
     }
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }

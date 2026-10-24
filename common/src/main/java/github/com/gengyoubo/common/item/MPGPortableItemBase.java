@@ -19,7 +19,7 @@ public abstract class MPGPortableItemBase extends Item {
     private final String translationPrefix;
 
     protected MPGPortableItemBase(String translationPrefix, int durability) {
-        super(new Properties().durability(durability).fireResistant().stacksTo(1));
+        super(new Properties().stacksTo(1).durability(Math.max(0, durability)).fireResistant());
         this.translationPrefix = translationPrefix;
     }
 

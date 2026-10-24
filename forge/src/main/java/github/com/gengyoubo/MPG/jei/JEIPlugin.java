@@ -30,7 +30,7 @@ import java.util.List;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
-    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MPG.MODID, "jei_plugin");
+    private static final ResourceLocation UID = new ResourceLocation(MPG.MODID, "jei_plugin");
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
@@ -86,6 +86,16 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(MPGBrewingStandMenu.class, MPGMenuCore.BrewingStandManaita.get(), RecipeTypes.BREWING, 1, 3, 5, 36);
     }
 
+    @Override
+    public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime runtime) {
+        if (!github.com.gengyoubo.MPG.integration.MPGAccessories.isEnabled()) {
+            runtime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM_STACK,
+                    List.of(MPGItemCore.ManaitaCraftingRing.get().getDefaultInstance(),
+                            MPGItemCore.ManaitaFurnaceRing.get().getDefaultInstance(),
+                            MPGItemCore.ManaitaBrewingRing.get().getDefaultInstance()));
+        }
+    }
+
     private static List<MPGSourceCopyRecipe> createSourceCopyRecipes() {
         return MPGJeiRecipeFactory.createSourceCopyRecipes(MPGItemCore.ManaitaSource.get(),
                 MPGConfig.source_doubling_value, typedItems(), typedStacks());
@@ -101,7 +111,8 @@ public class JEIPlugin implements IModPlugin {
 
     private static List<ItemStack> typedStacks() {
         List<ItemStack> stacks = new ArrayList<>();
-        typedItems().forEach(item -> stacks.addAll(MPGJeiRecipeFactory.createTypedStacks(item, 8)));
+        typedItems().stream().filter(item -> github.com.gengyoubo.MPG.integration.MPGAccessories.isEnabled() || !(item instanceof github.com.gengyoubo.MPG.item.ring.MPGRingItem))
+                .forEach(item -> stacks.addAll(MPGJeiRecipeFactory.createTypedStacks(item, 8)));
         return stacks;
     }
 }

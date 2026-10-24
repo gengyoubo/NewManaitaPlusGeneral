@@ -18,7 +18,7 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -110,12 +110,12 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
     public void slotsChanged(@NotNull Container container) {
         if (!this.player.level().isClientSide && this.player instanceof ServerPlayer serverPlayer) {
             ItemStack result = ItemStack.EMPTY;
-            Optional<RecipeHolder<CraftingRecipe>> optional = serverPlayer.server.getRecipeManager()
-                    .getRecipeFor(RecipeType.CRAFTING, this.craftSlots.asCraftInput(), this.player.level());
+            Optional<CraftingRecipe> optional = serverPlayer.server.getRecipeManager()
+                    .getRecipeFor(RecipeType.CRAFTING, this.craftSlots, this.player.level());
             if (optional.isPresent()) {
-                RecipeHolder<CraftingRecipe> recipeHolder = optional.get();
+                CraftingRecipe recipeHolder = optional.get();
                 this.resultSlots.setRecipeUsed(recipeHolder);
-                ItemStack assembled = recipeHolder.value().assemble(this.craftSlots.asCraftInput(), this.player.level().registryAccess());
+                ItemStack assembled = recipeHolder.assemble(this.craftSlots, this.player.level().registryAccess());
                 if (assembled.isItemEnabled(this.player.level().enabledFeatures())) {
                     result = assembled;
                 }

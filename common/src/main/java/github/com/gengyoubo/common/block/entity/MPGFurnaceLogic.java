@@ -10,8 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
+
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,30 +21,30 @@ final class MPGFurnaceLogic {
     private MPGFurnaceLogic() {
     }
 
-    static ItemStack assemble(@Nullable RecipeHolder<?> recipe, ItemStack input, RegistryAccess registryAccess) {
-        if (recipe == null || !(recipe.value() instanceof AbstractCookingRecipe cookingRecipe)) {
+    static ItemStack assemble(@Nullable net.minecraft.world.item.crafting.Recipe<?> recipe, ItemStack input, RegistryAccess registryAccess) {
+        if (recipe == null || !(recipe instanceof AbstractCookingRecipe cookingRecipe)) {
             return ItemStack.EMPTY;
         }
-        return cookingRecipe.assemble(new SingleRecipeInput(input), registryAccess);
+        return cookingRecipe.assemble(new net.minecraft.world.SimpleContainer(input), registryAccess);
     }
 
     static void awardRecipesAndExperience(ServerPlayer player, List<ItemStack> items,
                                           Object2IntMap<ResourceLocation> recipesUsed) {
-        List<RecipeHolder<?>> recipes = recipesAndExperience(player.serverLevel(), player.position(), recipesUsed);
+        List<net.minecraft.world.item.crafting.Recipe<?>> recipes = recipesAndExperience(player.serverLevel(), player.position(), recipesUsed);
         player.awardRecipes(recipes);
-        for (RecipeHolder<?> recipe : recipes) {
+        for (net.minecraft.world.item.crafting.Recipe<?> recipe : recipes) {
             player.triggerRecipeCrafted(recipe, items);
         }
         recipesUsed.clear();
     }
 
-    static List<RecipeHolder<?>> recipesAndExperience(ServerLevel level, Vec3 pos,
+    static List<net.minecraft.world.item.crafting.Recipe<?>> recipesAndExperience(ServerLevel level, Vec3 pos,
                                                       Object2IntMap<ResourceLocation> recipesUsed) {
-        List<RecipeHolder<?>> recipes = new ArrayList<>();
+        List<net.minecraft.world.item.crafting.Recipe<?>> recipes = new ArrayList<>();
         for (Object2IntMap.Entry<ResourceLocation> entry : recipesUsed.object2IntEntrySet()) {
             level.getRecipeManager().byKey(entry.getKey()).ifPresent(recipe -> {
                 recipes.add(recipe);
-                if (recipe.value() instanceof AbstractCookingRecipe cookingRecipe) {
+                if (recipe instanceof AbstractCookingRecipe cookingRecipe) {
                     createExperience(level, pos, entry.getIntValue(), cookingRecipe.getExperience());
                 }
             });

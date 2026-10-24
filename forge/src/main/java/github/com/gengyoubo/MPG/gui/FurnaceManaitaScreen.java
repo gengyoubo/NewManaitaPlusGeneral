@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class FurnaceManaitaScreen extends MPGFurnaceScreenBase<MPGFurnaceMenu> {
     private static final ResourceLocation UNIFORM_FONT =
-            ResourceLocation.withDefaultNamespace("uniform");
+            new ResourceLocation("uniform");
 
     public FurnaceManaitaScreen(MPGFurnaceMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, MPGConfig.furnace_doubling_value);

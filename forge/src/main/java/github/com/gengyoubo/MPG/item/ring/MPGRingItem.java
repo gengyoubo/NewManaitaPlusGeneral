@@ -26,6 +26,8 @@ public abstract class MPGRingItem extends MPGPortableItem implements IBauble, IM
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
+        if (!github.com.gengyoubo.MPG.integration.MPGAccessories.isEnabled())
+            return InteractionResultHolder.fail(itemInHand);
         if (player.isShiftKeyDown()) {
             if (!level.isClientSide && PlayerHandler.equipItem(player, itemInHand)) {
                 return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide);
@@ -37,7 +39,7 @@ public abstract class MPGRingItem extends MPGPortableItem implements IBauble, IM
 
     @Override
     public void onManaitaKeyPress(ItemStack itemStack, Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
+        if (github.com.gengyoubo.MPG.integration.MPGAccessories.isEnabled() && player instanceof ServerPlayer serverPlayer) {
             openPortableMenu(serverPlayer, itemStack, player.level());
         }
     }

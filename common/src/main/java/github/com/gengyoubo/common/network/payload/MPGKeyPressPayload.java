@@ -2,15 +2,14 @@ package github.com.gengyoubo.common.network.payload;
 
 import github.com.gengyoubo.common.MPGCommon;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import github.com.gengyoubo.common.network.MPGPacketCodec;
+
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public record MPGKeyPressPayload(byte keyCode) implements CustomPacketPayload {
-    public static final Type<MPGKeyPressPayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(MPGCommon.MOD_ID, "key_press"));
-    public static final StreamCodec<FriendlyByteBuf, MPGKeyPressPayload> STREAM_CODEC = new StreamCodec<>() {
+public record MPGKeyPressPayload(byte keyCode) {
+    public static final ResourceLocation TYPE = new ResourceLocation(MPGCommon.MOD_ID, "key_press");
+    public static final MPGPacketCodec<MPGKeyPressPayload> STREAM_CODEC = new MPGPacketCodec<>() {
         @Override
         public @NotNull MPGKeyPressPayload decode(FriendlyByteBuf buffer) {
             return new MPGKeyPressPayload(buffer.readByte());
@@ -22,8 +21,4 @@ public record MPGKeyPressPayload(byte keyCode) implements CustomPacketPayload {
         }
     };
 
-    @Override
-    public @NotNull Type<MPGKeyPressPayload> type() {
-        return TYPE;
-    }
 }

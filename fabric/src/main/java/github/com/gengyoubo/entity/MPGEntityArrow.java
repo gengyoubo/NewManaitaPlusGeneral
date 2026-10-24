@@ -10,7 +10,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class MPGEntityArrow extends MPGEntityArrowBase {
@@ -30,7 +29,7 @@ public class MPGEntityArrow extends MPGEntityArrowBase {
                 return arrow;
             }
         }
-        return new Arrow(level, owner, ItemStack.EMPTY, ItemStack.EMPTY);
+        return new Arrow(level, owner);
     }
 
     @Override

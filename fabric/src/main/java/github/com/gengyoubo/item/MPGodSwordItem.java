@@ -37,7 +37,7 @@ import java.util.Random;
 
 public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     public MPGodSwordItem() {
-        super(new MPToolTier(), new Item.Properties().fireResistant());
+        super(new MPToolTier(), 3, -2.4F, new Item.Properties().fireResistant());
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.doubling").getString() + ":" + (isDoubling(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
         tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.remove.name").getString() + ":" + (isRemove(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));

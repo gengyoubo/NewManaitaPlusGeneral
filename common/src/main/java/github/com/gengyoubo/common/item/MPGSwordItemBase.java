@@ -7,8 +7,6 @@ import github.com.gengyoubo.common.util.MPGNBTData;
 import github.com.gengyoubo.common.util.MPText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +20,6 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +30,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
     private static final int MAX_ATTACK_AREA = 27;
 
     protected MPGSwordItemBase() {
-        super(new ItemManaitaSwordTier(), new Item.Properties().fireResistant());
+        super(new ItemManaitaSwordTier(), 3, -2.4F, new Item.Properties().fireResistant());
     }
 
     @Override
@@ -44,7 +41,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                 @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(modeLine("mode.doubling", isDoubling(stack)));
@@ -214,8 +211,6 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
         }
 
         @Override
-        public @NotNull TagKey<Block> getIncorrectBlocksForDrops() {
-            return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
-        }
+        public int getLevel() { return 4; }
     }
 }

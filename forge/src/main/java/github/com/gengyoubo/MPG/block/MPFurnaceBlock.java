@@ -1,10 +1,8 @@
 package github.com.gengyoubo.MPG.block;
 
-import com.mojang.serialization.MapCodec;
 import github.com.gengyoubo.common.block.MPGFurnaceBlockBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +14,6 @@ import github.com.gengyoubo.MPG.core.MPGBlockEntityCore;
 import org.jetbrains.annotations.Nullable;
 
 public class MPFurnaceBlock extends MPGFurnaceBlockBase {
-    public static final MapCodec<MPFurnaceBlock> CODEC = simpleCodec(MPFurnaceBlock::new);
 
     public MPFurnaceBlock() {
         this(BlockBehaviour.Properties.of().noOcclusion());
@@ -24,11 +21,6 @@ public class MPFurnaceBlock extends MPGFurnaceBlockBase {
 
     private MPFurnaceBlock(BlockBehaviour.Properties properties) {
         super(properties, () -> MPGBlockCore.HookBlockItem.get());
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends AbstractFurnaceBlock> codec() {
-        return CODEC;
     }
 
     @Override

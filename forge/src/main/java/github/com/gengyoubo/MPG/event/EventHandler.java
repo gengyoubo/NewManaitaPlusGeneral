@@ -38,6 +38,11 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = MPG.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventHandler {
     @SubscribeEvent
+    public static void onLivingJump(net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent event) {
+        if (event.getEntity() instanceof Player player) MPGArmorItemBase.applyBootsJump(player);
+    }
+
+    @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
         MPGEventLogic.filterKeyItemTooltip(event.getItemStack(), event.getToolTip());
     }
@@ -133,7 +138,8 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent.Post event) {
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
         MPGArmorItemBase.syncArmorState(event.player);
     }
 

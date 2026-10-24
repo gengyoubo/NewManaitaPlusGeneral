@@ -11,7 +11,7 @@ public final class IForgeMenuType {
     }
 
     public static <T extends AbstractContainerMenu> MenuType<T> create(MenuFactory<T> factory) {
-        return new ExtendedScreenHandlerType<>(factory::create, BlockPos.STREAM_CODEC);
+        return new ExtendedScreenHandlerType<>((id, inventory, buf) -> factory.create(id, inventory, buf.readBlockPos()));
     }
 
     @FunctionalInterface

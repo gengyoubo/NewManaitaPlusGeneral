@@ -24,7 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.List;
 
 @JeiPlugin
 public class MPJeiPlugin implements IModPlugin {
-    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MPG.MODID, "jei_plugin");
+    private static final ResourceLocation UID = new ResourceLocation(MPG.MODID, "jei_plugin");
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
@@ -79,22 +79,32 @@ public class MPJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(MPItemCore.ManaitaSource.get().getDefaultInstance(), MPGSourceCopyRecipeCategory.TYPE);
     }
 
+    @Override
+    public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime runtime) {
+        if (!github.com.gengyoubo.integration.MPAccessories.isEnabled()) {
+            runtime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM_STACK,
+                    List.of(MPItemCore.ManaitaCraftingRing.get().getDefaultInstance(),
+                            MPItemCore.ManaitaFurnaceRing.get().getDefaultInstance(),
+                            MPItemCore.ManaitaBrewingRing.get().getDefaultInstance()));
+        }
+    }
+
     private static List<MPGSourceCopyRecipe> createSourceCopyRecipes() {
         return MPGJeiRecipeFactory.createSourceCopyRecipes(MPItemCore.ManaitaSource.get(),
                 MPGConfig.source_doubling_value, typedItems(), typedStacks());
     }
 
     @SuppressWarnings("unchecked")
-    private static List<RecipeHolder<CraftingRecipe>> getManaitaCraftingRecipes() {
+    private static List<CraftingRecipe> getManaitaCraftingRecipes() {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.level == null) {
             return List.of();
         }
         return minecraft.level.getRecipeManager().getRecipes().stream()
-                .filter(holder -> MPG.MODID.equals(holder.id().getNamespace()))
-                .filter(holder -> holder.value() instanceof CraftingRecipe)
-                .filter(holder -> holder.value().getSerializer() == MPRecipeSerializerCore.NBTCraftingRecipe.get())
-                .map(holder -> (RecipeHolder<CraftingRecipe>) holder)
+                .filter(holder -> MPG.MODID.equals(holder.getId().getNamespace()))
+                .filter(holder -> holder instanceof CraftingRecipe)
+                .filter(holder -> holder.getSerializer() == MPRecipeSerializerCore.NBTCraftingRecipe.get())
+                .map(holder -> (CraftingRecipe) holder)
                 .toList();
     }
 
@@ -102,12 +112,14 @@ public class MPJeiPlugin implements IModPlugin {
         return List.of(MPBlockCore.CraftingBlockItem.get(), MPBlockCore.FurnaceBlockItem.get(),
                 MPBlockCore.BrewingBlockItem.get(), MPBlockCore.HookBlockItem.get(),
                 MPItemCore.ManaitaCraftingPortable.get(), MPItemCore.ManaitaFurnacePortable.get(),
-                MPItemCore.ManaitaBrewingPortable.get());
+                MPItemCore.ManaitaBrewingPortable.get(), MPItemCore.ManaitaCraftingRing.get(),
+                MPItemCore.ManaitaFurnaceRing.get(), MPItemCore.ManaitaBrewingRing.get());
     }
 
     private static List<ItemStack> typedStacks() {
         List<ItemStack> stacks = new ArrayList<>();
-        typedItems().forEach(item -> stacks.addAll(MPGJeiRecipeFactory.createTypedStacks(item, 8)));
+        typedItems().stream().filter(item -> github.com.gengyoubo.integration.MPAccessories.isEnabled() || !(item instanceof github.com.gengyoubo.item.ring.MPRingItem))
+                .forEach(item -> stacks.addAll(MPGJeiRecipeFactory.createTypedStacks(item, 8)));
         return stacks;
     }
 

@@ -32,6 +32,13 @@ public class MPItemCore {
     public static final RegistryObject<Item> ManaitaFurnacePortable = ITEMS.register(FURNACE_PORTABLE, MPFurnacePortable::new);
     public static final RegistryObject<Item> ManaitaBrewingPortable = ITEMS.register(BREWING_PORTABLE, MPBrewingPortable::new);
 
+    public static final RegistryObject<Item> ManaitaCraftingRing = ITEMS.register(CRAFTING_RING,
+            () -> new github.com.gengyoubo.item.ring.MPRingItem(github.com.gengyoubo.item.ring.MPRingItem.Kind.CRAFTING));
+    public static final RegistryObject<Item> ManaitaFurnaceRing = ITEMS.register(FURNACE_RING,
+            () -> new github.com.gengyoubo.item.ring.MPRingItem(github.com.gengyoubo.item.ring.MPRingItem.Kind.FURNACE));
+    public static final RegistryObject<Item> ManaitaBrewingRing = ITEMS.register(BREWING_RING,
+            () -> new github.com.gengyoubo.item.ring.MPRingItem(github.com.gengyoubo.item.ring.MPRingItem.Kind.BREWING));
+
     public static void init() {
     }
 }

@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraft.util.GsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import github.com.gengyoubo.core.*;
@@ -75,6 +74,7 @@ public class MPG implements ModInitializer {
 
         BLOCKS.registerAll();
         ITEMS.registerAll();
+        github.com.gengyoubo.integration.MPAccessories.register();
         ATTRIBUTE_TYPE.registerAll();
         ENTITY_TYPES.registerAll();
         MENU_TYPES.registerAll();
@@ -94,6 +94,11 @@ public class MPG implements ModInitializer {
                 acceptMPGType(MPItemCore.ManaitaFurnacePortable.get(), entries, 8);
                 acceptMPGType(MPItemCore.ManaitaBrewingPortable.get(), entries, 8);
 
+                if (github.com.gengyoubo.integration.MPAccessories.isEnabled()) {
+                    acceptMPGType(MPItemCore.ManaitaCraftingRing.get(), entries, 8);
+                    acceptMPGType(MPItemCore.ManaitaFurnaceRing.get(), entries, 8);
+                    acceptMPGType(MPItemCore.ManaitaBrewingRing.get(), entries, 8);
+                }
                 entries.accept(MPItemCore.ManaitaSword.get());
                 entries.accept(MPItemCore.ManaitaSwordGod.get());
                 entries.accept(MPItemCore.ManaitaBow.get());
@@ -113,7 +118,7 @@ public class MPG implements ModInitializer {
     }
 
     private static void registerResourceConditions() {
-        ResourceConditions.register(EasyModeResourceCondition.TYPE);
+        ResourceConditions.register(EasyModeResourceCondition.ID, EasyModeResourceCondition::test);
     }
 
     private static void registerToolMining() {

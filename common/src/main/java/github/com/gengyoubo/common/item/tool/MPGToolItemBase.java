@@ -7,8 +7,6 @@ import github.com.gengyoubo.common.util.MPGItemStackData;
 import github.com.gengyoubo.common.util.MPGNBTData;
 import github.com.gengyoubo.common.util.MPText;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -40,7 +38,7 @@ public class MPGToolItemBase extends DiggerItem implements IMPGKey, IMPGDestroy,
     }
 
     public MPGToolItemBase(Tier tier, TagKey<Block> mineableTag, MPGToolProfile profile) {
-        super(tier, mineableTag, new Item.Properties().fireResistant());
+        super(1.0F, -2.8F, tier, mineableTag, new Item.Properties().fireResistant());
         this.profile = profile;
     }
 
@@ -50,7 +48,7 @@ public class MPGToolItemBase extends DiggerItem implements IMPGKey, IMPGDestroy,
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                 @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(modeLine("mode.doubling", isDoubling(stack)));
@@ -99,22 +97,14 @@ public class MPGToolItemBase extends DiggerItem implements IMPGKey, IMPGDestroy,
     }
 
     private void syncToolEnchantments(Level level, ItemStack itemStack) {
-        Holder.Reference<Enchantment> fortune = level.registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT)
-                .getOrThrow(Enchantments.FORTUNE);
-        Holder.Reference<Enchantment> silkTouch = level.registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT)
-                .getOrThrow(Enchantments.SILK_TOUCH);
-        int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(fortune, itemStack);
-        int silkTouchLevel = EnchantmentHelper.getItemEnchantmentLevel(silkTouch, itemStack);
         int expectedSilkTouchLevel = profile.supportsSilkTouch() && isSilkTouch(itemStack) ? 1 : 0;
-        if (fortuneLevel == 10 && silkTouchLevel == expectedSilkTouchLevel) {
-            return;
-        }
-        EnchantmentHelper.updateEnchantments(itemStack, mutable -> {
-            mutable.set(fortune, 10);
-            mutable.set(silkTouch, expectedSilkTouchLevel);
-        });
+        java.util.Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(itemStack);
+        if (enchantments.getOrDefault(Enchantments.BLOCK_FORTUNE, 0) == 10
+                && enchantments.getOrDefault(Enchantments.SILK_TOUCH, 0) == expectedSilkTouchLevel) return;
+        enchantments.put(Enchantments.BLOCK_FORTUNE, 10);
+        if (expectedSilkTouchLevel > 0) enchantments.put(Enchantments.SILK_TOUCH, expectedSilkTouchLevel);
+        else enchantments.remove(Enchantments.SILK_TOUCH);
+        EnchantmentHelper.setEnchantments(enchantments, itemStack);
     }
 
     @Override

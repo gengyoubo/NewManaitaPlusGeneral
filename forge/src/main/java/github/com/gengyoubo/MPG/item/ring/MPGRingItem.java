@@ -19,6 +19,11 @@ public abstract class MPGRingItem extends MPGPortableItem implements IBauble, IM
     }
 
     @Override
+    public net.minecraftforge.common.capabilities.ICapabilityProvider initCapabilities(ItemStack stack, net.minecraft.nbt.CompoundTag nbt) {
+        return github.com.gengyoubo.MPG.integration.MPGAccessories.createProvider(stack);
+    }
+
+    @Override
     public BaubleType getBaubleType(ItemStack itemStack) {
         return BaubleType.RING;
     }
@@ -40,7 +45,7 @@ public abstract class MPGRingItem extends MPGPortableItem implements IBauble, IM
     @Override
     public void onManaitaKeyPress(ItemStack itemStack, Player player) {
         if (github.com.gengyoubo.MPG.integration.MPGAccessories.isEnabled() && player instanceof ServerPlayer serverPlayer) {
-            openPortableMenu(serverPlayer, itemStack, player.level());
+            openPortableMenu(serverPlayer, itemStack, player.level);
         }
     }
 }

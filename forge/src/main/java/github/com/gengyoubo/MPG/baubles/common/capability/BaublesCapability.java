@@ -62,13 +62,13 @@ public final class BaublesCapability {
         if (!isEnabled()) {
             return;
         }
-        find(event.getOriginal()).ifPresent(oldInventory -> find(event.getEntity()).ifPresent(newInventory -> newInventory.copyFrom(oldInventory)));
+        find(event.getOriginal()).ifPresent(oldInventory -> find(event.getPlayer()).ifPresent(newInventory -> newInventory.copyFrom(oldInventory)));
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (!isEnabled() || event.phase != TickEvent.Phase.END || event.player.level().isClientSide) {
+        if (!isEnabled() || event.phase != TickEvent.Phase.END || event.player.level.isClientSide) {
             return;
         }
         find(event.player).ifPresent(inventory -> inventory.tick(event.player));

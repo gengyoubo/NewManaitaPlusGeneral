@@ -1,14 +1,15 @@
 package github.com.gengyoubo.MPG;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import com.mojang.logging.LogUtils;
 import github.com.gengyoubo.common.MPGCommon;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -32,18 +33,16 @@ public class MPG {
     public static final String MODID = MPGCommon.MOD_ID;
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final DeferredRegister<net.minecraft.world.level.block.Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU, MODID);
-    public static final DeferredRegister<Attribute> ATTRIBUTE_TYPE = DeferredRegister.create(Registries.ATTRIBUTE, MODID);
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER_DEFERRED_REGISTER = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    public static final DeferredRegister<Attribute> ATTRIBUTE_TYPE = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, MODID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER_DEFERRED_REGISTER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB_TYPES = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-    public static final RegistryObject<CreativeModeTab> MANAITA_PLUS_TAB = CREATIVE_MODE_TAB_TYPES.register("manaita_plus_tab", () -> CreativeModeTab.builder()
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> MPGBlockCore.CraftingBlockItem.get().getDefaultInstance())
-            .title(Component.translatable("itemGroup.ManaitaPlusTab"))
-            .displayItems((parameters, output) -> {
+    public static final CreativeModeTab MANAITA_PLUS_TAB = new CreativeModeTab("manaita_plus_general") {
+        @Override public ItemStack makeIcon() { return MPGBlockCore.CraftingBlockItem.get().getDefaultInstance(); }
+        @Override public Component getDisplayName() { return new TranslatableComponent("itemGroup.ManaitaPlusTab"); }
+        @Override public void fillItemList(net.minecraft.core.NonNullList<ItemStack> output) {
                 acceptMPGType(MPGBlockCore.CraftingBlockItem.get(), output, 8);
                 acceptMPGType(MPGBlockCore.FurnaceBlockItem.get(), output, 8);
                 acceptMPGType(MPGBlockCore.BrewingBlockItem.get(), output, 8);
@@ -58,22 +57,23 @@ public class MPG {
                     acceptMPGType(MPGItemCore.ManaitaBrewingRing.get(), output, 8);
                 }
 
-                output.accept(MPGItemCore.ManaitaSwordGod.get());
-                output.accept(MPGItemCore.ManaitaSword.get());
-                output.accept(MPGItemCore.ManaitaBow.get());
-                output.accept(MPGItemCore.ManaitaShovel.get());
-                output.accept(MPGItemCore.ManaitaPickaxe.get());
-                output.accept(MPGItemCore.ManaitaAxe.get());
-                output.accept(MPGItemCore.ManaitaPaxel.get());
-                output.accept(MPGItemCore.ManaitaHoe.get());
-                output.accept(MPGItemCore.ManaitaShears.get());
-                output.accept(MPGItemCore.ManaitaHelmet.get());
-                output.accept(MPGItemCore.ManaitaChestplate.get());
-                output.accept(MPGItemCore.ManaitaLeggings.get());
-                output.accept(MPGItemCore.ManaitaBoots.get());
-                output.accept(MPGItemCore.ManaitaHook.get());
-                output.accept(MPGItemCore.ManaitaSource.get());
-            }).build());
+                output.add(MPGItemCore.ManaitaSwordGod.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaSword.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaBow.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaShovel.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaPickaxe.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaAxe.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaPaxel.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaHoe.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaShears.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaHelmet.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaChestplate.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaLeggings.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaBoots.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaHook.get().getDefaultInstance());
+                output.add(MPGItemCore.ManaitaSource.get().getDefaultInstance());
+        }
+    };
 
     @SuppressWarnings("removal")
     public MPG() {
@@ -81,7 +81,7 @@ public class MPG {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         Networking.registerMessage();
-        modEventBus.addListener((net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent event) ->
+        modEventBus.addListener((net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent event) ->
                 event.enqueueWork(github.com.gengyoubo.MPG.integration.MPGAccessories::register));
 
         // Force-load all registry holder classes before RegisterEvent starts firing.
@@ -98,7 +98,6 @@ public class MPG {
         ITEMS.register(modEventBus);
         ATTRIBUTE_TYPE.register(modEventBus);
         ENTITY_TYPES.register(modEventBus);
-        CREATIVE_MODE_TAB_TYPES.register(modEventBus);
         MENU_TYPES.register(modEventBus);
         BLOCK_ENTITY_TYPES.register(modEventBus);
         RECIPE_SERIALIZER_DEFERRED_REGISTER.register(modEventBus);
@@ -106,11 +105,11 @@ public class MPG {
         net.minecraftforge.fml.ModLoadingContext.get().registerConfig(Type.COMMON, MPGConfig.SPEC);
     }
 
-    private static void acceptMPGType(Item item, CreativeModeTab.Output output, int maxType) {
+    private static void acceptMPGType(Item item, java.util.List<ItemStack> output, int maxType) {
         for (int type = 0; type <= maxType; type++) {
             ItemStack stack = new ItemStack(item);
             MPGItemStackData.putInt(stack, MPGNBTData.ItemType, type);
-            output.accept(stack);
+            output.add(stack);
         }
     }
 

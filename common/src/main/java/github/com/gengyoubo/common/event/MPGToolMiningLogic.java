@@ -90,7 +90,7 @@ public final class MPGToolMiningLogic {
         player.awardStat(Stats.ITEM_USED.get(tool.getItem()));
         if (drops) {
             player.causeFoodExhaustion(0.005F);
-            state.spawnAfterBreak(level, pos, tool, true);
+            state.spawnAfterBreak(level, pos, tool);
             for (ItemStack drop : itemDrops) {
                 dropMultiplied(level, pos, drop, multiplier);
             }
@@ -103,7 +103,8 @@ public final class MPGToolMiningLogic {
             return;
         }
         int count = (int) Math.min(Integer.MAX_VALUE, (long) original.getCount() * multiplier);
-        ItemStack multiplied = original.copyWithCount(count);
+        ItemStack multiplied = original.copy();
+        multiplied.setCount(count);
         ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 0.5D,
                 pos.getZ() + 0.5D, multiplied);
         entity.setDefaultPickUpDelay();

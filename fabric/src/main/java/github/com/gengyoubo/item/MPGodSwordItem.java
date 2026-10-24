@@ -1,5 +1,7 @@
 package github.com.gengyoubo.item;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import github.com.gengyoubo.item.tier.MPToolTier;
@@ -62,7 +64,7 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
 
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
-        if (attacker instanceof Player player && !player.level().isClientSide) {
+        if (attacker instanceof Player player && !player.level.isClientSide) {
             attack(target, player, isRemove(stack));
             godKill(player, isRemove(stack), player.isShiftKeyDown());
         }
@@ -72,15 +74,15 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.doubling").getString() + ":" + (isDoubling(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.remove.name").getString() + ":" + (isRemove(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
-        tooltip.add(Component.empty());
-        tooltip.add(Component.literal(MPText.manaita_enchantment.formatting(Component.translatable("info.item.manaita_sword_god.1").getString())));
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(new TranslatableComponent("mode.doubling").getString() + ":" + (isDoubling(stack) ? new TranslatableComponent("info.on").getString() : new TranslatableComponent("info.off").getString()))));
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(new TranslatableComponent("mode.remove.name").getString() + ":" + (isRemove(stack) ? new TranslatableComponent("info.on").getString() : new TranslatableComponent("info.off").getString()))));
+        tooltip.add(new net.minecraft.network.chat.TextComponent(""));
+        tooltip.add(new TextComponent(MPText.manaita_enchantment.formatting(new TranslatableComponent("info.item.manaita_sword_god.1").getString())));
     }
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack stack) {
-        return Component.literal(MPText.manaita_infinity.formatting(Component.translatable("item.manaita_sword_god.name").getString()));
+        return new TextComponent(MPText.manaita_infinity.formatting(new TranslatableComponent("item.manaita_sword_god.name").getString()));
     }
 
     public int getUseDuration(@NotNull ItemStack stack) {
@@ -111,16 +113,16 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
         if (player.isShiftKeyDown()) {
             boolean remove = !isRemove(itemStack);
             setRemove(itemStack, remove);
-            player.displayClientMessage(Component.literal(MPText.manaita_mode.formatting(String.format("[%s] %s: %s",
-                    Component.translatable("item.manaita_sword_god.name").getString(),
-                    Component.translatable("mode.remove.name").getString(),
-                    remove ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))), true);
+            player.displayClientMessage(new TextComponent(MPText.manaita_mode.formatting(String.format("[%s] %s: %s",
+                    new TranslatableComponent("item.manaita_sword_god.name").getString(),
+                    new TranslatableComponent("mode.remove.name").getString(),
+                    remove ? new TranslatableComponent("info.on").getString() : new TranslatableComponent("info.off").getString()))), true);
         } else {
             boolean doubling = toggleDoubling(itemStack);
-            player.displayClientMessage(Component.literal(MPText.manaita_mode.formatting(String.format("[%s] %s: %s",
-                    Component.translatable("item.manaita_sword_god.name").getString(),
-                    Component.translatable("mode.doubling").getString(),
-                    doubling ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))), true);
+            player.displayClientMessage(new TextComponent(MPText.manaita_mode.formatting(String.format("[%s] %s: %s",
+                    new TranslatableComponent("item.manaita_sword_god.name").getString(),
+                    new TranslatableComponent("mode.doubling").getString(),
+                    doubling ? new TranslatableComponent("info.on").getString() : new TranslatableComponent("info.off").getString()))), true);
         }
     }
 
@@ -136,7 +138,7 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     }
 
     private static void godKill(Player player, boolean remove, boolean includeEverything) {
-        if (!(player.level() instanceof ServerLevel serverLevel)) {
+        if (!(player.level instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -175,19 +177,19 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
         }
 
         MPGEntityData.death.add(target);
-        MPNetworking.sendToSameLevelPlayers(player.level(), new MPGChangeEntityDataPayload(target.getId(), MPGEntityData.death.getFlag()));
+        MPNetworking.sendToSameLevelPlayers(player.level, new MPGChangeEntityDataPayload(target.getId(), MPGEntityData.death.getFlag()));
 
         if (remove) {
             MPGEntityData.remove.add(target);
-            MPNetworking.sendToSameLevelPlayers(player.level(), new MPGChangeEntityDataPayload(target.getId(), MPGEntityData.remove.getFlag()));
+            MPNetworking.sendToSameLevelPlayers(player.level, new MPGChangeEntityDataPayload(target.getId(), MPGEntityData.remove.getFlag()));
             target.discard();
             return;
         }
 
         if (target instanceof LivingEntity living) {
-            living.hurt(living.damageSources().playerAttack(player), Float.MAX_VALUE);
+            living.hurt(net.minecraft.world.damagesource.DamageSource.playerAttack(player), Float.MAX_VALUE);
             living.setHealth(0.0F);
-            living.die(living.damageSources().generic());
+            living.die(net.minecraft.world.damagesource.DamageSource.GENERIC);
         } else {
             target.discard();
         }

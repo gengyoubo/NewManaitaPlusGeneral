@@ -25,16 +25,13 @@ final class MPGFurnaceLogic {
         if (recipe == null || !(recipe instanceof AbstractCookingRecipe cookingRecipe)) {
             return ItemStack.EMPTY;
         }
-        return cookingRecipe.assemble(new net.minecraft.world.SimpleContainer(input), registryAccess);
+        return cookingRecipe.assemble(new net.minecraft.world.SimpleContainer(input));
     }
 
     static void awardRecipesAndExperience(ServerPlayer player, List<ItemStack> items,
                                           Object2IntMap<ResourceLocation> recipesUsed) {
-        List<net.minecraft.world.item.crafting.Recipe<?>> recipes = recipesAndExperience(player.serverLevel(), player.position(), recipesUsed);
+        List<net.minecraft.world.item.crafting.Recipe<?>> recipes = recipesAndExperience(player.getLevel(), player.position(), recipesUsed);
         player.awardRecipes(recipes);
-        for (net.minecraft.world.item.crafting.Recipe<?> recipe : recipes) {
-            player.triggerRecipeCrafted(recipe, items);
-        }
         recipesUsed.clear();
     }
 

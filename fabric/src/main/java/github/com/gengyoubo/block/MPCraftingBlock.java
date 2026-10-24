@@ -1,5 +1,6 @@
 package github.com.gengyoubo.block;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.block.entity.MPCraftingBlockEntity;
 import github.com.gengyoubo.common.block.MPGCraftingBlockBase;
 import github.com.gengyoubo.core.MPBlockCore;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MPCraftingBlock extends MPGCraftingBlockBase {
 
-    private static final Component CONTAINER_TITLE = Component.translatable("container.crafting_manaita");
+    private static final Component CONTAINER_TITLE = new TranslatableComponent("container.crafting_manaita");
 
     public MPCraftingBlock() {
         super(() -> MPBlockCore.HookBlockItem.get());

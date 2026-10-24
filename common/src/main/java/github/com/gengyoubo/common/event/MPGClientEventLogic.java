@@ -65,20 +65,11 @@ public final class MPGClientEventLogic {
 
     private static void tryAutoLoadFirstWorld(Minecraft minecraft, Logger logger) {
         LevelStorageSource levelSource = minecraft.getLevelSource();
-        LevelStorageSource.LevelCandidates candidates;
         try {
-            candidates = levelSource.findLevelCandidates();
+            logFirstWorld(minecraft, levelSource.getLevelList(), logger);
         } catch (LevelStorageException exception) {
             logger.warn("Failed to enumerate local worlds for dev auto-load", exception);
-            return;
         }
-
-        if (candidates.isEmpty()) {
-            logger.info("No local worlds found, skipping dev auto-load");
-            return;
-        }
-        levelSource.loadLevelSummaries(candidates)
-                .thenAccept(summaries -> minecraft.execute(() -> logFirstWorld(minecraft, summaries, logger)));
     }
 
     private static void logFirstWorld(Minecraft minecraft, List<LevelSummary> summaries, Logger logger) {
@@ -86,6 +77,6 @@ public final class MPGClientEventLogic {
             return;
         }
         logger.info("Dev auto-loading first world: {}", summaries.get(0).getLevelId());
-        logger.info("Skipping dev auto-load on 1.21.1 until WorldOpenFlows migration is finished");
+        logger.info("Dev world auto-load is disabled");
     }
 }

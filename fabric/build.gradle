@@ -33,12 +33,16 @@ dependencies {
     // Architectury API. This is optional, and you can comment it out if you don't need it.
     modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
 
-    modImplementation "mezz.jei:jei-$rootProject.minecraft_version-fabric:$rootProject.jei_version"
-    modCompileOnly "dev.emi:trinkets:$rootProject.trinkets_version"
+    modImplementation("mezz.jei:jei-$rootProject.minecraft_version-fabric:$rootProject.jei_version") { transitive = false }
+    modCompileOnly("dev.emi:trinkets:$rootProject.trinkets_version") { transitive = false }
+    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:4.1.3") { transitive = false }
+    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:4.1.3") { transitive = false }
     if (rootProject.hasProperty('withAccessories')) {
-        modRuntimeOnly "dev.emi:trinkets:$rootProject.trinkets_version"
+        modRuntimeOnly("dev.emi:trinkets:$rootProject.trinkets_version") { transitive = false }
+        modRuntimeOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:4.1.3") { transitive = false }
+        modRuntimeOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:4.1.3") { transitive = false }
     }
-    modRuntimeOnly "com.terraformersmc:modmenu:$rootProject.modmenu_version"
+    modRuntimeOnly("com.terraformersmc:modmenu:$rootProject.modmenu_version") { transitive = false }
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

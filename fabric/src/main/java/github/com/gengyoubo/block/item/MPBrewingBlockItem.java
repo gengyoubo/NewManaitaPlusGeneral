@@ -10,4 +10,3 @@ public class MPBrewingBlockItem extends MPTypedBlockItem {
     }
 }
 
-

@@ -103,7 +103,7 @@ public abstract class MPGBrewingStandMenuBase extends AbstractContainerMenu {
         }
 
         if (moving.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
+            slot.set(ItemStack.EMPTY);
         } else {
             slot.setChanged();
         }

@@ -2,7 +2,7 @@ package github.com.gengyoubo.common.recipe;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
+
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -18,9 +18,9 @@ public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     private final IntSupplier multiplier;
     private final Supplier<? extends RecipeSerializer<?>> serializer;
 
-    protected MPGSourceCopyRecipeBase(net.minecraft.resources.ResourceLocation id, CraftingBookCategory category, Supplier<? extends Item> sourceItem,
+    protected MPGSourceCopyRecipeBase(net.minecraft.resources.ResourceLocation id, Supplier<? extends Item> sourceItem,
                                       IntSupplier multiplier, Supplier<? extends RecipeSerializer<?>> serializer) {
-        super(id, category);
+        super(id);
         this.sourceItem = sourceItem;
         this.multiplier = multiplier;
         this.serializer = serializer;
@@ -43,7 +43,7 @@ public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer input, @NotNull net.minecraft.core.RegistryAccess provider) {
+    public @NotNull ItemStack assemble(CraftingContainer input) {
         boolean consumedSource = false;
         for (int slot = 0; slot < input.getContainerSize(); slot++) {
             ItemStack stack = input.getItem(slot);
@@ -67,7 +67,7 @@ public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(net.minecraft.core.RegistryAccess provider) {
+    public @NotNull ItemStack getResultItem() {
         return sourceItem.get().getDefaultInstance();
     }
 

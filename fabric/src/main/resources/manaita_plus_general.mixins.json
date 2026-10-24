@@ -7,6 +7,9 @@
     "PlayerMixin",
     "LivingEntityMixin"
   ],
+  "client": [
+    "HumanoidArmorLayerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

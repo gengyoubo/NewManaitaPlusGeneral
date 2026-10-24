@@ -31,10 +31,10 @@ public abstract class MPGLightningBoltBase extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (life == 2 && level().isClientSide()) {
-            level().playLocalSound(getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER,
+        if (life == 2 && level.isClientSide()) {
+            level.playLocalSound(getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER,
                     SoundSource.WEATHER, 10000.0F, 0.8F + random.nextFloat() * 0.2F, false);
-            level().playLocalSound(getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT,
+            level.playLocalSound(getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT,
                     SoundSource.WEATHER, 2.0F, 0.5F + random.nextFloat() * 0.2F, false);
         }
 
@@ -49,8 +49,8 @@ public abstract class MPGLightningBoltBase extends Entity {
             }
         }
 
-        if (life >= 0 && !(level() instanceof ServerLevel)) {
-            level().setSkyFlashTime(2);
+        if (life >= 0 && !(level instanceof ServerLevel)) {
+            level.setSkyFlashTime(2);
         }
     }
 

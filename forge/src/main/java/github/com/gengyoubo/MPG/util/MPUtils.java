@@ -46,7 +46,7 @@ public class MPUtils {
             ThreadLocal.withInitial(EntitiesWrapper::new);
 
     public static void godKill(Player player,boolean remove,boolean shiftKeyDown) {
-        Level level = player.level();
+        Level level = player.level;
         if (level instanceof ServerLevel server) {
             List<Entity> tntities = new ArrayList<>();
             EntitiesWrapper wrapper = ENTITY_CACHE.get();
@@ -94,7 +94,7 @@ public class MPUtils {
             removeOnServer(target);
         } else {
             if (target instanceof LivingEntity living) {
-                living.hurt(living.damageSources().playerAttack(player), Float.MAX_VALUE);
+                living.hurt(net.minecraft.world.damagesource.DamageSource.playerAttack(player), Float.MAX_VALUE);
 
                 living.handleEntityEvent((byte) 2);
                 living.handleEntityEvent((byte) 47);
@@ -104,15 +104,13 @@ public class MPUtils {
                 living.handleEntityEvent((byte) 51);
                 living.handleEntityEvent((byte) 52);
 
-                living.die(living.damageSources().generic());
+                living.die(net.minecraft.world.damagesource.DamageSource.GENERIC);
             }
         }
     }
 
-
-
     public static void removeOnServer(Entity target) {
-        if (target.level() instanceof ServerLevel serverLevel) {
+        if (target.level instanceof ServerLevel serverLevel) {
             target.unRide();
             target.stopRiding();
             target.remove(Entity.RemovalReason.DISCARDED);
@@ -120,11 +118,9 @@ public class MPUtils {
         }
     }
 
-
     public static boolean isManaita(Player player) {
         return MPGEntityData.manaita.accept(player);
     }
-
 
     public static void popResource(Level p_49841_, BlockPos p_49842_, ItemStack p_49843_) {
         double d0 = (double) EntityType.ITEM.getHeight() / 2.0D;
@@ -133,7 +129,6 @@ public class MPUtils {
         double d3 = (double)p_49842_.getZ() + 0.5D + Mth.nextDouble(p_49841_.random, -0.25D, 0.25D);
         popResource(p_49841_, () -> new ItemEntity(p_49841_, d1, d2, d3, p_49843_), p_49843_);
     }
-
 
     private static void popResource(Level p_152441_, Supplier<ItemEntity> p_152442_, ItemStack p_152443_) {
         if (!p_152441_.isClientSide && !p_152443_.isEmpty()) {
@@ -202,7 +197,7 @@ public class MPUtils {
                                             p_49859_.setCount(p_49859_.getCount() * MPGConfig.destroy_doubling_value);
                                         popResource(serverLevel, mutableBlockPos, p_49859_);
                                     });
-                                int exp = blockState.getExpDrop(serverLevel, serverLevel.random, mutableBlockPos, 0, 0);
+                                int exp = blockState.getExpDrop(serverLevel, mutableBlockPos, 0, 0);
                                 if (doubling)
                                     exp *= MPGConfig.destroy_doubling_value;
                                 block.popExperience(serverLevel, mutableBlockPos, exp);
@@ -275,7 +270,7 @@ public class MPUtils {
                                 p_49859_.setCount(p_49859_.getCount() * 4);
                             popResource(serverLevel, pos, p_49859_);
                         });
-                    int exp = blockState.getExpDrop(serverLevel, serverLevel.random, pos, 0, 0);
+                    int exp = blockState.getExpDrop(serverLevel, pos, 0, 0);
                     if (doubling)
                         exp *= 4;
                     block.popExperience(serverLevel, pos, exp);

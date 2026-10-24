@@ -1,12 +1,12 @@
 package github.com.gengyoubo;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.MPGCommon;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -27,7 +27,6 @@ import github.com.gengyoubo.common.event.MPGToolMiningLogic;
 import github.com.gengyoubo.common.item.data.IMPGDestroy;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import github.com.gengyoubo.common.event.MPGEventLogic;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -69,7 +68,6 @@ public class MPG implements ModInitializer {
         MPNetworking.initCommon();
         MPNetworking.initServer();
         registerToolMining();
-        registerLivingDrops();
         registerSwordAttacks();
 
         BLOCKS.registerAll();
@@ -81,10 +79,9 @@ public class MPG implements ModInitializer {
         BLOCK_ENTITY_TYPES.registerAll();
         RECIPE_SERIALIZER_DEFERRED_REGISTER.registerAll();
 
-        MANAITA_PLUS_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, github.com.gengyoubo.util.MPResource.id(MODID, "manaita_plus_tab"), FabricItemGroup.builder()
+        MANAITA_PLUS_TAB = FabricItemGroupBuilder.create(github.com.gengyoubo.util.MPResource.id(MODID, "manaita_plus_tab"))
             .icon(() -> MPBlockCore.CraftingBlockItem.get().getDefaultInstance())
-            .title(Component.translatable("itemGroup.ManaitaPlusTab"))
-            .displayItems((context, entries) -> {
+            .appendItems(entries -> {
                 acceptMPGType(MPBlockCore.CraftingBlockItem.get(), entries, 8);
                 acceptMPGType(MPBlockCore.FurnaceBlockItem.get(), entries, 8);
                 acceptMPGType(MPBlockCore.BrewingBlockItem.get(), entries, 8);
@@ -99,22 +96,22 @@ public class MPG implements ModInitializer {
                     acceptMPGType(MPItemCore.ManaitaFurnaceRing.get(), entries, 8);
                     acceptMPGType(MPItemCore.ManaitaBrewingRing.get(), entries, 8);
                 }
-                entries.accept(MPItemCore.ManaitaSword.get());
-                entries.accept(MPItemCore.ManaitaSwordGod.get());
-                entries.accept(MPItemCore.ManaitaBow.get());
-                entries.accept(MPItemCore.ManaitaAxe.get());
-                entries.accept(MPItemCore.ManaitaHoe.get());
-                entries.accept(MPItemCore.ManaitaPaxel.get());
-                entries.accept(MPItemCore.ManaitaPickaxe.get());
-                entries.accept(MPItemCore.ManaitaShears.get());
-                entries.accept(MPItemCore.ManaitaShovel.get());
-                entries.accept(MPItemCore.ManaitaHelmet.get());
-                entries.accept(MPItemCore.ManaitaChestplate.get());
-                entries.accept(MPItemCore.ManaitaLeggings.get());
-                entries.accept(MPItemCore.ManaitaBoots.get());
-                entries.accept(MPItemCore.ManaitaHook.get());
-                entries.accept(MPItemCore.ManaitaSource.get());
-            }).build());
+                entries.add(MPItemCore.ManaitaSword.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaSwordGod.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaBow.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaAxe.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaHoe.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaPaxel.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaPickaxe.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaShears.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaShovel.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaHelmet.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaChestplate.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaLeggings.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaBoots.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaHook.get().getDefaultInstance());
+                entries.add(MPItemCore.ManaitaSource.get().getDefaultInstance());
+            }).build();
     }
 
     private static void registerResourceConditions() {
@@ -140,11 +137,6 @@ public class MPG implements ModInitializer {
         });
     }
 
-    private static void registerLivingDrops() {
-        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) ->
-                MPGEventLogic.handleFabricDeathDrops(entity, source, MPGConfig.item_drops_doubling_value));
-    }
-
     private static void registerSwordAttacks() {
         AttackEntityCallback.EVENT.register((player, level, hand, entity, hitResult) -> {
             ItemStack stack = player.getItemInHand(hand);
@@ -159,11 +151,11 @@ public class MPG implements ModInitializer {
         });
     }
 
-    private static void acceptMPGType(Item item, CreativeModeTab.Output entries, int maxType) {
+    private static void acceptMPGType(Item item, java.util.List<ItemStack> entries, int maxType) {
         for (int type = 0; type <= maxType; type++) {
             ItemStack stack = new ItemStack(item);
             github.com.gengyoubo.common.util.MPGItemStackData.putInt(stack, MPGNBTData.ItemType, type);
-            entries.accept(stack);
+            entries.add(stack);
         }
     }
 }

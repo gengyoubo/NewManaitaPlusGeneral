@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.item;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.MPG.menu.MPGCraftingMenu;
 import github.com.gengyoubo.common.item.MPGSourceItemBase;
 import net.minecraft.network.chat.Component;
@@ -12,6 +13,6 @@ public class MPGSourceItem extends MPGSourceItemBase {
     protected void openCraftingMenu(ServerPlayer player, Level level) {
         player.openMenu(new SimpleMenuProvider(
                 (windowId, inventory, menuPlayer) -> new MPGCraftingMenu(windowId, inventory, level),
-                Component.translatable("container.crafting")));
+                new TranslatableComponent("container.crafting")));
     }
 }

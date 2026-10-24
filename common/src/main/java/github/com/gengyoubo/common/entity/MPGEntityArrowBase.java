@@ -31,16 +31,16 @@ public abstract class MPGEntityArrowBase extends AbstractArrow {
     protected void onHitEntity(EntityHitResult hitResult) {
         Entity target = unwrapTarget(hitResult.getEntity());
         super.onHitEntity(hitResult);
-        if (level().isClientSide) {
+        if (level.isClientSide) {
             return;
         }
 
         Entity owner = getOwner();
         DamageSource damageSource = null;
         if (owner instanceof Player player) {
-            damageSource = target.damageSources().playerAttack(player);
+            damageSource = net.minecraft.world.damagesource.DamageSource.playerAttack(player);
         } else if (owner instanceof LivingEntity livingEntity) {
-            damageSource = target.damageSources().mobAttack(livingEntity);
+            damageSource = net.minecraft.world.damagesource.DamageSource.mobAttack(livingEntity);
         }
         if (damageSource != null) {
             target.hurt(damageSource, 100000.0F);

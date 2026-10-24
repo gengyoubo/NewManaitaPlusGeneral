@@ -14,8 +14,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
-import net.minecraft.world.item.Equipable;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
@@ -46,7 +46,7 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
     };
 
     private final InventoryBaubles baublesInventory;
-    private final TransientCraftingContainer craftSlots = new TransientCraftingContainer(this, 2, 2);
+    private final CraftingContainer craftSlots = new CraftingContainer(this, 2, 2);
     private final ResultContainer resultSlots = new ResultContainer();
     private final Player player;
 
@@ -74,8 +74,7 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(playerInventory, ARMOR_SLOT_INDEXES[slot], 8, 8 + slot * 18) {
                 @Override
                 public boolean mayPlace(@NotNull ItemStack stack) {
-                    Equipable equipable = Equipable.get(stack);
-                    return equipable != null && equipable.getEquipmentSlot() == equipmentSlot;
+                    return stack.canEquip(equipmentSlot, player);
                 }
 
                 @Override
@@ -108,15 +107,15 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
 
     @Override
     public void slotsChanged(@NotNull Container container) {
-        if (!this.player.level().isClientSide && this.player instanceof ServerPlayer serverPlayer) {
+        if (!this.player.level.isClientSide && this.player instanceof ServerPlayer serverPlayer) {
             ItemStack result = ItemStack.EMPTY;
             Optional<CraftingRecipe> optional = serverPlayer.server.getRecipeManager()
-                    .getRecipeFor(RecipeType.CRAFTING, this.craftSlots, this.player.level());
+                    .getRecipeFor(RecipeType.CRAFTING, this.craftSlots, this.player.level);
             if (optional.isPresent()) {
                 CraftingRecipe recipeHolder = optional.get();
                 this.resultSlots.setRecipeUsed(recipeHolder);
-                ItemStack assembled = recipeHolder.assemble(this.craftSlots, this.player.level().registryAccess());
-                if (assembled.isItemEnabled(this.player.level().enabledFeatures())) {
+                ItemStack assembled = recipeHolder.assemble(this.craftSlots);
+                if (!assembled.isEmpty()) {
                     result = assembled;
                 }
             }
@@ -171,7 +170,7 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
         }
 
         if (source.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
+            slot.set(ItemStack.EMPTY);
         } else {
             slot.setChanged();
         }
@@ -193,11 +192,7 @@ public class MPGBaublesMenu extends AbstractContainerMenu {
     }
 
     private boolean moveToArmor(ItemStack stack) {
-        Equipable equipable = Equipable.get(stack);
-        if (equipable == null) {
-            return false;
-        }
-        EquipmentSlot equipmentSlot = equipable.getEquipmentSlot();
+        EquipmentSlot equipmentSlot = LivingEntity.getEquipmentSlotForItem(stack);
         for (int slot = ARMOR_SLOT_START; slot < ARMOR_SLOT_END; slot++) {
             int armorIndex = slot - ARMOR_SLOT_START;
             if (ARMOR_SLOT_TYPES[armorIndex] != equipmentSlot || this.slots.get(slot).hasItem()) {

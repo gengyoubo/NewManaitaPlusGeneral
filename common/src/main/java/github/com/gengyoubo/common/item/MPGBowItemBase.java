@@ -1,5 +1,7 @@
 package github.com.gengyoubo.common.item;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import github.com.gengyoubo.common.util.MPText;
@@ -23,13 +25,13 @@ public abstract class MPGBowItemBase extends Item implements IMPGKey, IMPGDoubli
     public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                 List<Component> tooltip, @NotNull TooltipFlag flag) {
         String state = isDoubling(stack) ? translate("info.on") : translate("info.off");
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(translate("mode.doubling") + ":" + state)));
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(translate("info.attack"))));
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(translate("mode.doubling") + ":" + state)));
+        tooltip.add(new TextComponent(MPText.manaita_infinity.formatting(translate("info.attack"))));
     }
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack stack) {
-        return Component.literal(MPText.manaita_mode.formatting(translate("item.manaita_bow.name")));
+        return new TextComponent(MPText.manaita_mode.formatting(translate("item.manaita_bow.name")));
     }
 
     @Override
@@ -44,7 +46,7 @@ public abstract class MPGBowItemBase extends Item implements IMPGKey, IMPGDoubli
                 MPText.manaita_mode.formatting(translate("item.manaita_bow.name")),
                 ChatFormatting.RESET, ChatFormatting.RESET, translate("mode.doubling"),
                 doubling ? translate("info.on") : translate("info.off"));
-        player.displayClientMessage(Component.literal(message), keyMessageUsesOverlay());
+        player.displayClientMessage(new TextComponent(message), keyMessageUsesOverlay());
     }
 
     protected boolean keyMessageUsesOverlay() {
@@ -52,6 +54,6 @@ public abstract class MPGBowItemBase extends Item implements IMPGKey, IMPGDoubli
     }
 
     protected static String translate(String key) {
-        return Component.translatable(key).getString();
+        return new TranslatableComponent(key).getString();
     }
 }

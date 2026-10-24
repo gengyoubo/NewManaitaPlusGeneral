@@ -1,8 +1,7 @@
 package github.com.gengyoubo.MPG.event;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
-import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,11 +22,11 @@ public class EventRegisterHandler {
     public static void onGatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
 
-        gen.addProvider(event.includeServer(), new MPGLootTable(gen.getPackOutput()));
-
-        PackOutput packOutput = gen.getPackOutput();
-        gen.addProvider(event.includeClient(), new MPBlockStateProvider(packOutput, event.getExistingFileHelper()));
-        gen.addProvider(event.includeClient(), new MPItemModelProvider(packOutput, event.getExistingFileHelper()));
+        if (event.includeServer()) gen.addProvider(new MPGLootTable(gen));
+        if (event.includeClient()) {
+            gen.addProvider(new MPBlockStateProvider(gen, event.getExistingFileHelper()));
+            gen.addProvider(new MPItemModelProvider(gen, event.getExistingFileHelper()));
+        }
     }
 
 }

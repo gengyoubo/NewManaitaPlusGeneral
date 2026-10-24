@@ -38,7 +38,7 @@ public abstract class MPGPortableBrewingBlockEntityBase extends MPGBrewingStandB
                 fuel--;
                 brewTime = BREW_TIME;
                 ingredient = items.get(3).getItem();
-                performBrew(owner.level(), owner.getX(), owner.getY(), owner.getZ());
+                performBrew(owner.level, owner.getX(), owner.getY(), owner.getZ());
                 brewTime = 0;
             }
         }

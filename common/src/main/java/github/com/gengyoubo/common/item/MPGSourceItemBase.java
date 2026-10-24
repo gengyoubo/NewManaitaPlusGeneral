@@ -1,5 +1,7 @@
 package github.com.gengyoubo.common.item;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.util.MPText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,14 +24,14 @@ public abstract class MPGSourceItemBase extends Item {
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack stack) {
-        return Component.literal(MPText.manaita_mode.formatting(translate("item.source.name")));
+        return new TextComponent(MPText.manaita_mode.formatting(translate("item.source.name")));
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context,
                                 @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(translate("info.source.1"))));
+        tooltip.add(new TextComponent(MPText.manaita_infinity.formatting(translate("info.source.1"))));
     }
 
     @Override
@@ -50,6 +52,6 @@ public abstract class MPGSourceItemBase extends Item {
     protected abstract void openCraftingMenu(ServerPlayer player, Level level);
 
     protected static String translate(String key) {
-        return Component.translatable(key).getString();
+        return new TranslatableComponent(key).getString();
     }
 }

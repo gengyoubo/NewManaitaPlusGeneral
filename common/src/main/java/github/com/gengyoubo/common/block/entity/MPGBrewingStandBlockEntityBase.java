@@ -1,5 +1,6 @@
 package github.com.gengyoubo.common.block.entity;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.block.MPGBrewingStandBlockBase;
 import github.com.gengyoubo.common.config.MPGConfigValues;
 import net.minecraft.core.BlockPos;
@@ -72,7 +73,7 @@ public abstract class MPGBrewingStandBlockEntityBase extends BaseContainerBlockE
 
     @Override
     protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.brewing_manaita");
+        return new TranslatableComponent("container.brewing_manaita");
     }
 
     @Override
@@ -107,7 +108,6 @@ public abstract class MPGBrewingStandBlockEntityBase extends BaseContainerBlockE
             fuelStack.shrink(1);
             setChanged(level, pos, state);
         }
-
 
         boolean brewable = isBrewable(entity.items);
         ItemStack ingredientStack = entity.items.get(INGREDIENT_SLOT);
@@ -172,7 +172,7 @@ public abstract class MPGBrewingStandBlockEntityBase extends BaseContainerBlockE
             items.set(slot, brewed);
         }
         finishBrew(level, x, y, z, items);
-        level.levelEvent(1035, BlockPos.containing(x, y, z), 0);
+        level.levelEvent(1035, new BlockPos(x, y, z), 0);
         return true;
     }
 

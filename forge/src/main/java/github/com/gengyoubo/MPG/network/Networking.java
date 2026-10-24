@@ -31,22 +31,22 @@ public class Networking {
         CHANNEL.messageBuilder(MPGKeyPressPayload.class, 0, NetworkDirection.PLAY_TO_SERVER)
                 .encoder((packet, buf) -> MPGKeyPressPayload.STREAM_CODEC.encode(buf, packet))
                 .decoder(MPGKeyPressPayload.STREAM_CODEC::decode)
-                .consumerMainThread(Networking::handleKeyPress)
+                .consumer(Networking::handleKeyPress)
                 .add();
         CHANNEL.messageBuilder(OpenBaublesPacket.class, 1, NetworkDirection.PLAY_TO_SERVER)
                 .encoder((packet, buf) -> OpenBaublesPacket.STREAM_CODEC.encode(buf, packet))
                 .decoder(OpenBaublesPacket.STREAM_CODEC::decode)
-                .consumerMainThread(OpenBaublesPacket::handle)
+                .consumer(OpenBaublesPacket::handle)
                 .add();
         CHANNEL.messageBuilder(MPGDestroyBlockPayload.class, 2, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder((packet, buf) -> MPGDestroyBlockPayload.STREAM_CODEC.encode(buf, packet))
                 .decoder(MPGDestroyBlockPayload.STREAM_CODEC::decode)
-                .consumerMainThread(Networking::handleDestroyBlock)
+                .consumer(Networking::handleDestroyBlock)
                 .add();
         CHANNEL.messageBuilder(MPGChangeEntityDataPayload.class, 3, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder((packet, buf) -> MPGChangeEntityDataPayload.STREAM_CODEC.encode(buf, packet))
                 .decoder(MPGChangeEntityDataPayload.STREAM_CODEC::decode)
-                .consumerMainThread(Networking::handleChangeEntityData)
+                .consumer(Networking::handleChangeEntityData)
                 .add();
     }
 

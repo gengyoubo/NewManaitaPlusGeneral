@@ -3,7 +3,7 @@ package github.com.gengyoubo.MPG.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import github.com.gengyoubo.MPG.MPG;
 import github.com.gengyoubo.MPG.menu.MPGBaublesMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
@@ -30,19 +30,20 @@ public class BaublesScreen extends AbstractContainerScreen<MPGBaublesMenu> {
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack guiGraphics, float partialTick, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int left = this.leftPos;
         int top = this.topPos;
-        guiGraphics.blit(INVENTORY_TEXTURE, left, top, 0, 0, this.imageWidth, this.imageHeight);
+        com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, INVENTORY_TEXTURE);
+        blit(guiGraphics, left, top, 0, 0, this.imageWidth, this.imageHeight);
         if (this.minecraft != null && this.minecraft.player != null) {
-            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 51, top + 75,
+            InventoryScreen.renderEntityInInventory( left + 51, top + 75,
                     30, left + 51 - mouseX, top + 25 - mouseY, this.minecraft.player);
         }
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull PoseStack guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);

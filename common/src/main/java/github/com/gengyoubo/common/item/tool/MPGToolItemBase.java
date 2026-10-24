@@ -1,5 +1,7 @@
 package github.com.gengyoubo.common.item.tool;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.item.data.IMPGDestroy;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
@@ -59,10 +61,10 @@ public class MPGToolItemBase extends DiggerItem implements IMPGKey, IMPGDestroy,
             tooltip.add(modeLine("mode.can_harvest", canHarvest(stack)));
         }
         int range = getRange(stack);
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(
                 text("mode.dig_range") + ": " + range + "x" + range)));
         if (profile.supportsDepth()) {
-            tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+            tooltip.add(new TextComponent(MPText.manaita_mode.formatting(
                     text("mode.dig_depth") + ": " + getDepth(stack))));
         }
         if (profile.supportsDigUnderPlayer()) {
@@ -242,18 +244,18 @@ public class MPGToolItemBase extends DiggerItem implements IMPGKey, IMPGDestroy,
 
     private void showValue(Player player, ItemStack itemStack, String translationKey, String value) {
         if (player != null) {
-            player.displayClientMessage(Component.literal(MPText.manaita_mode.formatting(
+            player.displayClientMessage(new TextComponent(MPText.manaita_mode.formatting(
                     itemStack.getDisplayName().getString() + " " + text(translationKey) + ": " + value)),
                     messageUsesOverlay());
         }
     }
 
     private static Component modeLine(String translationKey, boolean enabled) {
-        return Component.literal(MPText.manaita_mode.formatting(
+        return new TextComponent(MPText.manaita_mode.formatting(
                 text(translationKey) + ": " + text(enabled ? "info.on" : "info.off")));
     }
 
     private static String text(String translationKey) {
-        return Component.translatable(translationKey).getString();
+        return new TranslatableComponent(translationKey).getString();
     }
 }

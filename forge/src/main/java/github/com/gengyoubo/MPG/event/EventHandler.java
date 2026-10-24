@@ -49,14 +49,14 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        if (event.getAction() == PlayerInteractEvent.LeftClickBlock.Action.START) {
-            Player player = event.getEntity();
+        {
+            Player player = event.getPlayer();
             ItemStack stack = player.getMainHandItem();
             if (stack.getItem() instanceof IMPGDestroy destroyItem && !destroyItem.canHarvest(stack)) {
                 event.setCanceled(true);
                 return;
             }
-            if (event.getLevel() instanceof ServerLevel level && player instanceof ServerPlayer serverPlayer) {
+            if (event.getWorld() instanceof ServerLevel level && player instanceof ServerPlayer serverPlayer) {
                 MPGToolMiningLogic.Result result = MPGToolMiningLogic.destroyBlocks(level, serverPlayer, stack,
                         event.getPos(), event.getFace(), MPGConfig.destroy_doubling_value,
                         MPGConfig.creative_range_destroy_value);
@@ -75,9 +75,9 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onLivingDrops(LivingDropsEvent event) {
-        MPGEventLogic.findKiller(event.getEntity(), event.getSource().getEntity()).ifPresent(player -> {
-            MPGEventLogic.createBeheadingDrop(event.getEntity(), player).ifPresent(stack ->
-                    event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(event.getEntity().level(),
+        MPGEventLogic.findKiller(event.getEntityLiving(), event.getSource().getEntity()).ifPresent(player -> {
+            MPGEventLogic.createBeheadingDrop(event.getEntityLiving(), player).ifPresent(stack ->
+                    event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(event.getEntity().level,
                             event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), stack)));
             MPGEventLogic.multiplyDrops(player, event.getDrops(), MPGConfig.item_drops_doubling_value);
         });

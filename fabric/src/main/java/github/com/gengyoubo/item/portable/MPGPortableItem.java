@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item.portable;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.item.MPGPortableItemBase;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,7 @@ public abstract class MPGPortableItem extends MPGPortableItemBase {
 
             @Override
             public @NotNull Component getDisplayName() {
-                return Component.translatable(titleKey);
+                return new TranslatableComponent(titleKey);
             }
 
             @Override

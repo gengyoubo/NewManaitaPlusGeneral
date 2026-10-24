@@ -49,7 +49,6 @@ public class EntitiesWrapper {
         }
     }
 
-
     private void add(Entity e, Object[] elementData, int s) {
         if (s == elementData.length)
             elementData = grow();

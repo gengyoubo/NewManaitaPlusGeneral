@@ -1,7 +1,8 @@
 package github.com.gengyoubo.common.client.gui;
 
+import net.minecraft.network.chat.TextComponent;
 import github.com.gengyoubo.common.menu.MPGFurnaceMenuBase;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
 import net.minecraft.client.gui.screens.recipebook.SmeltingRecipeBookComponent;
 import net.minecraft.network.chat.Component;
@@ -24,13 +25,13 @@ public class MPGFurnaceScreenBase<M extends MPGFurnaceMenuBase> extends Abstract
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, title, titleLabelX, titleLabelY, 4210752, false);
-        guiGraphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752, false);
-        guiGraphics.drawString(font, getDoublingComponent(), 118, 22, 4210752, false);
+    protected void renderLabels(PoseStack guiGraphics, int mouseX, int mouseY) {
+        font.draw(guiGraphics, title, titleLabelX, titleLabelY, 4210752);
+        font.draw(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752);
+        font.draw(guiGraphics, getDoublingComponent(), 118, 22, 4210752);
     }
 
     protected Component getDoublingComponent() {
-        return Component.literal(doublingText);
+        return new TextComponent(doublingText);
     }
 }

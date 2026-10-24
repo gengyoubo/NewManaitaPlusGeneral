@@ -28,7 +28,7 @@ public abstract class MPGPortableFurnaceBlockEntityBase extends MPGFurnaceBlockE
     public void setItem(int slot, @NotNull ItemStack stack) {
         super.setItem(slot, stack);
         if (!getItem(0).isEmpty()) {
-            processAll(owner.level());
+            processAll(owner.level);
         }
         saveToBackingStack();
     }

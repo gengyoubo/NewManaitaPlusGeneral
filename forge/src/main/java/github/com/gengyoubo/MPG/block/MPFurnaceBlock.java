@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class MPFurnaceBlock extends MPGFurnaceBlockBase {
 
     public MPFurnaceBlock() {
-        this(BlockBehaviour.Properties.of().noOcclusion());
+        this(BlockBehaviour.Properties.of(net.minecraft.world.level.material.Material.WOOD).noOcclusion());
     }
 
     private MPFurnaceBlock(BlockBehaviour.Properties properties) {

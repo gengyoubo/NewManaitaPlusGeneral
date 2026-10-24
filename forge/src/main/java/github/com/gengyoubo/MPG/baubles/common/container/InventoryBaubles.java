@@ -86,7 +86,8 @@ public class InventoryBaubles extends ItemStackHandler {
                 continue;
             }
 
-            ItemStack equipped = sourceStack.copyWithCount(1);
+            ItemStack equipped = sourceStack.copy();
+            equipped.setCount(1);
             setStackInSlot(slot, equipped);
             sourceStack.shrink(1);
             return true;

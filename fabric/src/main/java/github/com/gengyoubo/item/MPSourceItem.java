@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.item.MPGSourceItemBase;
 import github.com.gengyoubo.menu.MPCraftingMenu;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -23,7 +24,7 @@ public class MPSourceItem extends MPGSourceItemBase {
 
             @Override
             public @NotNull Component getDisplayName() {
-                return Component.translatable("container.crafting");
+                return new TranslatableComponent("container.crafting");
             }
 
             @Override

@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -34,7 +34,7 @@ public abstract class MPGFurnaceBlockBase extends AbstractFurnaceBlock {
     private final Supplier<? extends Item> hookItem;
 
     protected MPGFurnaceBlockBase(Supplier<? extends Item> hookItem) {
-        this(BlockBehaviour.Properties.of().noOcclusion(), hookItem);
+        this(BlockBehaviour.Properties.of(net.minecraft.world.level.material.Material.WOOD).noOcclusion(), hookItem);
     }
 
     protected MPGFurnaceBlockBase(BlockBehaviour.Properties properties, Supplier<? extends Item> hookItem) {
@@ -74,7 +74,7 @@ public abstract class MPGFurnaceBlockBase extends AbstractFurnaceBlock {
     }
 
     @Override
-    public @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootParams.@NotNull Builder params) {
+    public @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootContext.@NotNull Builder params) {
         return MPGTypedBlockDrops.create(state, hookItem);
     }
 

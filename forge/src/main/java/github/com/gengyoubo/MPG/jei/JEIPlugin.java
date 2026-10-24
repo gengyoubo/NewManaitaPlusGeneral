@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.jei;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.MPG.MPG;
 import github.com.gengyoubo.MPG.MPGConfig;
 import github.com.gengyoubo.MPG.core.MPGBlockCore;
@@ -48,17 +49,13 @@ public class JEIPlugin implements IModPlugin {
         typedItems().forEach(item -> registration.registerSubtypeInterpreter(item, MPGJeiSubtypeInterpreter.INSTANCE));
     }
 
-    @Override
-    public void registerExtraIngredients(IExtraIngredientRegistration registration) {
-        registration.addExtraItemStacks(typedStacks());
-    }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         registration.addRecipes(MPGSourceCopyRecipeCategory.TYPE, createSourceCopyRecipes());
         registration.addItemStackInfo(MPGItemCore.ManaitaSource.get().getDefaultInstance(),
-                Component.translatable("jei.manaita_plus_general.source.info.1"),
-                Component.translatable("jei.manaita_plus_general.source.info.2", MPGConfig.source_doubling_value));
+                new TranslatableComponent("jei.manaita_plus_general.source.info.1"),
+                new TranslatableComponent("jei.manaita_plus_general.source.info.2", MPGConfig.source_doubling_value));
     }
 
     @Override
@@ -81,13 +78,14 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        registration.addRecipeTransferHandler(MPGCraftingMenu.class, MPGMenuCore.CraftingManaita.get(), RecipeTypes.CRAFTING, 1, 9, 10, 36);
-        registration.addRecipeTransferHandler(MPGFurnaceMenu.class, MPGMenuCore.FurnaceManaita.get(), RecipeTypes.SMELTING, 0, 1, 3, 36);
-        registration.addRecipeTransferHandler(MPGBrewingStandMenu.class, MPGMenuCore.BrewingStandManaita.get(), RecipeTypes.BREWING, 1, 3, 5, 36);
+        registration.addRecipeTransferHandler(MPGCraftingMenu.class, RecipeTypes.CRAFTING, 1, 9, 10, 36);
+        registration.addRecipeTransferHandler(MPGFurnaceMenu.class, RecipeTypes.SMELTING, 0, 1, 3, 36);
+        registration.addRecipeTransferHandler(MPGBrewingStandMenu.class, RecipeTypes.BREWING, 1, 3, 5, 36);
     }
 
     @Override
     public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime runtime) {
+        runtime.getIngredientManager().addIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, typedStacks());
         if (!github.com.gengyoubo.MPG.integration.MPGAccessories.isEnabled()) {
             runtime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM_STACK,
                     List.of(MPGItemCore.ManaitaCraftingRing.get().getDefaultInstance(),

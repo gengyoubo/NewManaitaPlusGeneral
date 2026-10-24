@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,6 +40,7 @@ public class RegisterEventHandler {
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ClientEventHandler.register();
+            registerKeyMappings();
             MenuScreens.register(MPGMenuCore.CraftingManaita.get(), CraftingManaitaScreen::new);
             MenuScreens.register(MPGMenuCore.FurnaceManaita.get(), FurnaceManaitaScreen::new);
             MenuScreens.register(MPGMenuCore.BrewingStandManaita.get(), BrewingStandScreen::new);
@@ -71,18 +72,17 @@ public class RegisterEventHandler {
         BlockEntityRenderers.register(MPGBlockEntityCore.CRAFTING_BLOCK_ENTITY.get(), RenderCraftingManaitaBlockEntity::new);
     }
 
-    @SubscribeEvent
-    public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event)
+    private static void registerKeyMappings()
     {
         MPGKeyBoardCore.MESSAGE_KEY = new KeyMapping("key.manaita", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, 88, "key.categories.misc");
         MPGKeyBoardCore.MESSAGE_ARMOR_KEY = new KeyMapping("key.manaita.armor", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, 86, "key.categories.misc");
         MPGKeyBoardCore.PAXEL_KEY = new KeyMapping("key.manaita.doubling", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, 67, "key.categories.misc");
-        event.register(MPGKeyBoardCore.MESSAGE_KEY);
-        event.register(MPGKeyBoardCore.MESSAGE_ARMOR_KEY);
-        event.register(MPGKeyBoardCore.PAXEL_KEY);
+        net.minecraftforge.client.ClientRegistry.registerKeyBinding(MPGKeyBoardCore.MESSAGE_KEY);
+        net.minecraftforge.client.ClientRegistry.registerKeyBinding(MPGKeyBoardCore.MESSAGE_ARMOR_KEY);
+        net.minecraftforge.client.ClientRegistry.registerKeyBinding(MPGKeyBoardCore.PAXEL_KEY);
         if (BaublesCapability.isEnabled()) {
             MPGKeyBoardCore.BAUBLES_KEY = new KeyMapping("key.manaita.baubles", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, 66, "key.categories.misc");
-            event.register(MPGKeyBoardCore.BAUBLES_KEY);
+            net.minecraftforge.client.ClientRegistry.registerKeyBinding(MPGKeyBoardCore.BAUBLES_KEY);
         }
     }
 

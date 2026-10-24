@@ -38,7 +38,7 @@ public final class MPRingItem extends MPGPortableItem implements IMPGKey {
     @Override
     public void onManaitaKeyPress(ItemStack stack, Player player) {
         if (MPAccessories.isEnabled() && player instanceof ServerPlayer serverPlayer)
-            openPortableMenu(serverPlayer, stack, player.level());
+            openPortableMenu(serverPlayer, stack, player.level);
     }
     @Override
     protected void openPortableMenu(ServerPlayer player, ItemStack stack, Level level) {

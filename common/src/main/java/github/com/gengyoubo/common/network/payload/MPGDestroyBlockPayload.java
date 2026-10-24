@@ -3,7 +3,7 @@ package github.com.gengyoubo.common.network.payload;
 import github.com.gengyoubo.common.MPGCommon;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import github.com.gengyoubo.common.network.MPGPacketCodec;
 
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +17,7 @@ public record MPGDestroyBlockPayload(BlockPos blockPos, int range, Item item) {
         public @NotNull MPGDestroyBlockPayload decode(FriendlyByteBuf buffer) {
             BlockPos position = buffer.readBlockPos();
             int range = buffer.readInt();
-            Item item = BuiltInRegistries.ITEM.get(buffer.readResourceLocation());
+            Item item = Registry.ITEM.get(buffer.readResourceLocation());
             return new MPGDestroyBlockPayload(position, range, item);
         }
 
@@ -25,7 +25,7 @@ public record MPGDestroyBlockPayload(BlockPos blockPos, int range, Item item) {
         public void encode(FriendlyByteBuf buffer, MPGDestroyBlockPayload payload) {
             buffer.writeBlockPos(payload.blockPos());
             buffer.writeInt(payload.range());
-            buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(payload.item()));
+            buffer.writeResourceLocation(Registry.ITEM.getKey(payload.item()));
         }
     };
 

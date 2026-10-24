@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.item.portable;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.item.MPGPortableItemBase;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,7 +22,7 @@ public abstract class MPGPortableItem extends MPGPortableItemBase {
         serverPlayer.openMenu(new MenuProvider() {
             @Override
             public @NotNull Component getDisplayName() {
-                return Component.translatable(titleKey);
+                return new TranslatableComponent(titleKey);
             }
 
             @Override

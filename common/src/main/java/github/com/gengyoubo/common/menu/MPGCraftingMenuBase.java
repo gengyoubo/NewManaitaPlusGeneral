@@ -16,9 +16,7 @@ import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import net.minecraft.world.item.crafting.RecipeType;
@@ -30,7 +28,7 @@ import java.util.Optional;
 
 /** Shared 3x3 crafting menu and doubled-result behavior. */
 public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingContainer> {
-    private final CraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
+    private final CraftingContainer craftSlots = new CraftingContainer(this, 3, 3);
     private final ResultContainer resultSlots = new ResultContainer();
     private final ContainerLevelAccess access;
     private final Player player;
@@ -74,8 +72,8 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingContain
         if (recipe.isPresent()) {
             CraftingRecipe holder = recipe.get();
             resultSlots.setRecipeUsed(holder);
-            ItemStack assembled = holder.assemble(input, level.registryAccess());
-            if (assembled.isItemEnabled(level.enabledFeatures())) {
+            ItemStack assembled = holder.assemble(input);
+            if (!assembled.isEmpty()) {
                 long multiplied = (long) assembled.getCount() * MPGConfigValues.crafting_doubling_value;
                 assembled.setCount((int) Math.min(Integer.MAX_VALUE, multiplied));
                 result = assembled;
@@ -106,7 +104,7 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingContain
     @Override
     public boolean recipeMatches(net.minecraft.world.item.crafting.Recipe<? super CraftingContainer> recipe) {
         CraftingContainer input = craftSlots;
-        return recipe.matches(input, player.level());
+        return recipe.matches(input, player.level);
     }
 
     @Override
@@ -145,7 +143,7 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingContain
         }
 
         if (moving.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
+            slot.set(ItemStack.EMPTY);
         } else {
             slot.setChanged();
         }

@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +23,7 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class MPGHookBlockBase extends Block {
     public MPGHookBlockBase() {
-        super(Properties.of().noOcclusion());
+        super(Properties.of(net.minecraft.world.level.material.Material.WOOD).noOcclusion());
         registerDefaultState(stateDefinition.any()
                 .setValue(MPGBlockData.FACING, Direction.NORTH)
                 .setValue(MPGBlockData.TYPES, 0));
@@ -42,7 +42,7 @@ public class MPGHookBlockBase extends Block {
     }
 
     @Override
-    public @NotNull List<ItemStack> getDrops(BlockState state, LootParams.@NotNull Builder params) {
+    public @NotNull List<ItemStack> getDrops(BlockState state, LootContext.@NotNull Builder params) {
         ItemStack itemStack = new ItemStack(state.getBlock());
         MPGItemStackData.putInt(itemStack, MPGNBTData.ItemType, state.getValue(MPGBlockData.TYPES));
         return List.of(itemStack);

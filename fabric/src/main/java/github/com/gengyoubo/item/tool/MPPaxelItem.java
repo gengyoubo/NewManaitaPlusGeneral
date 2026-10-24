@@ -1,5 +1,7 @@
 package github.com.gengyoubo.item.tool;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
@@ -28,7 +30,7 @@ public class MPPaxelItem extends MPToolBase {
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         MPGEntityData.death.add(target);
-        target.hurt(target.damageSources().mobAttack(attacker), 10000);
+        target.hurt(net.minecraft.world.damagesource.DamageSource.mobAttack(attacker), 10000);
         target.setHealth(0F);
         return super.hurtEnemy(stack, target, attacker);
     }
@@ -36,8 +38,8 @@ public class MPPaxelItem extends MPToolBase {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.empty());
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(Component.translatable("info.attack").getString())));
+        tooltip.add(new net.minecraft.network.chat.TextComponent(""));
+        tooltip.add(new TextComponent(MPText.manaita_infinity.formatting(new TranslatableComponent("info.attack").getString())));
     }
 
     @Override

@@ -8,12 +8,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
+import java.util.Random;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix4f;
 
-import java.util.Random;
 
 /** Shared renderer for the visual-only MPG lightning entity. */
 public class MPGLightningBoltRendererBase<T extends MPGLightningBoltBase> extends EntityRenderer<T> {
@@ -28,7 +27,7 @@ public class MPGLightningBoltRendererBase<T extends MPGLightningBoltBase> extend
         float[] zOffsets = new float[8];
         float x = 0.0F;
         float z = 0.0F;
-        RandomSource pathRandom = RandomSource.create(bolt.seed);
+        Random pathRandom = new Random(bolt.seed);
 
         for (int i = 7; i >= 0; i--) {
             xOffsets[i] = x;
@@ -41,7 +40,7 @@ public class MPGLightningBoltRendererBase<T extends MPGLightningBoltBase> extend
         Matrix4f matrix = poseStack.last().pose();
         Random colorRandom = new Random(bolt.seed);
         for (int layer = 0; layer < 4; layer++) {
-            RandomSource branchRandom = RandomSource.create(bolt.seed);
+            Random branchRandom = new Random(bolt.seed);
             for (int branch = 0; branch < 3; branch++) {
                 int start = branch == 0 ? 7 : 7 - branch;
                 int end = branch == 0 ? 0 : start - 2;

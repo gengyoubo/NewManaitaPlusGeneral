@@ -10,7 +10,7 @@ import com.mojang.serialization.JsonOps;
 
 import com.mojang.serialization.MapLike;
 import github.com.gengyoubo.common.util.MPGNBTData;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 
 import net.minecraft.core.NonNullList;
 
@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
+
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -32,22 +32,19 @@ import java.util.Map;
 
 public class MPNBTCraftingRecipe implements CraftingRecipe {
     private static RecipeSerializer<?> registeredSerializer;
-    private static final StringRepresentable.EnumCodec<CraftingBookCategory> CATEGORY_CODEC =
-            StringRepresentable.fromEnum(CraftingBookCategory::values);
+
 
     private net.minecraft.resources.ResourceLocation id;
     @Override public net.minecraft.resources.ResourceLocation getId() { return id; }
     private final String group;
-    private final CraftingBookCategory category;
     private final int width;
     private final int height;
     private final IngredientSpec[] ingredients;
     private final ItemStack result;
     private final boolean showNotification;
 
-    public MPNBTCraftingRecipe(String group, CraftingBookCategory category, int width, int height, IngredientSpec[] ingredients, ItemStack result, boolean showNotification) {
+    public MPNBTCraftingRecipe(String group, int width, int height, IngredientSpec[] ingredients, ItemStack result, boolean showNotification) {
         this.group = group;
-        this.category = category;
         this.width = width;
         this.height = height;
         this.ingredients = ingredients;
@@ -68,17 +65,13 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
         return group;
     }
 
-    @Override
-    public @NotNull CraftingBookCategory category() {
-        return category;
-    }
+
 
     @Override
-    public @NotNull ItemStack getResultItem(net.minecraft.core.RegistryAccess provider) {
+    public @NotNull ItemStack getResultItem() {
         return result.copy();
     }
 
-    @Override
     public boolean showNotification() {
         return showNotification;
     }
@@ -123,7 +116,7 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull CraftingContainer container, @NotNull net.minecraft.core.RegistryAccess provider) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer container) {
         return result.copy();
     }
 
@@ -154,12 +147,11 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
             int width = buf.readVarInt();
             int height = buf.readVarInt();
             String group = buf.readUtf();
-            CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
             IngredientSpec[] ingredients = new IngredientSpec[width * height];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = new IngredientSpec(Ingredient.fromNetwork(buf), buf.readInt());
             }
-            MPNBTCraftingRecipe recipe = new MPNBTCraftingRecipe(group, category, width, height,
+            MPNBTCraftingRecipe recipe = new MPNBTCraftingRecipe(group, width, height,
                     ingredients, buf.readItem(), buf.readBoolean());
             recipe.id = id;
             return recipe;
@@ -170,7 +162,6 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
             buf.writeVarInt(recipe.width);
             buf.writeVarInt(recipe.height);
             buf.writeUtf(recipe.group);
-            buf.writeEnum(recipe.category);
             for (IngredientSpec ingredient : recipe.ingredients) {
                 ingredient.ingredient().toNetwork(buf);
                 buf.writeInt(ingredient.requiredType());
@@ -183,7 +174,6 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
             try {
                 JsonObject json = toJsonObject(ops, input);
                 String group = GsonHelper.getAsString(json, "group", "");
-                CraftingBookCategory category = CATEGORY_CODEC.byName(GsonHelper.getAsString(json, "category", null), CraftingBookCategory.MISC);
                 String[] pattern = shrink(patternFromJson(GsonHelper.getAsJsonArray(json, "pattern")));
                 if (pattern.length == 0) {
                     throw new JsonSyntaxException("Invalid pattern: empty pattern not allowed");
@@ -194,17 +184,17 @@ public class MPNBTCraftingRecipe implements CraftingRecipe {
                 IngredientSpec[] ingredients = dissolvePattern(pattern, key, width, height);
                 ItemStack result = resultFromJson(GsonHelper.getAsJsonObject(json, "result"));
                 boolean showNotification = GsonHelper.getAsBoolean(json, "show_notification", true);
-                return DataResult.success(new MPNBTCraftingRecipe(group, category, width, height, ingredients, result, showNotification));
+                return DataResult.success(new MPNBTCraftingRecipe(group, width, height, ingredients, result, showNotification));
             } catch (Exception exception) {
-                return DataResult.error(exception::getMessage);
+                return DataResult.error(exception.getMessage());
             }
         }
 
         private static ItemStack resultFromJson(JsonObject json) {
             String itemId = GsonHelper.getAsString(json, json.has("item") ? "item" : "id");
             ResourceLocation id = new ResourceLocation(itemId);
-            if (!BuiltInRegistries.ITEM.containsKey(id)) throw new JsonSyntaxException("Unknown item: " + id);
-            ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(id), GsonHelper.getAsInt(json, "count", 1));
+            if (!Registry.ITEM.containsKey(id)) throw new JsonSyntaxException("Unknown item: " + id);
+            ItemStack stack = new ItemStack(Registry.ITEM.get(id), GsonHelper.getAsInt(json, "count", 1));
             if (json.has("nbt")) {
                 try {
                     JsonElement nbt = json.get("nbt");

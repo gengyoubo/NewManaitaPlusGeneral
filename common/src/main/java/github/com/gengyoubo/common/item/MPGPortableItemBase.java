@@ -1,5 +1,6 @@
 package github.com.gengyoubo.common.item;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.util.MPGItemStackData;
 import github.com.gengyoubo.common.util.MPGNBTData;
 import net.minecraft.network.chat.Component;
@@ -26,7 +27,7 @@ public abstract class MPGPortableItemBase extends Item {
     @Override
     public @NotNull Component getName(@NotNull ItemStack stack) {
         int type = MPGItemStackData.getInt(stack, MPGNBTData.ItemType);
-        return Component.translatable(translationPrefix + type + ".name");
+        return new TranslatableComponent(translationPrefix + type + ".name");
     }
 
     @Override

@@ -8,7 +8,7 @@ import github.com.gengyoubo.common.util.MPGNBTData;
 import io.netty.buffer.Unpooled;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -66,7 +66,7 @@ class PortCompatibilityTest {
             serializer.toNetwork(buffer, recipe);
             var decoded = serializer.fromNetwork(id, buffer);
             assertEquals(id, decoded.getId());
-            ItemStack result = decoded.getResultItem(RegistryAccess.EMPTY);
+            ItemStack result = decoded.getResultItem();
             assertEquals(2, result.getCount());
             assertEquals(7, MPGItemStackData.getInt(result, MPGNBTData.ItemType));
             assertEquals(7, MPGItemStackData.getInt(decoded.getIngredients().get(0).getItems()[0], MPGNBTData.ItemType));

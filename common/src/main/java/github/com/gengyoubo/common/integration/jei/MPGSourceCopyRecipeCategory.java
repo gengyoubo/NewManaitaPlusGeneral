@@ -1,9 +1,10 @@
 package github.com.gengyoubo.common.integration.jei;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.MPGCommon;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
+
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -24,10 +25,14 @@ public class MPGSourceCopyRecipeCategory implements IRecipeCategory<MPGSourceCop
 
     private final IDrawable background;
     private final IDrawable icon;
+    private final IDrawable slotBackground;
+    private final IDrawable arrow;
 
     public MPGSourceCopyRecipeCategory(IGuiHelper guiHelper, ItemStack iconStack) {
         background = guiHelper.createBlankDrawable(118, 58);
         icon = guiHelper.createDrawableItemStack(iconStack);
+        slotBackground = guiHelper.getSlotDrawable();
+        arrow = guiHelper.createDrawable(new ResourceLocation("textures/gui/container/crafting_table.png"), 89, 35, 22, 15);
     }
 
     @Override
@@ -37,18 +42,20 @@ public class MPGSourceCopyRecipeCategory implements IRecipeCategory<MPGSourceCop
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("jei.manaita_plus_general.source_copying");
+        return new TranslatableComponent("jei.manaita_plus_general.source_copying");
     }
 
-    @Override
     public int getWidth() {
         return background.getWidth();
     }
 
-    @Override
     public int getHeight() {
         return background.getHeight();
     }
+
+    @Override public @NotNull IDrawable getBackground() { return background; }
+    @Override public ResourceLocation getUid() { return TYPE.getUid(); }
+    @Override public Class<? extends MPGSourceCopyRecipe> getRecipeClass() { return MPGSourceCopyRecipe.class; }
 
     @Override
     public @NotNull IDrawable getIcon() {
@@ -63,28 +70,28 @@ public class MPGSourceCopyRecipeCategory implements IRecipeCategory<MPGSourceCop
                 .addItemStacks(recipe.sources()).addItemStacks(recipe.inputs());
         builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addItemStacks(recipe.outputs());
         builder.addSlot(RecipeIngredientRole.INPUT, GRID_X, GRID_Y)
-                .addItemStacks(recipe.sources()).setStandardSlotBackground();
+                .addItemStacks(recipe.sources()).setBackground(slotBackground, -1, -1);
         builder.addSlot(RecipeIngredientRole.INPUT, HIDDEN_SLOT, HIDDEN_SLOT).addItemStacks(recipe.inputs());
         builder.addSlot(RecipeIngredientRole.OUTPUT, HIDDEN_SLOT, HIDDEN_SLOT).addItemStacks(recipe.outputs());
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, GRID_X + SLOT_SIZE, GRID_Y)
-                .setStandardSlotBackground().addItemStacks(recipe.inputs());
+                .setBackground(slotBackground, -1, -1).addItemStacks(recipe.inputs());
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
                 if ((x == 0 || x == 1) && y == 0) {
                     continue;
                 }
                 builder.addSlot(RecipeIngredientRole.RENDER_ONLY,
-                        GRID_X + x * SLOT_SIZE, GRID_Y + y * SLOT_SIZE).setStandardSlotBackground();
+                        GRID_X + x * SLOT_SIZE, GRID_Y + y * SLOT_SIZE).setBackground(slotBackground, -1, -1);
             }
         }
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 96, 19)
-                .setOutputSlotBackground().addItemStacks(recipe.outputs());
+                .setBackground(slotBackground, -1, -1).addItemStacks(recipe.outputs());
     }
 
     @Override
-    public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder, @NotNull MPGSourceCopyRecipe recipe,
-                                   @NotNull IFocusGroup focuses) {
-        builder.addRecipeArrow().setPosition(66, 20);
+    public void draw(MPGSourceCopyRecipe recipe, mezz.jei.api.gui.ingredient.IRecipeSlotsView slots,
+                     com.mojang.blaze3d.vertex.PoseStack poseStack, double mouseX, double mouseY) {
+        arrow.draw(poseStack, 66, 20);
     }
 
     @Override

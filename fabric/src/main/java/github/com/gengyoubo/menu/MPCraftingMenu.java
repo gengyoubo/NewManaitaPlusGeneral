@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 public class MPCraftingMenu extends MPGCraftingMenuBase {
     @SuppressWarnings("unused")
     public MPCraftingMenu(int containerId, Inventory inventory, BlockPos blockPos) {
-        this(containerId, inventory, ContainerLevelAccess.create(inventory.player.level(), blockPos), false);
+        this(containerId, inventory, ContainerLevelAccess.create(inventory.player.level, blockPos), false);
     }
 
     public MPCraftingMenu(int containerId, Inventory inventory, Level level) {

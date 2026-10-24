@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.block;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.MPG.block.entity.MPCraftingBlockEntity;
 import github.com.gengyoubo.MPG.core.MPGBlockCore;
 import github.com.gengyoubo.MPG.menu.MPGCraftingMenu;
@@ -17,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class MPCraftingBlock extends MPGCraftingBlockBase {
 
-    private static final Component CONTAINER_TITLE = Component.translatable("container.crafting_manaita");
+    private static final Component CONTAINER_TITLE = new TranslatableComponent("container.crafting_manaita");
 
     public MPCraftingBlock() {
-        this(BlockBehaviour.Properties.of().noOcclusion());
+        this(BlockBehaviour.Properties.of(net.minecraft.world.level.material.Material.WOOD).noOcclusion());
     }
 
     private MPCraftingBlock(BlockBehaviour.Properties properties) {

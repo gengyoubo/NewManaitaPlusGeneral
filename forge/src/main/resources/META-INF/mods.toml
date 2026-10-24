@@ -14,21 +14,21 @@ logoFile= "assets/manaita_plus_general/textures/logo.png"
 [[dependencies.${mod_id}]]
 modId="forge"
 mandatory=true
-versionRange="$[47,48)"
+versionRange="${forge_version_range}"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="architectury"
 mandatory=true
-versionRange="[9,10)"
+versionRange="[4,5)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="curios"
 mandatory=false
-versionRange="[5,6)"
+versionRange="[1.18.2-5.0.9.2,)"
 ordering="AFTER"
 side="BOTH"
 

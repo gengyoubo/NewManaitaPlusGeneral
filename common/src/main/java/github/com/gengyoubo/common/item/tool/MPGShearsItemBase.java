@@ -1,5 +1,7 @@
 package github.com.gengyoubo.common.item.tool;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.item.data.IMPGDestroy;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
@@ -73,7 +75,7 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
         level.playSound(player, pos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 1.0F);
         BlockState maxAgeState = growingPlant.getMaxAgeState(state);
         level.setBlockAndUpdate(pos, maxAgeState);
-        level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, maxAgeState));
+        level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
         if (player != null) {
             itemStack.hurtAndBreak(1, player, entity -> entity.broadcastBreakEvent(context.getHand()));
         }
@@ -100,7 +102,7 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
         enchantments.put(Enchantments.BLOCK_FORTUNE, 10);
         if (!hasSilkTouch) enchantments.put(Enchantments.SILK_TOUCH, 1);
         EnchantmentHelper.setEnchantments(enchantments, itemStack);
-        showMessage(player, Component.literal(MPText.manaita_enchantment.formatting(
+        showMessage(player, new TextComponent(MPText.manaita_enchantment.formatting(
                 itemStack.getDisplayName().getString() + text("info.enchantment") + ": "
                         + text(hasSilkTouch ? "enchantments.fortune" : "enchantments.silktouch"))));
     }
@@ -119,7 +121,7 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
         int normalizedRange = range == 0 ? 1 : range;
         MPGItemStackData.putInt(itemStack, MPGNBTData.Range, normalizedRange);
         if (player != null) {
-            showMessage(player, Component.literal(MPText.manaita_mode.formatting(
+            showMessage(player, new TextComponent(MPText.manaita_mode.formatting(
                     "[" + text("item.manaita_plus_general.manaita_shears") + "] "
                             + text("mode.range.name") + ": " + normalizedRange + "x"
                             + normalizedRange + "x" + normalizedRange)));
@@ -131,9 +133,9 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
                                 @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         int range = getRange(stack);
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(
                 text("mode.manaita_tool") + ": " + range + "x" + range + "x" + range)));
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(
                 text("mode.doubling") + ":" + (isDoubling(stack) ? text("info.on") : text("info.off")))));
     }
 
@@ -145,7 +147,7 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
     @Override
     public void onManaitaKeyPressOnClient(ItemStack itemStack, Player player) {
         boolean doubling = toggleDoubling(itemStack);
-        showMessage(player, Component.literal(MPText.manaita_mode.formatting(String.format(
+        showMessage(player, new TextComponent(MPText.manaita_mode.formatting(String.format(
                 "[%s] %s: %s", text("item.manaita_plus_general.manaita_shears"),
                 text("mode.doubling"), doubling ? text("info.on") : text("info.off")))));
     }
@@ -164,6 +166,6 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
     }
 
     private static String text(String key) {
-        return Component.translatable(key).getString();
+        return new TranslatableComponent(key).getString();
     }
 }

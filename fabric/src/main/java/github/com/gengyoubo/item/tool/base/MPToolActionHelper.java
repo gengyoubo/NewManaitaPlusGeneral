@@ -1,5 +1,7 @@
 package github.com.gengyoubo.item.tool.base;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -76,18 +78,18 @@ public final class MPToolActionHelper {
         var silkTouch = Enchantments.SILK_TOUCH;
 
         itemInHand.enchant(fortune, 10);
-        String enchantName = Component.translatable("enchantments.fortune").getString();
+        String enchantName = new TranslatableComponent("enchantments.fortune").getString();
         if (EnchantmentHelper.getItemEnchantmentLevel(silkTouch, itemInHand) <= 0) {
             itemInHand.enchant(silkTouch, 1);
-            enchantName = Component.translatable("enchantments.silktouch").getString();
+            enchantName = new TranslatableComponent("enchantments.silktouch").getString();
         }
-        player.displayClientMessage(Component.literal(MPText.manaita_enchantment.formatting(itemInHand.getDisplayName().getString() + Component.translatable("info.enchantment").getString() + ": " + enchantName)), true);
+        player.displayClientMessage(new TextComponent(MPText.manaita_enchantment.formatting(itemInHand.getDisplayName().getString() + new TranslatableComponent("info.enchantment").getString() + ": " + enchantName)), true);
     }
 
     public static void appendRangeAndDoublingTooltip(List<Component> tooltip, int range, boolean doubling) {
         String rangeValue = String.valueOf(range);
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.manaita_tool").getString() + ": " + rangeValue + "x" + rangeValue + "x" + rangeValue)));
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.doubling").getString() + ":" + (doubling ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(new TranslatableComponent("mode.manaita_tool").getString() + ": " + rangeValue + "x" + rangeValue + "x" + rangeValue)));
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(new TranslatableComponent("mode.doubling").getString() + ":" + (doubling ? new TranslatableComponent("info.on").getString() : new TranslatableComponent("info.off").getString()))));
     }
 
     public static boolean applyAxeActions(UseOnContext context, BlockPos pos, BlockState blockState) {
@@ -109,7 +111,7 @@ public final class MPToolActionHelper {
         level.playSound(player, pos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 1.0F);
         BlockState maxAgeState = growingPlantHeadBlock.getMaxAgeState(blockState);
         level.setBlockAndUpdate(pos, maxAgeState);
-        level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, maxAgeState));
+        level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
         damageHeldItem(context, player, itemStack);
         return true;
     }
@@ -122,7 +124,7 @@ public final class MPToolActionHelper {
         BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), original.getClickedFace(), pos,
                 original.isInside());
         return new UseOnContext(original.getLevel(), original.getPlayer(), original.getHand(),
-                original.getItemInHand(), hit);
+                original.getItemInHand(), hit) {};
     }
 
     private static void damageHeldItem(UseOnContext context, Player player, ItemStack itemStack) {

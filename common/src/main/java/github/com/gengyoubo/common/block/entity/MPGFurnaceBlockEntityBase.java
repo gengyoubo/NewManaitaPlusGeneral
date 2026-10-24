@@ -1,5 +1,6 @@
 package github.com.gengyoubo.common.block.entity;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.config.MPGConfigValues;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -36,16 +37,14 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
     private static final int[] SLOTS_FOR_SIDES = {1};
 
     private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
-    private final RecipeManager.CachedCheck<net.minecraft.world.Container, net.minecraft.world.item.crafting.SmeltingRecipe> quickCheck;
 
     protected MPGFurnaceBlockEntityBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state, RecipeType.SMELTING);
-        quickCheck = RecipeManager.createCheck(RecipeType.SMELTING);
     }
 
     @Override
     protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.furnace_manaita");
+        return new TranslatableComponent("container.furnace_manaita");
     }
 
     @Override
@@ -84,8 +83,8 @@ public abstract class MPGFurnaceBlockEntityBase extends AbstractFurnaceBlockEnti
         boolean changed = false;
         ItemStack input = items.get(0);
         if (!input.isEmpty()) {
-            AbstractCookingRecipe recipe = quickCheck
-                    .getRecipeFor(new net.minecraft.world.SimpleContainer(input), level)
+            AbstractCookingRecipe recipe = level.getRecipeManager()
+                    .getRecipeFor(RecipeType.SMELTING, new net.minecraft.world.SimpleContainer(input), level)
                     .orElse(null);
             while (canBurn(level.registryAccess(), recipe)) {
                 burn(level.registryAccess(), recipe);

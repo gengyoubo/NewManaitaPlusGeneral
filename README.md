@@ -1,6 +1,6 @@
 # ManaitaPlusGeneral Architectury workspace
 
-This branch targets Minecraft 1.20.1 on Fabric and Forge.
+This branch targets Minecraft 1.18.2 on Fabric and Forge.
 
 ## Regarding Source Code Prior to Version 3.0
 This is the source code repository for version 3.0 and later. If you want to view the source code repository for versions prior to 3.0, please follow this link:
@@ -12,7 +12,7 @@ https://github.com/gengyoubo/ManaitaPlusGeneral
 - `fabric`: Fabric registration, events, networking and optional Trinkets integration.
 - `forge`: Forge registration, events, networking and optional Curios integration.
 
-Both loaders use Architectury API 9.2.14 and bundle the shared module.
+Both loaders use Architectury API 4.12.94 and bundle the shared module.
 Only the Fabric and Forge source modules are used on this branch.
 
 ## Build
@@ -25,11 +25,11 @@ target Java 17, which is also the minimum game runtime.
 ```
 
 Platform jars are written under `fabric/build/libs` and `forge/build/libs`.
-Use Minecraft 1.20.1, Architectury API 9.2.14, and either Fabric Loader 0.16.3+
-with Fabric API 0.92.2+1.20.1, or Forge 47.4.x.
+Use Minecraft 1.18.2, Architectury API 4.12.94, and either Fabric Loader 0.16.3+
+with Fabric API 0.77.0+1.18.2, or Forge 40.3.12.
 
 Rings appear in the creative tab, JEI and crafting recipes only when the matching
-accessory mod is installed: Curios 5.9.1+1.20.1 on Forge, or Trinkets 3.7.2 on
+accessory mod is installed: Curios 1.18.2-5.0.9.2 on Forge, or Trinkets 3.3.1 on
 Fabric. Sneak-use equips a ring; the normal Manaita key opens an equipped ring's
 menu. The built-in Baubles inventory is disabled on this branch.
 

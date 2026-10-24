@@ -57,8 +57,8 @@ public class MPGBrewingPortable extends MPGPortableItem {
         private static void consumeIngredient(Level level, double x, double y, double z,
                                               NonNullList<ItemStack> items) {
             ItemStack ingredient = items.get(3);
-            if (ingredient.hasCraftingRemainingItem()) {
-                ItemStack remainder = ingredient.getCraftingRemainingItem().copy();
+            if (ingredient.hasContainerItem()) {
+                ItemStack remainder = ingredient.getContainerItem().copy();
                 ingredient.shrink(1);
                 if (ingredient.isEmpty()) {
                     ingredient = remainder;

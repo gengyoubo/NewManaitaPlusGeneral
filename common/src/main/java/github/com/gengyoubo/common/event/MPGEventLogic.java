@@ -4,7 +4,7 @@ import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,8 +35,7 @@ public final class MPGEventLogic {
         Iterator<Component> iterator = tooltip.iterator();
         while (iterator.hasNext()) {
             Component component = iterator.next();
-            if (component instanceof MutableComponent mutable
-                    && mutable.getContents() instanceof TranslatableContents translatable
+            if (component instanceof TranslatableComponent translatable
                     && translatable.getKey().startsWith("item.modifiers.")) {
                 while (iterator.hasNext()) {
                     iterator.next();
@@ -107,8 +106,7 @@ public final class MPGEventLogic {
             head = new ItemStack(Items.ZOMBIE_HEAD);
         } else if (target.getType() == EntityType.CREEPER) {
             head = new ItemStack(Items.CREEPER_HEAD);
-        } else if (target.getType() == EntityType.PIGLIN || target.getType() == EntityType.PIGLIN_BRUTE) {
-            head = new ItemStack(Items.PIGLIN_HEAD);
+
         } else if (target.getType() == EntityType.ENDER_DRAGON) {
             head = new ItemStack(Items.DRAGON_HEAD);
         } else {
@@ -118,7 +116,7 @@ public final class MPGEventLogic {
     }
 
     public static void handleFabricDeathDrops(LivingEntity target, DamageSource source, int multiplier) {
-        if (!(target.level() instanceof ServerLevel level)) {
+        if (!(target.level instanceof ServerLevel level)) {
             return;
         }
         findKiller(target, source.getEntity()).ifPresent(player -> {

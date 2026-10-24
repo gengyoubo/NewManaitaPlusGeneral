@@ -3,7 +3,7 @@ package github.com.gengyoubo.MPG.item.armor;
 import github.com.gengyoubo.common.item.armor.MPGArmorItemBase;
 
 public class MPGArmor extends MPGArmorItemBase {
-    protected MPGArmor(Type type) {
+    protected MPGArmor(net.minecraft.world.entity.EquipmentSlot type) {
         super(MANAITA_ARMOR_MATERIAL, type);
     }
 

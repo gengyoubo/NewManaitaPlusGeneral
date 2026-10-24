@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class MPBrewingStandBlock extends MPGBrewingStandBlockBase {
 
     public MPBrewingStandBlock() {
-        this(BlockBehaviour.Properties.of().noOcclusion());
+        this(BlockBehaviour.Properties.of(net.minecraft.world.level.material.Material.WOOD).noOcclusion());
     }
 
     private MPBrewingStandBlock(BlockBehaviour.Properties properties) {

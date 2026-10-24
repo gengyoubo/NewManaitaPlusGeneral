@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 public class MPArmor extends MPGArmorItemBase {
     private static final ArmorMaterial MATERIAL = MANAITA_ARMOR_MATERIAL;
 
-    protected MPArmor(Type type) {
+    protected MPArmor(net.minecraft.world.entity.EquipmentSlot type) {
         super(MATERIAL, type);
     }
 

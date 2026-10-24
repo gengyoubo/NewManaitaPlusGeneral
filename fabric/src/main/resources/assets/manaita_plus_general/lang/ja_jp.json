@@ -110,5 +110,6 @@
   "key.manaita.armor": "まな板の防具",
   "key.manaita.doubling": "まな板倍化機能",
   "enchantments.fortune": "时运",
-  "enchantments.silktouch": "精准挖掘"
+  "enchantments.silktouch": "精准挖掘",
+  "itemGroup.manaita_plus_general.manaita_plus_tab": "Manaita Plus"
 }

@@ -3,7 +3,7 @@ package github.com.gengyoubo.common.client.gui;
 import github.com.gengyoubo.common.block.entity.MPGBrewingStandBlockEntityBase;
 import github.com.gengyoubo.common.config.MPGConfigValues;
 import github.com.gengyoubo.common.menu.MPGBrewingStandMenuBase;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,28 +30,30 @@ public class MPGBrewingStandScreenBase<M extends MPGBrewingStandMenuBase> extend
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTick) {
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, titleLabelX, titleLabelY, 4210752, false);
-        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752, false);
-        graphics.drawString(font, doublingText, titleLabelX + font.width(title), titleLabelY, 4210752, false);
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
+        font.draw(graphics, title, titleLabelX, titleLabelY, 4210752);
+        font.draw(graphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752);
+        font.draw(graphics, doublingText, titleLabelX + font.width(title), titleLabelY, 4210752);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTick, int mouseX, int mouseY) {
         int left = (width - imageWidth) / 2;
         int top = (height - imageHeight) / 2;
-        graphics.blit(BREWING_STAND_LOCATION, left, top, 0, 0, imageWidth, imageHeight);
+        com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, BREWING_STAND_LOCATION);
+        blit(graphics, left, top, 0, 0, imageWidth, imageHeight);
 
         int fuelWidth = Mth.clamp((18 * menu.getFuel() + 19) / 20, 0, 18);
         if (fuelWidth > 0) {
-            graphics.blit(BREWING_STAND_LOCATION, left + 60, top + 44, 176, 29, fuelWidth, 4);
+            com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, BREWING_STAND_LOCATION);
+        blit(graphics, left + 60, top + 44, 176, 29, fuelWidth, 4);
         }
 
         int brewingTicks = menu.getBrewingTicks();
@@ -62,12 +64,14 @@ public class MPGBrewingStandScreenBase<M extends MPGBrewingStandMenuBase> extend
         int progress = (int) (28.0F * (1.0F - (float) brewingTicks
                 / MPGBrewingStandBlockEntityBase.BREW_TIME));
         if (progress > 0) {
-            graphics.blit(BREWING_STAND_LOCATION, left + 97, top + 16, 176, 0, 9, progress);
+            com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, BREWING_STAND_LOCATION);
+        blit(graphics, left + 97, top + 16, 176, 0, 9, progress);
         }
 
         int bubbleHeight = BUBBLE_LENGTHS[Math.max(0, brewingTicks - 1) % BUBBLE_LENGTHS.length];
         if (bubbleHeight > 0) {
-            graphics.blit(BREWING_STAND_LOCATION, left + 63, top + 43 - bubbleHeight,
+            com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, BREWING_STAND_LOCATION);
+        blit(graphics, left + 63, top + 43 - bubbleHeight,
                     185, 29 - bubbleHeight, 12, bubbleHeight);
         }
     }

@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.item.tool.base;
 
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -66,7 +67,7 @@ public final class ManaitaPlusLegacyToolActionHelper {
         level.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
         if (!level.isClientSide) {
             level.setBlock(pos, tillState, 11);
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, tillState));
+            level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             damageHeldItem(context, player, context.getItemInHand());
         }
         return true;
@@ -92,13 +93,13 @@ public final class ManaitaPlusLegacyToolActionHelper {
         if (!hasSilkTouch) {
             enchantName = I18n.get("enchantments.silktouch");
         }
-        MPUtils.chat(player, Component.literal(MPText.manaita_enchantment.formatting(itemInHand.getDisplayName().getString() + I18n.get("info.enchantment") + ": " + enchantName)));
+        MPUtils.chat(player, new TextComponent(MPText.manaita_enchantment.formatting(itemInHand.getDisplayName().getString() + I18n.get("info.enchantment") + ": " + enchantName)));
     }
 
     public static void appendRangeAndDoublingTooltip(List<Component> tooltip, int range, boolean doubling) {
         String rangeValue = String.valueOf(range);
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(I18n.get("mode.manaita_tool") + ": " + rangeValue + "x" + rangeValue + "x" + rangeValue)));
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(I18n.get("mode.doubling") + ":" + (doubling ? I18n.get("info.on") : I18n.get("info.off")))));
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(I18n.get("mode.manaita_tool") + ": " + rangeValue + "x" + rangeValue + "x" + rangeValue)));
+        tooltip.add(new TextComponent(MPText.manaita_mode.formatting(I18n.get("mode.doubling") + ":" + (doubling ? I18n.get("info.on") : I18n.get("info.off")))));
     }
 
     public static boolean applyAxeActions(UseOnContext context, BlockPos pos, BlockState blockState) {
@@ -132,7 +133,7 @@ public final class ManaitaPlusLegacyToolActionHelper {
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, itemStack);
         }
         level.setBlock(pos, targetState.get(), 11);
-        level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, targetState.get()));
+        level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
         damageHeldItem(context, player, itemStack);
         return true;
     }
@@ -152,7 +153,7 @@ public final class ManaitaPlusLegacyToolActionHelper {
         level.playSound(player, pos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 1.0F);
         BlockState maxAgeState = growingPlantHeadBlock.getMaxAgeState(blockState);
         level.setBlockAndUpdate(pos, maxAgeState);
-        level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, maxAgeState));
+        level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
         damageHeldItem(context, player, itemStack);
         return true;
     }
@@ -184,7 +185,7 @@ public final class ManaitaPlusLegacyToolActionHelper {
 
         if (!level.isClientSide) {
             level.setBlock(pos, targetState, 11);
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, targetState));
+            level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             damageHeldItem(context, player, context.getItemInHand());
         }
         return true;

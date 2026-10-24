@@ -3,7 +3,7 @@ package github.com.gengyoubo.entity;
 import github.com.gengyoubo.MPG;
 import github.com.gengyoubo.common.entity.MPGEntityArrowBase;
 import github.com.gengyoubo.common.entity.MPGEntityData;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -21,8 +21,8 @@ public class MPGEntityArrow extends MPGEntityArrowBase {
     }
 
     public static AbstractArrow create(Level level, LivingEntity owner) {
-        if (BuiltInRegistries.ENTITY_TYPE.containsKey(ENTITY_ID)) {
-            Entity created = BuiltInRegistries.ENTITY_TYPE.get(ENTITY_ID).create(level);
+        if (Registry.ENTITY_TYPE.containsKey(ENTITY_ID)) {
+            Entity created = Registry.ENTITY_TYPE.get(ENTITY_ID).create(level);
             if (created instanceof AbstractArrow arrow) {
                 arrow.setOwner(owner);
                 arrow.setPos(owner.getX(), owner.getEyeY() - 0.1D, owner.getZ());

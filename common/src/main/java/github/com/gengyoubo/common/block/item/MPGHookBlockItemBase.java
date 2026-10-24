@@ -1,5 +1,6 @@
 package github.com.gengyoubo.common.block.item;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.common.block.MPGBlockData;
 import github.com.gengyoubo.common.util.MPGItemStackData;
 import github.com.gengyoubo.common.util.MPGNBTData;
@@ -32,13 +33,13 @@ public class MPGHookBlockItemBase extends BlockItem {
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack stack) {
-        return Component.translatable("tile.fixed_hook."
+        return new TranslatableComponent("tile.fixed_hook."
                 + MPGItemStackData.getInt(stack, MPGNBTData.ItemType) + ".name");
     }
 
     @Override
     public @NotNull InteractionResult place(BlockPlaceContext context) {
-        if (!getBlock().isEnabled(context.getLevel().enabledFeatures()) || !context.canPlace()) {
+        if (!context.canPlace()) {
             return InteractionResult.FAIL;
         }
 
@@ -77,7 +78,7 @@ public class MPGHookBlockItemBase extends BlockItem {
             level.playSound(player, pos, sound, SoundSource.BLOCKS,
                     (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
         }
-        level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(player, placedState));
+        level.gameEvent(player, GameEvent.BLOCK_PLACE, pos);
         if (player == null || !player.getAbilities().instabuild) {
             itemStack.shrink(1);
         }

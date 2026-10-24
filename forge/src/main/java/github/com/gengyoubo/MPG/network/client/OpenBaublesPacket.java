@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.network.client;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.MPG.MPG;
 import github.com.gengyoubo.MPG.baubles.common.capability.BaublesCapability;
 import github.com.gengyoubo.MPG.baubles.common.lib.PlayerHandler;
@@ -27,7 +28,7 @@ public record OpenBaublesPacket() {
             ServerPlayer sender = context.getSender();
             sender.openMenu(new net.minecraft.world.SimpleMenuProvider(
                     (containerId, inventory, player) -> new MPGBaublesMenu(containerId, inventory, PlayerHandler.getPlayerBaubles(player)),
-                    Component.translatable("container.manaita_baubles")
+                    new TranslatableComponent("container.manaita_baubles")
             ));
         });
         context.setPacketHandled(true);

@@ -160,5 +160,6 @@
   "key.manaita.baubles":"Cutting Board Accessories",
 
   "enchantments.fortune": "Fortune",
-  "enchantments.silktouch": "Silktouch"
+  "enchantments.silktouch": "Silktouch",
+  "itemGroup.manaita_plus_general.manaita_plus_tab": "Manaita Plus"
 }

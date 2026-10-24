@@ -1,5 +1,6 @@
 package github.com.gengyoubo.jei;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import github.com.gengyoubo.MPG;
 import github.com.gengyoubo.MPGConfig;
 import github.com.gengyoubo.common.integration.jei.MPGJeiRecipeFactory;
@@ -50,18 +51,14 @@ public class MPJeiPlugin implements IModPlugin {
         typedItems().forEach(item -> registration.registerSubtypeInterpreter(item, MPGJeiSubtypeInterpreter.INSTANCE));
     }
 
-    @Override
-    public void registerExtraIngredients(IExtraIngredientRegistration registration) {
-        registration.addExtraItemStacks(typedStacks());
-    }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         registration.addRecipes(RecipeTypes.CRAFTING, getManaitaCraftingRecipes());
         registration.addRecipes(MPGSourceCopyRecipeCategory.TYPE, createSourceCopyRecipes());
         registration.addItemStackInfo(MPItemCore.ManaitaSource.get().getDefaultInstance(),
-                Component.translatable("jei.manaita_plus_general.source.info.1"),
-                Component.translatable("jei.manaita_plus_general.source.info.2", MPGConfig.source_doubling_value));
+                new TranslatableComponent("jei.manaita_plus_general.source.info.1"),
+                new TranslatableComponent("jei.manaita_plus_general.source.info.2", MPGConfig.source_doubling_value));
     }
 
     @Override
@@ -81,6 +78,7 @@ public class MPJeiPlugin implements IModPlugin {
 
     @Override
     public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime runtime) {
+        runtime.getIngredientManager().addIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, typedStacks());
         if (!github.com.gengyoubo.integration.MPAccessories.isEnabled()) {
             runtime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM_STACK,
                     List.of(MPItemCore.ManaitaCraftingRing.get().getDefaultInstance(),

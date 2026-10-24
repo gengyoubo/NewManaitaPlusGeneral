@@ -27,7 +27,7 @@ public class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onKeyInput(InputEvent.Key event) {
+    public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (MINECRAFT.player == null) {
             return;
         }

@@ -124,7 +124,6 @@ public class Helper {
         }
     }
 
-
     @SuppressWarnings("deprecation")
     public static void setFieldValue(Field f, Object target, Object value) {
         try {

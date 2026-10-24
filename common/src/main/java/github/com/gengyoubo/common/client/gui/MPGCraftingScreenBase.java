@@ -2,7 +2,7 @@ package github.com.gengyoubo.common.client.gui;
 
 import github.com.gengyoubo.common.config.MPGConfigValues;
 import github.com.gengyoubo.common.menu.MPGCraftingMenuBase;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -38,7 +38,8 @@ public class MPGCraftingScreenBase<M extends MPGCraftingMenuBase> extends Abstra
                 0, 0, 19, new ResourceLocation("textures/gui/recipe_button.png"), button -> {
                     recipeBookComponent.toggleVisibility();
                     leftPos = recipeBookComponent.updateScreenPosition(width, imageWidth);
-                    button.setPosition(leftPos + 5, height / 2 - 49);
+                    button.x = leftPos + 5;
+                    button.y = height / 2 - 49;
                 }));
         addWidget(recipeBookComponent);
         titleLabelX = 29;
@@ -51,7 +52,7 @@ public class MPGCraftingScreenBase<M extends MPGCraftingMenuBase> extends Abstra
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTick) {
         if (recipeBookComponent.isVisible() && widthTooNarrow) {
             renderBackground(graphics);
             recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
@@ -66,15 +67,16 @@ public class MPGCraftingScreenBase<M extends MPGCraftingMenuBase> extends Abstra
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, titleLabelX, titleLabelY, 4210752, false);
-        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752, false);
-        graphics.drawString(font, doublingText, 126, 22, 4210752, false);
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
+        font.draw(graphics, title, titleLabelX, titleLabelY, 4210752);
+        font.draw(graphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752);
+        font.draw(graphics, doublingText, 126, 22, 4210752);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.blit(CRAFTING_TABLE_LOCATION, leftPos, (height - imageHeight) / 2,
+    protected void renderBg(PoseStack graphics, float partialTick, int mouseX, int mouseY) {
+        com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, CRAFTING_TABLE_LOCATION);
+        blit(graphics, leftPos, (height - imageHeight) / 2,
                 0, 0, imageWidth, imageHeight);
     }
 

@@ -13,8 +13,7 @@ public class MPGCraftingPortable extends MPGPortableItem {
     @Override
     protected void openPortableMenu(ServerPlayer serverPlayer, ItemStack itemInHand, Level level) {
         openPortableScreen(serverPlayer, itemInHand, level, "container.crafting_manaita",
-                (containerId, inventory, player, heldStack, world) -> new MPGCraftingMenu(containerId, inventory, player.level()));
+                (containerId, inventory, player, heldStack, world) -> new MPGCraftingMenu(containerId, inventory, player.level));
     }
 }
-
 

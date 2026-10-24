@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.item.tool;
 
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -46,7 +47,7 @@ public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         MPGEntityData.death.add(entity);
-        entity.hurt(entity.damageSources().playerAttack(player), 10000);
+        entity.hurt(net.minecraft.world.damagesource.DamageSource.playerAttack(player), 10000);
         if (entity instanceof LivingEntity living) {
             living.setHealth(0F);
         }
@@ -56,8 +57,8 @@ public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull net.minecraft.world.level.Level context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.empty());
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(I18n.get("info.attack"))));
+        tooltip.add(new net.minecraft.network.chat.TextComponent(""));
+        tooltip.add(new TextComponent(MPText.manaita_infinity.formatting(I18n.get("info.attack"))));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package github.com.gengyoubo.common.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import github.com.gengyoubo.common.block.MPGBlockData;
 import github.com.gengyoubo.common.util.MPGItemStackData;
 import github.com.gengyoubo.common.util.MPGNBTData;
@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,7 +50,7 @@ public abstract class MPGBlockEntityRendererBase<T extends BlockEntity> implemen
         MPGItemStackData.putInt(displayStack, MPGNBTData.ItemType, state.getValue(MPGBlockData.TYPES));
         ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         BakedModel model = renderer.getModel(displayStack, blockEntity.getLevel(), null, 0);
-        renderer.render(displayStack, ItemDisplayContext.FIXED, true, poseStack,
+        renderer.render(displayStack, ItemTransforms.TransformType.FIXED, true, poseStack,
                 bufferSource, packedLight, packedOverlay, model);
     }
 
@@ -72,21 +72,21 @@ public abstract class MPGBlockEntityRendererBase<T extends BlockEntity> implemen
         switch (wall) {
             case NORTH -> {
                 poseStack.translate(0.5F, 0.5F, 0.0F);
-                poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
             }
             case SOUTH -> {
                 poseStack.translate(0.5F, 0.5F, 1.0F);
-                poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
             }
             case WEST -> {
                 poseStack.translate(0.0F, 0.5F, 0.5F);
-                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
             }
             case EAST -> {
                 poseStack.translate(1.0F, 0.5F, 0.5F);
-                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
             }
             case UP -> {
                 poseStack.translate(0.5F, 1.0F, 0.5F);
@@ -101,15 +101,15 @@ public abstract class MPGBlockEntityRendererBase<T extends BlockEntity> implemen
 
     private static void applyVerticalFacing(PoseStack poseStack, Direction facing) {
         switch (facing) {
-            case NORTH -> poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-            case SOUTH -> poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+            case NORTH -> poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+            case SOUTH -> poseStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
             case WEST -> {
-                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-                poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
             }
             case EAST -> {
-                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-                poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
             }
             default -> {
             }

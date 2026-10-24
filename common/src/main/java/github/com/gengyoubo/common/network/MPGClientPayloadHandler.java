@@ -42,7 +42,7 @@ public final class MPGClientPayloadHandler {
                     minecraft.getSoundManager().play(new SimpleSoundInstance(
                             sound.getHitSound(), SoundSource.BLOCKS,
                             (sound.getVolume() + 1.0F) / 8.0F, sound.getPitch() * 0.5F,
-                            SoundInstance.createUnseededRandom(), position));
+                            position));
                 }
             }
         }

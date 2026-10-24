@@ -1,6 +1,6 @@
 package github.com.gengyoubo.common.trades;
 
-import net.minecraft.util.RandomSource;
+import java.util.Random;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public record MPGSingleItemTrade(ItemStack input, ItemStack output, int maxUses, int xp, float priceMultiplier)
         implements VillagerTrades.ItemListing {
     @Override
-    public MerchantOffer getOffer(@NotNull Entity trader, @NotNull RandomSource random) {
+    public MerchantOffer getOffer(@NotNull Entity trader, @NotNull Random random) {
         return new MerchantOffer(input.copy(), output.copy(),
                 maxUses, xp, priceMultiplier);
     }

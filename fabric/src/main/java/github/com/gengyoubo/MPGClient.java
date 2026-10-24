@@ -25,12 +25,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class MPGClient implements ClientModInitializer {
-    private static final ResourceLocation TYPE_PREDICATE = github.com.gengyoubo.util.MPResource.id(MPG.MODID, MPGNBTData.Type);
+    private static final Identifier TYPE_PREDICATE = github.com.gengyoubo.util.MPResource.id(MPG.MODID, MPGNBTData.Type);
     private static boolean predicatesRegistered;
 
     @Override
@@ -60,7 +60,7 @@ public class MPGClient implements ClientModInitializer {
         }
 
         for (String itemPath : MPGRegistryIds.TYPED_ITEM_IDS) {
-            ResourceLocation id = github.com.gengyoubo.util.MPResource.id(MPG.MODID, itemPath);
+            Identifier id = github.com.gengyoubo.util.MPResource.id(MPG.MODID, itemPath);
             Item item = BuiltInRegistries.ITEM.get(id);
             if (item == net.minecraft.world.item.Items.AIR) {
                 MPG.LOGGER.warn("Skipped predicate registration for missing item {}", id);

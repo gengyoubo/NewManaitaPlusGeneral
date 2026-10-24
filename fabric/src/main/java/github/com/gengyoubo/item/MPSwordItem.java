@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item;
 
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.item.MPGSwordItemBase;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -8,6 +9,10 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class MPSwordItem extends MPGSwordItemBase {
+    public MPSwordItem(Item.Properties properties) {
+        super(properties);
+    }
+
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target,
                              @NotNull LivingEntity attacker) {

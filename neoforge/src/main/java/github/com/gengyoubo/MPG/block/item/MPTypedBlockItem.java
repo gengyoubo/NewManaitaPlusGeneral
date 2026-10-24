@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.block.item;
 
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.MPG.block.MPHookBlock;
 import github.com.gengyoubo.common.block.item.MPGTypedBlockItemBase;
 import net.minecraft.core.BlockPos;

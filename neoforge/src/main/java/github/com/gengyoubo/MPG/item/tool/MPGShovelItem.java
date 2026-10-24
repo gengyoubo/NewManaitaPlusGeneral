@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.item.tool;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
@@ -13,8 +14,8 @@ import github.com.gengyoubo.MPG.item.tool.base.ManaitaPlusLegacyToolActionHelper
 import github.com.gengyoubo.common.item.tool.MPGToolProfile;
 
 public class MPGShovelItem extends ManaitaPlusLegacyTaggedToolItem {
-    public MPGShovelItem() {
-        super(BlockTags.MINEABLE_WITH_SHOVEL, MPGToolProfile.SHOVEL);
+    public MPGShovelItem(Item.Properties properties) {
+        super(properties, BlockTags.MINEABLE_WITH_SHOVEL, MPGToolProfile.SHOVEL);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class MPGShovelItem extends ManaitaPlusLegacyTaggedToolItem {
         boolean changed = ManaitaPlusLegacyToolActionHelper.applyInRange(context, range,
                 (pos, state) -> ManaitaPlusLegacyToolActionHelper.applyShovelAction(context, pos, state));
         if (changed) {
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

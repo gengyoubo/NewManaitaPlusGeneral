@@ -10,7 +10,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,7 +88,7 @@ public class MPGSourceCopyRecipeCategory implements IRecipeCategory<MPGSourceCop
     }
 
     @Override
-    public ResourceLocation getRegistryName(MPGSourceCopyRecipe recipe) {
-        return ResourceLocation.fromNamespaceAndPath(MPGCommon.MOD_ID, "source_copying");
+    public Identifier getRegistryName(MPGSourceCopyRecipe recipe) {
+        return Identifier.fromNamespaceAndPath(MPGCommon.MOD_ID, "source_copying");
     }
 }

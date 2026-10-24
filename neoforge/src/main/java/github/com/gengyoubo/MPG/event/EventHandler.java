@@ -10,10 +10,6 @@ import github.com.gengyoubo.common.event.MPGEventLogic;
 import github.com.gengyoubo.common.event.MPGToolMiningLogic;
 import github.com.gengyoubo.common.item.data.IMPGDestroy;
 import github.com.gengyoubo.common.item.armor.MPGArmorItemBase;
-import github.com.gengyoubo.common.trades.MPGSingleItemTrade;
-import github.com.gengyoubo.common.trades.MPGTwoItemTrade;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -30,7 +26,6 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.List;
@@ -137,19 +132,4 @@ public class EventHandler {
         MPGArmorItemBase.syncArmorState(event.getEntity());
     }
 
-    @SubscribeEvent
-    public static void addCustomTrades(VillagerTradesEvent event) {
-        if (event.getType() != VillagerProfession.WEAPONSMITH) {
-            return;
-        }
-        List<VillagerTrades.ItemListing> trades = event.getTrades().get(5);
-        trades.add(new MPGSingleItemTrade(new ItemStack(MPGBlockCore.CraftingBlockItem.get(), 64),
-                new ItemStack(MPGItemCore.ManaitaBow.get()), 1, 0, 1));
-        trades.add(new MPGSingleItemTrade(new ItemStack(MPGBlockCore.FurnaceBlockItem.get(), 64),
-                new ItemStack(MPGItemCore.ManaitaBow.get()), 1, 0, 1));
-        trades.add(new MPGSingleItemTrade(new ItemStack(MPGBlockCore.BrewingBlock.get(), 64),
-                new ItemStack(MPGItemCore.ManaitaBow.get()), 1, 0, 1));
-        trades.add(new MPGTwoItemTrade(new ItemStack(MPGItemCore.ManaitaBow.get()), new ItemStack(Items.NETHER_STAR),
-                new ItemStack(MPGItemCore.ManaitaSwordGod.get()), 1, 0, 1));
-    }
 }

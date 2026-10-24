@@ -1,12 +1,13 @@
 package github.com.gengyoubo.item;
 
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.item.MPGBowItemBase;
 import github.com.gengyoubo.entity.MPGEntityArrow;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
@@ -16,22 +17,22 @@ public class MPBowItem extends MPGBowItemBase {
     private static final int CHARGE_TICKS = 10;
     private static final int RAPID_FIRE_INTERVAL = 2;
 
-    public MPBowItem() {
-        super(Integer.MAX_VALUE);
+    public MPBowItem(Item.Properties properties) {
+        super(properties);
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, @NotNull Player player,
+    public @NotNull InteractionResult use(Level level, @NotNull Player player,
                                                             @NotNull InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
         player.startUsingItem(hand);
-        return InteractionResultHolder.consume(heldItem);
+        return InteractionResult.CONSUME;
     }
 
     @Override
     public void onUseTick(Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack stack,
                           int remainingUseDuration) {
-        if (level.isClientSide || !(livingEntity instanceof Player player)) {
+        if (level.isClientSide() || !(livingEntity instanceof Player player)) {
             return;
         }
 

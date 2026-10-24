@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item.tool;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
@@ -12,8 +13,8 @@ import github.com.gengyoubo.item.tool.base.MPToolActionHelper;
 import github.com.gengyoubo.common.item.tool.MPGToolProfile;
 
 public class MPShovelItem extends MPTaggedToolItem {
-    public MPShovelItem() {
-        super(BlockTags.MINEABLE_WITH_SHOVEL, MPGToolProfile.SHOVEL);
+    public MPShovelItem(Item.Properties properties) {
+        super(properties, BlockTags.MINEABLE_WITH_SHOVEL, MPGToolProfile.SHOVEL);
     }
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
@@ -22,7 +23,7 @@ public class MPShovelItem extends MPTaggedToolItem {
         boolean changed = MPToolActionHelper.applyInRange(context, range,
                 (pos, state) -> MPToolActionHelper.applyShovelAction(context, pos, state));
         if (changed) {
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

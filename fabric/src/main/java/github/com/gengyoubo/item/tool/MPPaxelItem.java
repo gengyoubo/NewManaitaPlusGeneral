@@ -1,5 +1,7 @@
 package github.com.gengyoubo.item.tool;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
@@ -24,8 +26,8 @@ import java.util.List;
 public class MPPaxelItem extends MPToolBase {
     public static final net.minecraft.tags.TagKey<Block> MINEABLE = BlockTags.MINEABLE_WITH_PICKAXE;
 
-    public MPPaxelItem() {
-        super(MINEABLE, MPGToolProfile.PAXEL);
+    public MPPaxelItem(Item.Properties properties) {
+        super(properties, MINEABLE, MPGToolProfile.PAXEL);
     }
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
@@ -36,10 +38,11 @@ public class MPPaxelItem extends MPToolBase {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.empty());
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(Component.translatable("info.attack").getString())));
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltip, flag);
+        tooltip.accept(Component.empty());
+        tooltip.accept(Component.literal(MPText.manaita_infinity.formatting(Component.translatable("info.attack").getString())));
     }
 
     @Override
@@ -55,6 +58,6 @@ public class MPPaxelItem extends MPToolBase {
                 MPToolActionHelper.applyAxeActions(context, pos, state)
                         | MPToolActionHelper.applyGrowPlantAction(context, pos, state)
                         | MPToolActionHelper.applyShovelAction(context, pos, state));
-        return changed ? InteractionResult.sidedSuccess(context.getLevel().isClientSide) : InteractionResult.PASS;
+        return changed ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 }

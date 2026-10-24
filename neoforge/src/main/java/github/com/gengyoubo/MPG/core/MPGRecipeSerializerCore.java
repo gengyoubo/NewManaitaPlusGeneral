@@ -11,9 +11,9 @@ import static github.com.gengyoubo.common.registry.MPGRegistryIds.NBT_CRAFTING_R
 
 public class MPGRecipeSerializerCore {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> CraftingRecipe =
-            RECIPE_SERIALIZER_DEFERRED_REGISTER.register(CRAFTING_RECIPE, MPGCraftingRecipe.Serializer::new);
+            RECIPE_SERIALIZER_DEFERRED_REGISTER.register(CRAFTING_RECIPE, () -> MPGCraftingRecipe.SERIALIZER);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> NBTCraftingRecipe =
-            RECIPE_SERIALIZER_DEFERRED_REGISTER.register(NBT_CRAFTING_RECIPE, MPNBTCraftingRecipe.Serializer::new);
+            RECIPE_SERIALIZER_DEFERRED_REGISTER.register(NBT_CRAFTING_RECIPE, () -> MPNBTCraftingRecipe.SERIALIZER);
 
     public static void init() {
     }

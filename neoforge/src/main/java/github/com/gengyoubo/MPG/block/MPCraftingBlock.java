@@ -21,11 +21,7 @@ public class MPCraftingBlock extends MPGCraftingBlockBase {
     public static final MapCodec<MPCraftingBlock> CODEC = simpleCodec(MPCraftingBlock::new);
     private static final Component CONTAINER_TITLE = Component.translatable("container.crafting_manaita");
 
-    public MPCraftingBlock() {
-        this(BlockBehaviour.Properties.of().noOcclusion());
-    }
-
-    private MPCraftingBlock(BlockBehaviour.Properties properties) {
+    public MPCraftingBlock(BlockBehaviour.Properties properties) {
         super(properties, () -> MPGBlockCore.HookBlockItem.get());
     }
 

@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item.tool.base;
 
+import github.com.gengyoubo.common.util.MPGMessages;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -68,7 +69,7 @@ public final class MPToolActionHelper {
     }
 
     public static void handleRangeOrEnchantmentUse(Level level, Player player, ItemStack itemInHand, int nextRange, IntConsumer rangeSetter) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (player.isShiftKeyDown()) {
@@ -86,7 +87,7 @@ public final class MPToolActionHelper {
             itemInHand.enchant(silkTouch, 1);
             enchantName = Component.translatable("enchantments.silktouch").getString();
         }
-        player.displayClientMessage(Component.literal(MPText.manaita_enchantment.formatting(itemInHand.getDisplayName().getString() + Component.translatable("info.enchantment").getString() + ": " + enchantName)), true);
+        MPGMessages.show(player, Component.literal(MPText.manaita_enchantment.formatting(itemInHand.getDisplayName().getString() + Component.translatable("info.enchantment").getString() + ": " + enchantName)), true);
     }
 
     public static void appendRangeAndDoublingTooltip(List<Component> tooltip, int range, boolean doubling) {

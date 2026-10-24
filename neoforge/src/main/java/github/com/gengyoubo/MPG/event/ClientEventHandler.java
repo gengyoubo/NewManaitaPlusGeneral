@@ -45,6 +45,6 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onClientTick(ClientTickEvent.Post event) {
-        MPGClientEventLogic.tickDevWorldAutoLoad(FMLEnvironment.production, MPG.LOGGER);
+        MPGClientEventLogic.tickDevWorldAutoLoad(FMLEnvironment.isProduction(), MPG.LOGGER);
     }
 }

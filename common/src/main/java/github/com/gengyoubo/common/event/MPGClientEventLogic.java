@@ -35,7 +35,7 @@ public final class MPGClientEventLogic {
     }
 
     public static void handleArmorKey(Player player) {
-        player.getInventory().armor.forEach(stack -> invokeClient(stack, player));
+        github.com.gengyoubo.common.util.MPGItemStackData.armorStacks(player).forEach(stack -> invokeClient(stack, player));
     }
 
     private static void invokeClient(ItemStack stack, Player player) {

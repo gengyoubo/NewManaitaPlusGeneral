@@ -1,5 +1,6 @@
 package github.com.gengyoubo.block;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import com.mojang.serialization.MapCodec;
 import github.com.gengyoubo.common.block.MPGFurnaceBlockBase;
 import net.minecraft.core.BlockPos;
@@ -17,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 public class MPFurnaceBlock extends MPGFurnaceBlockBase {
     private static final MapCodec<MPFurnaceBlock> CODEC = MapCodec.unit(MPFurnaceBlock::new);
 
-    public MPFurnaceBlock() {
-        super(() -> MPBlockCore.HookBlockItem.get());
+    public MPFurnaceBlock(BlockBehaviour.Properties properties) {
+        super(properties, () -> MPBlockCore.HookBlockItem.get());
     }
 
     @Override
@@ -34,7 +35,7 @@ public class MPFurnaceBlock extends MPGFurnaceBlockBase {
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153273_, @NotNull BlockState p_153274_, @NotNull BlockEntityType<T> p_153275_) {
-        return p_153273_.isClientSide ? null : createTickerHelper(p_153275_, MPBlockEntityCore.FURNACE_BLOCK_ENTITY.get(), MPFurnaceBlockEntity::serverTick);
+        return p_153273_.isClientSide() ? null : createTickerHelper(p_153275_, MPBlockEntityCore.FURNACE_BLOCK_ENTITY.get(), MPFurnaceBlockEntity::serverTick);
     }
 }
 

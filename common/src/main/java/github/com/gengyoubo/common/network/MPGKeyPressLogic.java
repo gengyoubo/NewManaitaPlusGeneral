@@ -12,7 +12,7 @@ public final class MPGKeyPressLogic {
     public static void handle(ServerPlayer player, byte keyCode) {
         switch (keyCode) {
             case 0 -> invokeStandardMainHand(player);
-            case 1 -> player.getInventory().armor.forEach(stack -> invoke(stack, player));
+            case 1 -> github.com.gengyoubo.common.util.MPGItemStackData.armorStacks(player).forEach(stack -> invoke(stack, player));
             case 2 -> invokePaxel(player);
             default -> {
             }

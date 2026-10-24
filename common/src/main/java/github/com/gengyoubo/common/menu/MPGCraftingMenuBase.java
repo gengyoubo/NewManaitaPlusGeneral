@@ -2,79 +2,57 @@ package github.com.gengyoubo.common.menu;
 
 import github.com.gengyoubo.common.config.MPGConfigValues;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.AbstractCraftingMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
-/** Shared 3x3 crafting menu and doubled-result behavior. */
-public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
-    private final CraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
-    private final ResultContainer resultSlots = new ResultContainer();
+/** Shared 3x3 crafting menu; mirrors the vanilla crafting table but multiplies every result. */
+public abstract class MPGCraftingMenuBase extends AbstractCraftingMenu {
     private final ContainerLevelAccess access;
     private final Player player;
     private final Block craftingBlock;
     private final boolean alwaysValid;
+    private boolean placingRecipe;
 
     protected MPGCraftingMenuBase(MenuType<?> menuType, int containerId, Inventory inventory,
                                   ContainerLevelAccess access, Block craftingBlock, boolean alwaysValid) {
-        super(menuType, containerId);
+        super(menuType, containerId, 3, 3);
         this.access = access;
         this.player = inventory.player;
         this.craftingBlock = craftingBlock;
         this.alwaysValid = alwaysValid;
 
-        addSlot(new ResultSlot(inventory.player, craftSlots, resultSlots, 0, 124, 35));
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 3; column++) {
-                addSlot(new Slot(craftSlots, column + row * 3, 30 + column * 18, 17 + row * 18));
-            }
-        }
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, 84 + row * 18));
-            }
-        }
-        for (int column = 0; column < 9; column++) {
-            addSlot(new Slot(inventory, column, 8 + column * 18, 142));
-        }
+        addResultSlot(player, 124, 35);
+        addCraftingGridSlots(30, 17);
+        addStandardInventorySlots(inventory, 8, 84);
     }
 
-    private static void slotChangedCraftingGrid(AbstractContainerMenu menu, Level level, Player player,
-                                                CraftingContainer craftSlots, ResultContainer resultSlots) {
-        if (level.isClientSide || level.getServer() == null) {
-            return;
-        }
+    private void slotChangedCraftingGrid(ServerLevel level, @Nullable RecipeHolder<CraftingRecipe> recipeHint) {
+        CraftingInput input = craftSlots.asCraftInput();
         ServerPlayer serverPlayer = (ServerPlayer) player;
         ItemStack result = ItemStack.EMPTY;
-        CraftingInput input = CraftingInput.of(craftSlots.getWidth(), craftSlots.getHeight(), craftSlots.getItems());
         Optional<RecipeHolder<CraftingRecipe>> recipe = level.getServer().getRecipeManager()
-                .getRecipeFor(RecipeType.CRAFTING, input, level);
-        if (recipe.isPresent()) {
-            RecipeHolder<CraftingRecipe> holder = recipe.get();
-            resultSlots.setRecipeUsed(holder);
-            ItemStack assembled = holder.value().assemble(input, level.registryAccess());
+                .getRecipeFor(RecipeType.CRAFTING, input, level, recipeHint);
+        if (recipe.isPresent() && resultSlots.setRecipeUsed(serverPlayer, recipe.get())) {
+            ItemStack assembled = recipe.get().value().assemble(input);
             if (assembled.isItemEnabled(level.enabledFeatures())) {
                 long multiplied = (long) assembled.getCount() * MPGConfigValues.crafting_doubling_value;
                 assembled.setCount((int) Math.min(Integer.MAX_VALUE, multiplied));
@@ -82,31 +60,30 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingInput, 
             }
         }
         resultSlots.setItem(0, result);
-        menu.setRemoteSlot(0, result);
-        serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(
-                menu.containerId, menu.incrementStateId(), 0, result));
+        setRemoteSlot(0, result);
+        serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(containerId, incrementStateId(), 0, result));
     }
 
     @Override
     public void slotsChanged(@NotNull Container container) {
-        access.execute((level, pos) -> slotChangedCraftingGrid(this, level, player, craftSlots, resultSlots));
+        if (!placingRecipe) {
+            access.execute((level, pos) -> {
+                if (level instanceof ServerLevel serverLevel) {
+                    slotChangedCraftingGrid(serverLevel, null);
+                }
+            });
+        }
     }
 
     @Override
-    public void fillCraftSlotsStackedContents(@NotNull StackedContents stackedContents) {
-        craftSlots.fillStackedContents(stackedContents);
+    protected void beginPlacingRecipe() {
+        placingRecipe = true;
     }
 
     @Override
-    public void clearCraftingContent() {
-        craftSlots.clearContent();
-        resultSlots.clearContent();
-    }
-
-    @Override
-    public boolean recipeMatches(RecipeHolder<CraftingRecipe> recipe) {
-        CraftingInput input = CraftingInput.of(craftSlots.getWidth(), craftSlots.getHeight(), craftSlots.getItems());
-        return recipe.value().matches(input, player.level());
+    protected void finishPlacingRecipe(@NotNull ServerLevel level, @NotNull RecipeHolder<CraftingRecipe> recipe) {
+        placingRecipe = false;
+        slotChangedCraftingGrid(level, recipe);
     }
 
     @Override
@@ -125,7 +102,7 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingInput, 
         ItemStack moving = slot.getItem();
         original = moving.copy();
         if (slotIndex == 0) {
-            access.execute((level, pos) -> moving.getItem().onCraftedBy(moving, level, player));
+            moving.getItem().onCraftedBy(moving, player);
             if (!moveItemStackTo(moving, 10, 46, true)) {
                 return ItemStack.EMPTY;
             }
@@ -165,28 +142,18 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingInput, 
     }
 
     @Override
-    public boolean canTakeItemForPickAll(@NotNull ItemStack stack, Slot slot) {
+    public boolean canTakeItemForPickAll(@NotNull ItemStack stack, @NotNull Slot slot) {
         return slot.container != resultSlots && super.canTakeItemForPickAll(stack, slot);
     }
 
     @Override
-    public int getResultSlotIndex() {
-        return 0;
+    public @NotNull Slot getResultSlot() {
+        return slots.get(0);
     }
 
     @Override
-    public int getGridWidth() {
-        return craftSlots.getWidth();
-    }
-
-    @Override
-    public int getGridHeight() {
-        return craftSlots.getHeight();
-    }
-
-    @Override
-    public int getSize() {
-        return 10;
+    public @NotNull List<Slot> getInputGridSlots() {
+        return slots.subList(1, 10);
     }
 
     @Override
@@ -195,7 +162,7 @@ public abstract class MPGCraftingMenuBase extends RecipeBookMenu<CraftingInput, 
     }
 
     @Override
-    public boolean shouldMoveToInventory(int slotIndex) {
-        return slotIndex != getResultSlotIndex();
+    protected @NotNull Player owner() {
+        return player;
     }
 }

@@ -99,7 +99,7 @@ public final class MPGEventLogic {
         ItemStack head;
         if (target instanceof Player playerTarget) {
             head = new ItemStack(Items.PLAYER_HEAD);
-            head.set(DataComponents.PROFILE, new ResolvableProfile(playerTarget.getGameProfile()));
+            head.set(DataComponents.PROFILE, ResolvableProfile.createResolved(playerTarget.getGameProfile()));
         } else if (target.getType() == EntityType.WITHER_SKELETON) {
             head = new ItemStack(Items.WITHER_SKELETON_SKULL);
         } else if (target.getType() == EntityType.SKELETON) {
@@ -123,7 +123,7 @@ public final class MPGEventLogic {
             return;
         }
         findKiller(target, source.getEntity()).ifPresent(player -> {
-            createBeheadingDrop(target, player).ifPresent(target::spawnAtLocation);
+            createBeheadingDrop(target, player).ifPresent(stack -> target.spawnAtLocation(level, stack));
             List<ItemEntity> freshDrops = level.getEntitiesOfClass(ItemEntity.class,
                     target.getBoundingBox().inflate(2.0D), item -> item.tickCount <= 1);
             multiplyDrops(player, freshDrops, multiplier);

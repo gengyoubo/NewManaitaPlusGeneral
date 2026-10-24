@@ -1,5 +1,12 @@
 package github.com.gengyoubo.common.item;
 
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
+import github.com.gengyoubo.common.item.tier.MPGToolMaterials;
+import github.com.gengyoubo.common.util.MPGMessages;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import github.com.gengyoubo.common.util.MPGItemStackData;
@@ -17,10 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
@@ -29,31 +33,31 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /** Shared Manaita sword modes and player-only execution attack. */
-public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMPGDoubling {
+public abstract class MPGSwordItemBase extends Item implements IMPGKey, IMPGDoubling {
     private static final int MAX_ATTACK_AREA = 27;
 
-    protected MPGSwordItemBase() {
-        super(new ItemManaitaSwordTier(), new Item.Properties().fireResistant());
+    protected MPGSwordItemBase(Item.Properties properties) {
+        super(MPGToolMaterials.sword(properties));
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, @NotNull Level level, @NotNull Entity entity,
-                              int slot, boolean selected) {
-        super.inventoryTick(stack, level, entity, slot, selected);
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity,
+                              @Nullable EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
         stack.setPopTime(0);
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
-                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(modeLine("mode.doubling", isDoubling(stack)));
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltip, flag);
+        tooltip.accept(modeLine("mode.doubling", isDoubling(stack)));
         int area = getAttackArea(stack);
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+        tooltip.accept(Component.literal(MPText.manaita_mode.formatting(
                 translate("mode.attack_area") + ": " + area + "x" + area)));
-        tooltip.add(modeLine("mode.attack_friendly_mob", attacksFriendlyMobs(stack)));
-        tooltip.add(Component.empty());
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(translate("info.attack"))));
+        tooltip.accept(modeLine("mode.attack_friendly_mob", attacksFriendlyMobs(stack)));
+        tooltip.accept(Component.empty());
+        tooltip.accept(Component.literal(MPText.manaita_infinity.formatting(translate("info.attack"))));
     }
 
     @Override
@@ -83,7 +87,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
 
     /** Called only from player attack hooks; mobs receive the normal weapon attack without execution. */
     public final void performPlayerAttack(Player player, ItemStack stack, LivingEntity primaryTarget) {
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             return;
         }
 
@@ -169,7 +173,7 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
     }
 
     private void showModeMessage(Player player, ItemStack stack, String mode, String value) {
-        player.displayClientMessage(Component.literal(MPText.manaita_mode.formatting(
+        MPGMessages.show(player, Component.literal(MPText.manaita_mode.formatting(
                 stack.getDisplayName().getString() + " " + translate(mode) + ": " + value)),
                 keyMessageUsesOverlay());
     }
@@ -185,37 +189,5 @@ public abstract class MPGSwordItemBase extends SwordItem implements IMPGKey, IMP
 
     protected static String translate(String key) {
         return Component.translatable(key).getString();
-    }
-
-    public static final class ItemManaitaSwordTier implements Tier {
-        @Override
-        public int getUses() {
-            return -1;
-        }
-
-        @Override
-        public float getSpeed() {
-            return Float.MAX_VALUE;
-        }
-
-        @Override
-        public float getAttackDamageBonus() {
-            return Float.MAX_VALUE;
-        }
-
-        @Override
-        public int getEnchantmentValue() {
-            return 0;
-        }
-
-        @Override
-        public @NotNull Ingredient getRepairIngredient() {
-            return Ingredient.of(Items.NETHERITE_INGOT);
-        }
-
-        @Override
-        public @NotNull TagKey<Block> getIncorrectBlocksForDrops() {
-            return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
-        }
     }
 }

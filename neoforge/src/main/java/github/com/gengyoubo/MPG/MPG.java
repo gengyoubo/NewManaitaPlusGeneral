@@ -134,7 +134,7 @@ public class MPG {
                 return;
             }
 
-            MinecraftServer server = player.getServer();
+            MinecraftServer server = player.level().getServer();
             if (server == null) {
                 return;
             }

@@ -31,7 +31,7 @@ public abstract class MPGTypedBlockItemBase extends BlockItem {
 
     protected MPGTypedBlockItemBase(Block block, Properties properties, String translationPrefix,
                                     Class<? extends Block> typedBlockClass, Class<? extends Block> hookBlockClass) {
-        super(block, properties);
+        super(block, properties.fireResistant());
         this.translationPrefix = translationPrefix;
         this.typedBlockClass = typedBlockClass;
         this.hookBlockClass = hookBlockClass;
@@ -104,7 +104,7 @@ public abstract class MPGTypedBlockItemBase extends BlockItem {
             itemStack.shrink(1);
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Override

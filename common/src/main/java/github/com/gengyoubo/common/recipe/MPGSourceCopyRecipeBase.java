@@ -1,9 +1,7 @@
 package github.com.gengyoubo.common.recipe;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -17,11 +15,10 @@ import java.util.function.Supplier;
 public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     private final Supplier<? extends Item> sourceItem;
     private final IntSupplier multiplier;
-    private final Supplier<? extends RecipeSerializer<?>> serializer;
+    private final Supplier<? extends RecipeSerializer<? extends CustomRecipe>> serializer;
 
-    protected MPGSourceCopyRecipeBase(CraftingBookCategory category, Supplier<? extends Item> sourceItem,
-                                      IntSupplier multiplier, Supplier<? extends RecipeSerializer<?>> serializer) {
-        super(category);
+    protected MPGSourceCopyRecipeBase(Supplier<? extends Item> sourceItem, IntSupplier multiplier,
+                                      Supplier<? extends RecipeSerializer<? extends CustomRecipe>> serializer) {
         this.sourceItem = sourceItem;
         this.multiplier = multiplier;
         this.serializer = serializer;
@@ -43,7 +40,7 @@ public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingInput input, @NotNull HolderLookup.Provider provider) {
+    public @NotNull ItemStack assemble(@NotNull CraftingInput input) {
         boolean consumedSource = false;
         for (ItemStack stack : input.items()) {
             if (stack.isEmpty()) {
@@ -61,17 +58,7 @@ public abstract class MPGSourceCopyRecipeBase extends CustomRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 2;
-    }
-
-    @Override
-    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return sourceItem.get().getDefaultInstance();
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return serializer.get();
     }
 }

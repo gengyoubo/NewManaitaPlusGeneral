@@ -7,6 +7,6 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderMPFurnaceBlockEntity extends AbstractRenderMPBlockEntity<MPFurnaceBlockEntity> {
     public RenderMPFurnaceBlockEntity(BlockEntityRendererProvider.Context context) {
-        super(new ItemStack(MPBlockCore.FurnaceBlockItem.get()));
+        super(context, new ItemStack(MPBlockCore.FurnaceBlockItem.get()));
     }
 }

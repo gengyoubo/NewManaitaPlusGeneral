@@ -31,12 +31,8 @@ import java.util.function.Supplier;
 public abstract class MPGCraftingBlockBase extends BaseEntityBlock {
     private final Supplier<? extends Item> hookItem;
 
-    protected MPGCraftingBlockBase(Supplier<? extends Item> hookItem) {
-        this(BlockBehaviour.Properties.of().noOcclusion(), hookItem);
-    }
-
     protected MPGCraftingBlockBase(BlockBehaviour.Properties properties, Supplier<? extends Item> hookItem) {
-        super(properties);
+        super(properties.noOcclusion());
         this.hookItem = hookItem;
         registerDefaultState(stateDefinition.any()
                 .setValue(MPGBlockData.HOOK, 8)
@@ -68,7 +64,7 @@ public abstract class MPGCraftingBlockBase extends BaseEntityBlock {
     protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level,
                                                          @NotNull BlockPos pos, @NotNull Player player,
                                                          @NotNull BlockHitResult hitResult) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         player.openMenu(state.getMenuProvider(level, pos));

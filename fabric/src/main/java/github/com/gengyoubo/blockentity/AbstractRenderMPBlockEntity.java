@@ -2,11 +2,12 @@ package github.com.gengyoubo.blockentity;
 
 import github.com.gengyoubo.common.client.renderer.MPGBlockEntityRendererBase;
 import github.com.gengyoubo.core.MPBlockCore;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public abstract class AbstractRenderMPBlockEntity<T extends BlockEntity> extends MPGBlockEntityRendererBase<T> {
-    protected AbstractRenderMPBlockEntity(ItemStack displayStack) {
-        super(displayStack, MPBlockCore.HookBlock.get().defaultBlockState());
+    protected AbstractRenderMPBlockEntity(BlockEntityRendererProvider.Context context, ItemStack displayStack) {
+        super(context, displayStack, MPBlockCore.HookBlock.get().defaultBlockState());
     }
 }

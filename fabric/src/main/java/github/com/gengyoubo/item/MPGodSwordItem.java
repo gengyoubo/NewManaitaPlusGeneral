@@ -1,5 +1,8 @@
 package github.com.gengyoubo.item;
 
+import github.com.gengyoubo.common.util.MPGMessages;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import github.com.gengyoubo.item.tier.MPToolTier;
@@ -14,7 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -50,19 +53,19 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         player.startUsingItem(hand);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             summonLightning(level, player.position());
             godKill(player, isRemove(itemStack), player.isShiftKeyDown());
         }
-        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
-        if (attacker instanceof Player player && !player.level().isClientSide) {
+        if (attacker instanceof Player player && !player.level().isClientSide()) {
             attack(target, player, isRemove(stack));
             godKill(player, isRemove(stack), player.isShiftKeyDown());
         }
@@ -70,12 +73,13 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.doubling").getString() + ":" + (isDoubling(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.remove.name").getString() + ":" + (isRemove(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
-        tooltip.add(Component.empty());
-        tooltip.add(Component.literal(MPText.manaita_enchantment.formatting(Component.translatable("info.item.manaita_sword_god.1").getString())));
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltip, flag);
+        tooltip.accept(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.doubling").getString() + ":" + (isDoubling(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
+        tooltip.accept(Component.literal(MPText.manaita_mode.formatting(Component.translatable("mode.remove.name").getString() + ":" + (isRemove(stack) ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))));
+        tooltip.accept(Component.empty());
+        tooltip.accept(Component.literal(MPText.manaita_enchantment.formatting(Component.translatable("info.item.manaita_sword_god.1").getString())));
     }
 
     @Override
@@ -111,13 +115,13 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
         if (player.isShiftKeyDown()) {
             boolean remove = !isRemove(itemStack);
             setRemove(itemStack, remove);
-            player.displayClientMessage(Component.literal(MPText.manaita_mode.formatting(String.format("[%s] %s: %s",
+            MPGMessages.show(player, Component.literal(MPText.manaita_mode.formatting(String.format("[%s] %s: %s",
                     Component.translatable("item.manaita_sword_god.name").getString(),
                     Component.translatable("mode.remove.name").getString(),
                     remove ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))), true);
         } else {
             boolean doubling = toggleDoubling(itemStack);
-            player.displayClientMessage(Component.literal(MPText.manaita_mode.formatting(String.format("[%s] %s: %s",
+            MPGMessages.show(player, Component.literal(MPText.manaita_mode.formatting(String.format("[%s] %s: %s",
                     Component.translatable("item.manaita_sword_god.name").getString(),
                     Component.translatable("mode.doubling").getString(),
                     doubling ? Component.translatable("info.on").getString() : Component.translatable("info.off").getString()))), true);
@@ -196,7 +200,7 @@ public class MPGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
     private static void summonLightning(Level level, Vec3 position) {
         Random random = new Random();
         for (int i = 0; i < 100; i++) {
-            MPGLightningBolt bolt = MPEntityCore.ManaitaLightningBolt.get().create(level);
+            MPGLightningBolt bolt = MPEntityCore.ManaitaLightningBolt.get().create(level, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
             if (bolt == null) {
                 continue;
             }

@@ -1,56 +1,36 @@
 package github.com.gengyoubo.item.armor;
 
 import github.com.gengyoubo.common.item.armor.MPGArmorItemBase;
-import net.minecraft.core.Holder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 
+/** Fabric armor pieces; textures come from the shared manaita_armor equipment asset. */
 public class MPArmor extends MPGArmorItemBase {
-    private static final Holder<ArmorMaterial> MATERIAL = MANAITA_ARMOR_MATERIAL;
-
-    protected MPArmor(Type type) {
-        super(MATERIAL, type);
+    protected MPArmor(Item.Properties properties, EquipmentSlot slot) {
+        super(properties, slot);
     }
 
     public static class Helmet extends MPGArmorItemBase.Helmet {
-        public Helmet() {
-            super(MATERIAL);
-        }
-
-        public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-            return "manaita_plus_general:textures/models/armor/manaita_armor_layer_1.png";
+        public Helmet(Item.Properties properties) {
+            super(properties);
         }
     }
 
     public static class Chestplate extends MPGArmorItemBase.Chestplate {
-        public Chestplate() {
-            super(MATERIAL);
-        }
-
-        public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-            return "manaita_plus_general:textures/models/armor/manaita_armor_layer_1.png";
+        public Chestplate(Item.Properties properties) {
+            super(properties);
         }
     }
 
     public static class Leggings extends MPGArmorItemBase.Leggings {
-        public Leggings() {
-            super(MATERIAL);
-        }
-
-        public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-            return "manaita_plus_general:textures/models/armor/manaita_armor_layer_2.png";
+        public Leggings(Item.Properties properties) {
+            super(properties);
         }
     }
 
     public static class Boots extends MPGArmorItemBase.Boots {
-        public Boots() {
-            super(MATERIAL);
-        }
-
-        public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-            return "manaita_plus_general:textures/models/armor/manaita_armor_layer_2.png";
+        public Boots(Item.Properties properties) {
+            super(properties);
         }
     }
 }

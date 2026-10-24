@@ -1,5 +1,7 @@
 package github.com.gengyoubo.MPG.item.portable;
 
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.MPG.core.MPGBlockCore;
 import github.com.gengyoubo.MPG.core.MPGBlockEntityCore;
 import github.com.gengyoubo.MPG.menu.MPGBrewingStandMenu;
@@ -17,8 +19,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class MPGBrewingPortable extends MPGPortableItem {
-    public MPGBrewingPortable() {
-        super("item.portableBrewing.");
+    public MPGBrewingPortable(Item.Properties properties) {
+        super(properties, "item.portableBrewing.");
     }
 
     @Override
@@ -30,8 +32,7 @@ public class MPGBrewingPortable extends MPGPortableItem {
 
     public static class ManaitaPlusBrewingStandBlockEntity extends MPGPortableBrewingBlockEntityBase {
         public ManaitaPlusBrewingStandBlockEntity(Player player, ItemStack stack) {
-            super(MPGBlockEntityCore.BREWING_BLOCK_ENTITY.get(),
-                    MPGBlockCore.BrewingBlock.get().defaultBlockState(), player, stack);
+            super(MPGBlockEntityCore.BREWING_BLOCK_ENTITY.get(), MPGBlockCore.BrewingBlock.get().defaultBlockState(), player, stack);
         }
 
         @Override
@@ -58,8 +59,9 @@ public class MPGBrewingPortable extends MPGPortableItem {
         private static void consumeIngredient(Level level, double x, double y, double z,
                                               NonNullList<ItemStack> items) {
             ItemStack ingredient = items.get(3);
-            if (ingredient.hasCraftingRemainingItem()) {
-                ItemStack remainder = ingredient.getCraftingRemainingItem().copy();
+            ItemStackTemplate remainderTemplate = ingredient.getItem().getCraftingRemainder();
+            if (remainderTemplate != null) {
+                ItemStack remainder = remainderTemplate.create();
                 ingredient.shrink(1);
                 if (ingredient.isEmpty()) {
                     ingredient = remainder;

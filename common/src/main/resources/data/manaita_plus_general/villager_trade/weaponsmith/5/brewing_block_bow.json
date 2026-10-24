@@ -1,0 +1,11 @@
+{
+  "wants": {
+    "id": "manaita_plus_general:block_brewing_manaita",
+    "count": 64.0
+  },
+  "gives": {
+    "id": "manaita_plus_general:manaita_bow"
+  },
+  "max_uses": 1.0,
+  "xp": 0.0
+}

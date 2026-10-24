@@ -1,5 +1,6 @@
 package github.com.gengyoubo.block;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import com.mojang.serialization.MapCodec;
 import github.com.gengyoubo.block.entity.MPBrewingStandBlockEntity;
 import github.com.gengyoubo.common.block.MPGBrewingStandBlockBase;
@@ -18,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 public class MPBrewingStandBlock extends MPGBrewingStandBlockBase {
     private static final MapCodec<MPBrewingStandBlock> CODEC = MapCodec.unit(MPBrewingStandBlock::new);
 
-    public MPBrewingStandBlock() {
-        super(() -> MPBlockCore.HookBlockItem.get());
+    public MPBrewingStandBlock(BlockBehaviour.Properties properties) {
+        super(properties, () -> MPBlockCore.HookBlockItem.get());
     }
 
     @Override
@@ -36,7 +37,7 @@ public class MPBrewingStandBlock extends MPGBrewingStandBlockBase {
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state,
                                                                   @NotNull BlockEntityType<T> type) {
-        return level.isClientSide ? null : createTickerHelper(
+        return level.isClientSide() ? null : createTickerHelper(
                 type, MPBlockEntityCore.BREWING_BLOCK_ENTITY.get(), MPBrewingStandBlockEntity::serverTick);
     }
 }

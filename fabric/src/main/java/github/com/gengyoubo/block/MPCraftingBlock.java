@@ -1,5 +1,6 @@
 package github.com.gengyoubo.block;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import com.mojang.serialization.MapCodec;
 import github.com.gengyoubo.block.entity.MPCraftingBlockEntity;
 import github.com.gengyoubo.common.block.MPGCraftingBlockBase;
@@ -23,8 +24,8 @@ public class MPCraftingBlock extends MPGCraftingBlockBase {
     private static final MapCodec<MPCraftingBlock> CODEC = MapCodec.unit(MPCraftingBlock::new);
     private static final Component CONTAINER_TITLE = Component.translatable("container.crafting_manaita");
 
-    public MPCraftingBlock() {
-        super(() -> MPBlockCore.HookBlockItem.get());
+    public MPCraftingBlock(BlockBehaviour.Properties properties) {
+        super(properties, () -> MPBlockCore.HookBlockItem.get());
     }
 
     @Override

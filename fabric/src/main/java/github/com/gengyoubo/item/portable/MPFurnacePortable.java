@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item.portable;
 
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.block.entity.MPGPortableFurnaceBlockEntityBase;
 import github.com.gengyoubo.core.MPBlockCore;
 import github.com.gengyoubo.core.MPBlockEntityCore;
@@ -13,8 +14,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class MPFurnacePortable extends MPGPortableItem {
-    public MPFurnacePortable() {
-        super("item.portableFurnace.");
+    public MPFurnacePortable(Item.Properties properties) {
+        super(properties, "item.portableFurnace.");
     }
 
     @Override
@@ -26,8 +27,7 @@ public class MPFurnacePortable extends MPGPortableItem {
 
     public static class MPFurnaceBlockEntity extends MPGPortableFurnaceBlockEntityBase {
         public MPFurnaceBlockEntity(Player player, ItemStack stack) {
-            super(MPBlockEntityCore.FURNACE_BLOCK_ENTITY.get(),
-                    MPBlockCore.FurnaceBlock.get().defaultBlockState(), player, stack);
+            super(MPBlockEntityCore.FURNACE_BLOCK_ENTITY.get(), MPBlockCore.FurnaceBlock.get().defaultBlockState(), player, stack);
         }
 
         @Override

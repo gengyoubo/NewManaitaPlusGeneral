@@ -6,13 +6,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import github.com.gengyoubo.MPG.block.entity.MPBrewingStandBlockEntity;
 import github.com.gengyoubo.MPG.core.MPGBlockCore;
-import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderBrewingManaitaBlockEntity extends AbstractRenderManaitaBlockEntity<MPBrewingStandBlockEntity> {
     public RenderBrewingManaitaBlockEntity(BlockEntityRendererProvider.Context context) {
-        super(new ItemStack(MPGBlockCore.BrewingBlockItem.get()));
-        Objects.requireNonNull(context);
+        super(context, new ItemStack(MPGBlockCore.BrewingBlockItem.get()));
     }
 }
 

@@ -25,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 public class MPGHookBlockItemBase extends BlockItem {
     private final Class<? extends Block> hookBlockClass;
 
-    public MPGHookBlockItemBase(Block block, Class<? extends Block> hookBlockClass) {
-        super(block, new Properties().fireResistant());
+    public MPGHookBlockItemBase(Block block, Properties properties, Class<? extends Block> hookBlockClass) {
+        super(block, properties.fireResistant());
         this.hookBlockClass = hookBlockClass;
     }
 
@@ -81,7 +81,7 @@ public class MPGHookBlockItemBase extends BlockItem {
         if (player == null || !player.getAbilities().instabuild) {
             itemStack.shrink(1);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     protected SoundType getPlacementSoundType(BlockState state, Level level, BlockPos pos, Player player) {

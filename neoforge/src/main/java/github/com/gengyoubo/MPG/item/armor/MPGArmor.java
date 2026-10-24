@@ -1,51 +1,36 @@
 package github.com.gengyoubo.MPG.item.armor;
 
 import github.com.gengyoubo.common.item.armor.MPGArmorItemBase;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
 
+/** NeoForge armor pieces; textures come from the shared manaita_armor equipment asset. */
 public class MPGArmor extends MPGArmorItemBase {
-    protected MPGArmor(Type type) {
-        super(MANAITA_ARMOR_MATERIAL, type);
+    protected MPGArmor(Item.Properties properties, EquipmentSlot slot) {
+        super(properties, slot);
     }
 
     public static class Helmet extends MPGArmorItemBase.Helmet {
-        public Helmet() {
-            super(MANAITA_ARMOR_MATERIAL);
+        public Helmet(Item.Properties properties) {
+            super(properties);
         }
-
-        public String getArmorTexture() {
-            return "manaita_plus_general:textures/models/armor/manaita_armor_layer_1.png";
-        }
-
     }
 
     public static class Chestplate extends MPGArmorItemBase.Chestplate {
-        public Chestplate() {
-            super(MANAITA_ARMOR_MATERIAL);
-        }
-
-        public String getArmorTexture() {
-            return "manaita_plus_general:textures/models/armor/manaita_armor_layer_1.png";
+        public Chestplate(Item.Properties properties) {
+            super(properties);
         }
     }
 
     public static class Leggings extends MPGArmorItemBase.Leggings {
-        public Leggings() {
-            super(MANAITA_ARMOR_MATERIAL);
+        public Leggings(Item.Properties properties) {
+            super(properties);
         }
-
-        public String getArmorTexture() {
-            return "manaita_plus_general:textures/models/armor/manaita_armor_layer_2.png";
-        }
-
     }
 
     public static class Boots extends MPGArmorItemBase.Boots {
-        public Boots() {
-            super(MANAITA_ARMOR_MATERIAL);
-        }
-
-        public String getArmorTexture() {
-            return "manaita_plus_general:textures/models/armor/manaita_armor_layer_2.png";
+        public Boots(Item.Properties properties) {
+            super(properties);
         }
 
         @Override

@@ -1,5 +1,10 @@
 package github.com.gengyoubo.common.item.tool;
 
+import net.minecraft.core.component.DataComponents;
+import github.com.gengyoubo.common.item.tier.MPGToolMaterials;
+import github.com.gengyoubo.common.util.MPGMessages;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import github.com.gengyoubo.common.item.data.IMPGDestroy;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
@@ -17,7 +22,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -38,8 +42,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestroy, IMPGDoubling {
-    public MPGShearsItemBase(int durability) {
-        super(new Item.Properties().stacksTo(1).durability(durability).fireResistant());
+    public MPGShearsItemBase(Item.Properties properties) {
+        super(MPGToolMaterials.unbreakable(properties).component(DataComponents.TOOL, ShearsItem.createToolProperties()));
     }
 
     @Override
@@ -57,7 +61,7 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
         if (applyGrowPlantAction(context, pos, state)) {
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return super.useOn(context);
     }
@@ -78,23 +82,23 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
         level.setBlockAndUpdate(pos, maxAgeState);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, maxAgeState));
         if (player != null) {
-            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
+            itemStack.hurtAndBreak(1, player, context.getHand());
         }
         return true;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player,
+    public @NotNull InteractionResult use(@NotNull Level level, Player player,
                                                             @NotNull InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (player.isShiftKeyDown()) {
                 setRange(itemStack, (getRange(itemStack) + 2) % 21, player);
             } else {
                 addToolEnchantments(level, player, itemStack);
             }
         }
-        return InteractionResultHolder.pass(itemStack);
+        return InteractionResult.PASS;
     }
 
     private void addToolEnchantments(Level level, Player player, ItemStack itemStack) {
@@ -137,12 +141,12 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
-                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltip, flag);
         int range = getRange(stack);
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+        tooltip.accept(Component.literal(MPText.manaita_mode.formatting(
                 text("mode.manaita_tool") + ": " + range + "x" + range + "x" + range)));
-        tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+        tooltip.accept(Component.literal(MPText.manaita_mode.formatting(
                 text("mode.doubling") + ":" + (isDoubling(stack) ? text("info.on") : text("info.off")))));
     }
 
@@ -165,7 +169,7 @@ public class MPGShearsItemBase extends ShearsItem implements IMPGKey, IMPGDestro
     }
 
     protected void showMessage(Player player, Component message) {
-        player.displayClientMessage(message, messageUsesOverlay());
+        MPGMessages.show(player, message, messageUsesOverlay());
     }
 
     protected boolean messageUsesOverlay() {

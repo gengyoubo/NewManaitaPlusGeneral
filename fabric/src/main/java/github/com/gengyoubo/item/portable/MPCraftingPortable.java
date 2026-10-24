@@ -1,13 +1,14 @@
 package github.com.gengyoubo.item.portable;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import github.com.gengyoubo.menu.MPCraftingMenu;
 
 public class MPCraftingPortable extends MPGPortableItem {
-    public MPCraftingPortable() {
-        super("item.portableCrafting.");
+    public MPCraftingPortable(Item.Properties properties) {
+        super(properties, "item.portableCrafting.");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item.portable;
 
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.item.MPGPortableItemBase;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
@@ -13,8 +14,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class MPGPortableItem extends MPGPortableItemBase {
-    protected MPGPortableItem(String translationPrefix) {
-        super(translationPrefix, Integer.MAX_VALUE);
+    protected MPGPortableItem(Item.Properties properties, String translationPrefix) {
+        super(properties, translationPrefix);
     }
 
     protected final void openPortableScreen(ServerPlayer serverPlayer, ItemStack itemInHand, Level level,

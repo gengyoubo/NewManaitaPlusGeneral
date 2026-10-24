@@ -1,10 +1,12 @@
 package github.com.gengyoubo.common.item;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import github.com.gengyoubo.common.util.MPText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,8 +18,8 @@ import java.util.List;
 
 /** Shared source-item behaviour; platform subclasses only open their menu. */
 public abstract class MPGSourceItemBase extends Item {
-    protected MPGSourceItemBase() {
-        super(new Item.Properties().fireResistant());
+    protected MPGSourceItemBase(Item.Properties properties) {
+        super(properties.fireResistant());
     }
 
     @Override
@@ -27,9 +29,9 @@ public abstract class MPGSourceItemBase extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
-                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(translate("info.source.1"))));
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltip, flag);
+        tooltip.accept(Component.literal(MPText.manaita_infinity.formatting(translate("info.source.1"))));
     }
 
     @Override
@@ -38,13 +40,13 @@ public abstract class MPGSourceItemBase extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player,
+    public @NotNull InteractionResult use(Level level, Player player,
                                                             @NotNull InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             openCraftingMenu(serverPlayer, level);
         }
-        return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     protected abstract void openCraftingMenu(ServerPlayer player, Level level);

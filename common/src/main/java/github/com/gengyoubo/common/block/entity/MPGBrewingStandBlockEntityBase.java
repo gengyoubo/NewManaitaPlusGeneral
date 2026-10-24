@@ -4,9 +4,7 @@ import github.com.gengyoubo.common.block.MPGBrewingStandBlockBase;
 import github.com.gengyoubo.common.config.MPGConfigValues;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
@@ -19,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -184,21 +184,21 @@ public abstract class MPGBrewingStandBlockEntityBase extends BaseContainerBlockE
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        super.loadAdditional(tag, provider);
+    protected void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, items, provider);
-        brewTime = tag.getShort("BrewTime");
+        ContainerHelper.loadAllItems(input, items);
+        brewTime = input.getShortOr("BrewTime", (short) 0);
         ingredient = brewTime > 0 ? items.get(INGREDIENT_SLOT).getItem() : null;
-        fuel = tag.getByte("Fuel");
+        fuel = input.getByteOr("Fuel", (byte) 0);
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        super.saveAdditional(tag, provider);
-        tag.putShort("BrewTime", (short) brewTime);
-        ContainerHelper.saveAllItems(tag, items, provider);
-        tag.putByte("Fuel", (byte) fuel);
+    protected void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
+        output.putShort("BrewTime", (short) brewTime);
+        ContainerHelper.saveAllItems(output, items);
+        output.putByte("Fuel", (byte) fuel);
     }
 
     @Override

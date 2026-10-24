@@ -10,16 +10,11 @@ import static github.com.gengyoubo.MPG.MPG.BLOCK_ENTITY_TYPES;
 
 public class MPGBlockEntityCore {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MPFurnaceBlockEntity>> FURNACE_BLOCK_ENTITY =
-            BLOCK_ENTITY_TYPES.register("furnace_block_entity", () -> buildType(BlockEntityType.Builder.of(MPFurnaceBlockEntity::new, MPGBlockCore.FurnaceBlock.get())));
+            BLOCK_ENTITY_TYPES.register("furnace_block_entity", () -> new BlockEntityType<>(MPFurnaceBlockEntity::new, MPGBlockCore.FurnaceBlock.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MPBrewingStandBlockEntity>> BREWING_BLOCK_ENTITY =
-            BLOCK_ENTITY_TYPES.register("brewing_block_entity", () -> buildType(BlockEntityType.Builder.of(MPBrewingStandBlockEntity::new, MPGBlockCore.BrewingBlock.get())));
+            BLOCK_ENTITY_TYPES.register("brewing_block_entity", () -> new BlockEntityType<>(MPBrewingStandBlockEntity::new, MPGBlockCore.BrewingBlock.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MPCraftingBlockEntity>> CRAFTING_BLOCK_ENTITY =
-            BLOCK_ENTITY_TYPES.register("crafting_entity", () -> buildType(BlockEntityType.Builder.of(MPCraftingBlockEntity::new, MPGBlockCore.CraftingBlock.get())));
-
-    @SuppressWarnings("DataFlowIssue")
-    private static <T extends net.minecraft.world.level.block.entity.BlockEntity> BlockEntityType<T> buildType(BlockEntityType.Builder<T> builder) {
-        return builder.build(null);
-    }
+            BLOCK_ENTITY_TYPES.register("crafting_entity", () -> new BlockEntityType<>(MPCraftingBlockEntity::new, MPGBlockCore.CraftingBlock.get()));
 
     public static void init() {
     }

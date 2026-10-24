@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item;
 
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.item.MPGSourceItemBase;
 import github.com.gengyoubo.menu.MPCraftingMenu;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -13,6 +14,10 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class MPSourceItem extends MPGSourceItemBase {
+    public MPSourceItem(Item.Properties properties) {
+        super(properties);
+    }
+
     @Override
     protected void openCraftingMenu(ServerPlayer player, Level level) {
         player.openMenu(new ExtendedScreenHandlerFactory<BlockPos>() {

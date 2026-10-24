@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.block.entity;
 
+import net.minecraft.world.item.ItemStackTemplate;
 import github.com.gengyoubo.MPG.core.MPGBlockEntityCore;
 import github.com.gengyoubo.MPG.menu.MPGBrewingStandMenu;
 import github.com.gengyoubo.common.block.entity.MPGBrewingStandBlockEntityBase;
@@ -29,8 +30,9 @@ public class MPBrewingStandBlockEntity extends MPGBrewingStandBlockEntityBase {
     protected void finishBrew(Level level, double x, double y, double z, NonNullList<ItemStack> items) {
         net.neoforged.neoforge.event.EventHooks.onPotionBrewed(items);
         ItemStack ingredient = items.get(3);
-        if (ingredient.hasCraftingRemainingItem()) {
-            ItemStack remainder = ingredient.getCraftingRemainingItem().copy();
+        ItemStackTemplate remainderTemplate = ingredient.getItem().getCraftingRemainder();
+        if (remainderTemplate != null) {
+            ItemStack remainder = remainderTemplate.create();
             ingredient.shrink(1);
             if (ingredient.isEmpty()) {
                 ingredient = remainder;

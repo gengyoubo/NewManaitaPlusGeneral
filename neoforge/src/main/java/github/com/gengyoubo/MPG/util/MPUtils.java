@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.util;
 
+import github.com.gengyoubo.common.util.MPGMessages;
 import github.com.gengyoubo.common.entity.MPGEntityData;
 
 import github.com.gengyoubo.MPG.item.armor.MPGArmor;
@@ -15,8 +16,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.entity.projectile.DragonFireball;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
+import net.minecraft.world.entity.projectile.hurtingprojectile.DragonFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -180,7 +181,7 @@ public class MPUtils {
 
 
     private static void popResource(Level p_152441_, Supplier<ItemEntity> p_152442_, ItemStack p_152443_) {
-        if (!p_152441_.isClientSide && !p_152443_.isEmpty()) {
+        if (!p_152441_.isClientSide() && !p_152443_.isEmpty()) {
             ItemEntity itementity = p_152442_.get();
             itementity.setDefaultPickUpDelay();
             p_152441_.addFreshEntity(itementity);
@@ -188,7 +189,7 @@ public class MPUtils {
     }
 
     public static boolean isManaitaArmor(Player player) {
-        for (ItemStack itemStack : player.getInventory().armor) {
+        for (ItemStack itemStack : github.com.gengyoubo.common.util.MPGItemStackData.armorStacks(player)) {
             if (itemStack == null || !(itemStack.getItem() instanceof MPGArmor))
                 return false;
         }
@@ -196,7 +197,7 @@ public class MPUtils {
     }
 
     public static boolean isManaitaArmorPart(Player player) {
-        for (ItemStack itemStack : player.getInventory().armor) {
+        for (ItemStack itemStack : github.com.gengyoubo.common.util.MPGItemStackData.armorStacks(player)) {
             if (itemStack != null && itemStack.getItem() instanceof MPGArmor)
                 return true;
         }
@@ -261,14 +262,14 @@ public class MPUtils {
     public static boolean setBlock(Level level,BlockPos p_46605_, BlockState p_46606_,int p_46607_ ) {
         if (level.isOutsideBuildHeight(p_46605_)) {
             return false;
-        } else if (!level.isClientSide && level.isDebug()) {
+        } else if (!level.isClientSide() && level.isDebug()) {
             return false;
         } else {
             LevelChunk levelchunk = level.getChunkAt(p_46605_);
 
             p_46605_ = p_46605_.immutable(); // Forge - prevent mutable BlockPos leaks
             net.neoforged.neoforge.common.util.BlockSnapshot blockSnapshot = null;
-            if (level.captureBlockSnapshots && !level.isClientSide) {
+            if (level.captureBlockSnapshots && !level.isClientSide()) {
                 blockSnapshot = net.neoforged.neoforge.common.util.BlockSnapshot.create(level.dimension(), level, p_46605_, p_46607_);
                 level.capturedBlockSnapshots.add(blockSnapshot);
             }
@@ -368,7 +369,7 @@ public class MPUtils {
 
     public static void chat(Player player, Component message) {
         if (player != null) {
-            player.displayClientMessage(message, false);
+            MPGMessages.show(player, message, false);
         }
     }
 }

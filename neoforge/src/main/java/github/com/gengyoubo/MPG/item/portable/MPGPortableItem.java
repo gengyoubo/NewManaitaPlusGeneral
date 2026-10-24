@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.item.portable;
 
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.item.MPGPortableItemBase;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,8 +13,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class MPGPortableItem extends MPGPortableItemBase {
-    protected MPGPortableItem(String translationPrefix) {
-        super(translationPrefix, -1);
+    protected MPGPortableItem(Item.Properties properties, String translationPrefix) {
+        super(properties, translationPrefix);
     }
 
     protected final void openPortableScreen(ServerPlayer serverPlayer, ItemStack itemInHand, Level level,

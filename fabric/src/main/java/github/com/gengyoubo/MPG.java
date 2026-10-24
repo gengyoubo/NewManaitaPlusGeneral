@@ -125,7 +125,7 @@ public class MPG implements ModInitializer {
             if (!destroyItem.canHarvest(stack)) {
                 return InteractionResult.FAIL;
             }
-            if (level.isClientSide || !(level instanceof ServerLevel serverLevel)
+            if (level.isClientSide() || !(level instanceof ServerLevel serverLevel)
                     || !(player instanceof ServerPlayer serverPlayer)) {
                 return InteractionResult.PASS;
             }
@@ -146,7 +146,7 @@ public class MPG implements ModInitializer {
             if (!(stack.getItem() instanceof MPGSwordItemBase sword) || !(entity instanceof LivingEntity living)) {
                 return InteractionResult.PASS;
             }
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 return InteractionResult.PASS;
             }
             sword.performPlayerAttack(player, stack, living);

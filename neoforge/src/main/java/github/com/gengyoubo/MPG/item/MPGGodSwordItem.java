@@ -1,14 +1,18 @@
 package github.com.gengyoubo.MPG.item;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -25,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import github.com.gengyoubo.MPG.entity.MPGLightningBolt;
 import github.com.gengyoubo.common.item.data.IMPGDoubling;
 import github.com.gengyoubo.common.item.data.IMPGKey;
-import github.com.gengyoubo.MPG.item.tier.MPGToolTier;
+import github.com.gengyoubo.common.item.tier.MPGToolMaterials;
 import github.com.gengyoubo.MPG.network.Networking;
 import github.com.gengyoubo.common.network.payload.MPGChangeEntityDataPayload;
 import github.com.gengyoubo.common.entity.MPGEntityData;
@@ -39,7 +43,7 @@ import java.util.Random;
 
 import static github.com.gengyoubo.MPG.core.MPGEntityCore.ManaitaLightningBolt;
 
-public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling {
+public class MPGGodSwordItem extends Item implements IMPGKey, IMPGDoubling {
     public static final IClientItemExtensions CLIENT_EXTENSIONS = new IClientItemExtensions() {
         @Nullable
         @Override
@@ -67,8 +71,8 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
         }
     };
 
-    public MPGGodSwordItem() {
-        super(new MPGToolTier(), new Item.Properties().fireResistant());
+    public MPGGodSwordItem(Item.Properties properties) {
+        super(MPGToolMaterials.sword(properties).enchantable(1));
     }
 
 
@@ -82,7 +86,7 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack p_41404_, @NotNull Level p_41405_, @NotNull Entity p_41406_, int p_41407_, boolean p_41408_) {
+    public void inventoryTick(@NotNull ItemStack p_41404_, @NotNull ServerLevel p_41405_, @NotNull Entity p_41406_, @Nullable EquipmentSlot slot) {
         if (p_41406_ instanceof  Player player) {
             player.getAbilities().mayfly = true;
             player.setHealth(player.getMaxHealth());
@@ -105,14 +109,14 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level p_41432_, Player player, @NotNull InteractionHand p_41434_) {
+    public @NotNull InteractionResult use(Level p_41432_, Player player, @NotNull InteractionHand p_41434_) {
         ItemStack itemstack = player.getItemInHand(p_41434_);
         player.startUsingItem(p_41434_);
-        if (!p_41432_.isClientSide) {
+        if (!p_41432_.isClientSide()) {
             Random random = new Random();
             Vec3 position = player.position();
             for (int i = 0; i < 100; i++) {
-                MPGLightningBolt bolt = ManaitaLightningBolt.get().create(p_41432_);
+                MPGLightningBolt bolt = ManaitaLightningBolt.get().create(p_41432_, EntitySpawnReason.TRIGGERED);
                 if (bolt != null) {
                     float angle = random.nextFloat() * 62.831852F;
                     double distance = random.nextGaussian() * 100.0D;
@@ -127,16 +131,17 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
             }
         }
         MPUtils.godKill(player,isRemove(itemstack),player.isShiftKeyDown());
-        return InteractionResultHolder.pass(itemstack);
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack p_41421_, @NotNull TooltipContext context, @NotNull List<Component> p_41423_, @NotNull TooltipFlag p_41424_) {
-        super.appendHoverText(p_41421_, context, p_41423_, p_41424_);
-        p_41423_.add(Component.literal(MPText.manaita_mode.formatting(I18n.get("mode.doubling") + ":" + (isDoubling(p_41421_) ? I18n.get("info.on") : I18n.get("info.off")))));
-        p_41423_.add(Component.literal(MPText.manaita_mode.formatting(I18n.get("mode.remove.name") + ":" + (isRemove(p_41421_) ? I18n.get("info.on") : I18n.get("info.off")))));
-        p_41423_.add(Component.empty());
-        p_41423_.add(Component.literal(MPText.manaita_enchantment.formatting(I18n.get("info.item.manaita_sword_god.1"))));
+    public void appendHoverText(@NotNull ItemStack p_41421_, @NotNull TooltipContext context,
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> p_41423_, @NotNull TooltipFlag p_41424_) {
+        super.appendHoverText(p_41421_, context, display, p_41423_, p_41424_);
+        p_41423_.accept(Component.literal(MPText.manaita_mode.formatting(I18n.get("mode.doubling") + ":" + (isDoubling(p_41421_) ? I18n.get("info.on") : I18n.get("info.off")))));
+        p_41423_.accept(Component.literal(MPText.manaita_mode.formatting(I18n.get("mode.remove.name") + ":" + (isRemove(p_41421_) ? I18n.get("info.on") : I18n.get("info.off")))));
+        p_41423_.accept(Component.empty());
+        p_41423_.accept(Component.literal(MPText.manaita_enchantment.formatting(I18n.get("info.item.manaita_sword_god.1"))));
     }
 
     @Override
@@ -150,17 +155,12 @@ public class MPGGodSwordItem extends SwordItem implements IMPGKey, IMPGDoubling 
     }
 
     @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack p_41452_) {
-        return UseAnim.CUSTOM;
+    public @NotNull ItemUseAnimation getUseAnimation(@NotNull ItemStack p_41452_) {
+        return ItemUseAnimation.CUSTOM;
     }
 
     @Override
     public boolean isFoil(@NotNull ItemStack p_41453_) {
-        return true;
-    }
-
-    @Override
-    public boolean isEnchantable(@NotNull ItemStack p_41456_) {
         return true;
     }
 

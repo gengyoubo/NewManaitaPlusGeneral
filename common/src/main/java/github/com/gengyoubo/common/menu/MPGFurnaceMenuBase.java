@@ -1,5 +1,6 @@
 package github.com.gengyoubo.common.menu;
 
+import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +23,7 @@ public class MPGFurnaceMenuBase extends AbstractFurnaceMenu {
 
     protected MPGFurnaceMenuBase(MenuType<?> menuType, int containerId, Inventory inventory,
                                  Container container, ContainerData data) {
-        super(menuType, RecipeType.SMELTING, RecipeBookType.FURNACE,
+        super(menuType, RecipeType.SMELTING, RecipePropertySet.FURNACE_INPUT, RecipeBookType.FURNACE,
                 containerId, inventory, container, data);
         replaceResultSlot(inventory);
     }

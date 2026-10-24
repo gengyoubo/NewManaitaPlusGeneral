@@ -33,12 +33,8 @@ import java.util.function.Supplier;
 public abstract class MPGFurnaceBlockBase extends AbstractFurnaceBlock {
     private final Supplier<? extends Item> hookItem;
 
-    protected MPGFurnaceBlockBase(Supplier<? extends Item> hookItem) {
-        this(BlockBehaviour.Properties.of().noOcclusion(), hookItem);
-    }
-
     protected MPGFurnaceBlockBase(BlockBehaviour.Properties properties, Supplier<? extends Item> hookItem) {
-        super(properties);
+        super(properties.noOcclusion());
         this.hookItem = hookItem;
         registerDefaultState(stateDefinition.any()
                 .setValue(MPGBlockData.HOOK, 8)
@@ -61,7 +57,7 @@ public abstract class MPGFurnaceBlockBase extends AbstractFurnaceBlock {
     protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level,
                                                          @NotNull BlockPos pos, @NotNull Player player,
                                                          @NotNull BlockHitResult hitResult) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         openContainer(level, pos, player);

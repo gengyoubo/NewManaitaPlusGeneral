@@ -1,8 +1,11 @@
 package github.com.gengyoubo.MPG.item.tool;
 
+import net.minecraft.world.item.Item;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
@@ -28,9 +31,9 @@ import java.util.List;
 
 public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     public static final TagKey<Block> MINEABLE =
-            BlockTags.create(ResourceLocation.withDefaultNamespace("mineable"));
-    public MPGPaxelItem() {
-        super(MINEABLE, MPGToolProfile.PAXEL);
+            BlockTags.create(Identifier.withDefaultNamespace("mineable"));
+    public MPGPaxelItem(Item.Properties properties) {
+        super(properties, MINEABLE, MPGToolProfile.PAXEL);
     }
 
     @Override
@@ -54,10 +57,11 @@ public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.empty());
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(I18n.get("info.attack"))));
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltip, flag);
+        tooltip.accept(Component.empty());
+        tooltip.accept(Component.literal(MPText.manaita_infinity.formatting(I18n.get("info.attack"))));
     }
 
     @Override
@@ -73,6 +77,6 @@ public class MPGPaxelItem extends ManaitaPlusLegacyToolBase {
                 ManaitaPlusLegacyToolActionHelper.applyAxeActions(context, pos, state)
                         | ManaitaPlusLegacyToolActionHelper.applyGrowPlantAction(context, pos, state)
                         | ManaitaPlusLegacyToolActionHelper.applyShovelAction(context, pos, state));
-        return changed ? InteractionResult.sidedSuccess(context.getLevel().isClientSide) : InteractionResult.PASS;
+        return changed ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 }

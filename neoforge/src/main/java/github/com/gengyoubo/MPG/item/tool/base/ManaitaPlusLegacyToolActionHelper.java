@@ -1,5 +1,6 @@
 package github.com.gengyoubo.MPG.item.tool.base;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -66,7 +67,7 @@ public final class ManaitaPlusLegacyToolActionHelper {
         }
 
         level.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             level.setBlock(pos, tillState, 11);
             level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, tillState));
             damageHeldItem(context, player, context.getItemInHand());
@@ -75,7 +76,7 @@ public final class ManaitaPlusLegacyToolActionHelper {
     }
 
     public static void handleRangeOrEnchantmentUse(Level level, Player player, ItemStack itemInHand, int nextRange, IntConsumer rangeSetter) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (player.isShiftKeyDown()) {
@@ -188,7 +189,7 @@ public final class ManaitaPlusLegacyToolActionHelper {
             return false;
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             level.setBlock(pos, targetState, 11);
             level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, targetState));
             damageHeldItem(context, player, context.getItemInHand());

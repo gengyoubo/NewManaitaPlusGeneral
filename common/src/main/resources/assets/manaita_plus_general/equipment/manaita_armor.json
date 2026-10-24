@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "manaita_plus_general:manaita_armor"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "manaita_plus_general:manaita_armor"
+      }
+    ]
+  }
+}

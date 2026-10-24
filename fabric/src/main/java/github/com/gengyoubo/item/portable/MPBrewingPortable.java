@@ -1,5 +1,6 @@
 package github.com.gengyoubo.item.portable;
 
+import net.minecraft.world.item.Item;
 import github.com.gengyoubo.common.block.entity.MPGPortableBrewingBlockEntityBase;
 import github.com.gengyoubo.core.MPBlockCore;
 import github.com.gengyoubo.core.MPBlockEntityCore;
@@ -16,8 +17,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class MPBrewingPortable extends MPGPortableItem {
-    public MPBrewingPortable() {
-        super("item.portableBrewing.");
+    public MPBrewingPortable(Item.Properties properties) {
+        super(properties, "item.portableBrewing.");
     }
 
     @Override
@@ -29,8 +30,7 @@ public class MPBrewingPortable extends MPGPortableItem {
 
     public static class MPBrewingStandBlockEntity extends MPGPortableBrewingBlockEntityBase {
         public MPBrewingStandBlockEntity(Player player, ItemStack stack) {
-            super(MPBlockEntityCore.BREWING_BLOCK_ENTITY.get(),
-                    MPBlockCore.BrewingBlock.get().defaultBlockState(), player, stack);
+            super(MPBlockEntityCore.BREWING_BLOCK_ENTITY.get(), MPBlockCore.BrewingBlock.get().defaultBlockState(), player, stack);
         }
 
         @Override

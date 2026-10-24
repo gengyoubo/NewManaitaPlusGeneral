@@ -1,6 +1,8 @@
 package github.com.gengyoubo.common.entity;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -18,7 +20,6 @@ public abstract class MPGLightningBoltBase extends Entity {
 
     protected MPGLightningBoltBase(EntityType<?> type, Level level) {
         super(type, level);
-        noCulling = true;
         life = 2;
         seed = random.nextLong();
         flashes = random.nextInt(3) + 1;
@@ -62,14 +63,19 @@ public abstract class MPGLightningBoltBase extends Entity {
     }
 
     @Override
+    public boolean hurtServer(@NotNull ServerLevel level, @NotNull DamageSource source, float amount) {
+        return false;
+    }
+
+    @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
     }
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+    protected void readAdditionalSaveData(@NotNull ValueInput input) {
     }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
     }
 }

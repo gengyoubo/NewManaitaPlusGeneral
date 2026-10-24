@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "manaita_plus_general:weaponsmith/5/crafting_block_bow",
+    "manaita_plus_general:weaponsmith/5/furnace_block_bow",
+    "manaita_plus_general:weaponsmith/5/brewing_block_bow",
+    "manaita_plus_general:weaponsmith/5/bow_nether_star_god_sword"
+  ]
+}

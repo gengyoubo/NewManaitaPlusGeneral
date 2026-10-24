@@ -1,13 +1,22 @@
 package github.com.gengyoubo.common.item.armor;
 
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.component.DataComponents;
+import github.com.gengyoubo.common.item.tier.MPGToolMaterials;
+import github.com.gengyoubo.common.util.MPGMessages;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import github.com.gengyoubo.common.config.MPGConfigValues;
 import github.com.gengyoubo.common.entity.MPGEntityData;
 import github.com.gengyoubo.common.item.data.IMPGKey;
 import github.com.gengyoubo.common.util.MPGItemStackData;
 import github.com.gengyoubo.common.util.MPText;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -23,37 +32,19 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MPGArmorItemBase extends ArmorItem {
-    public static final Holder<ArmorMaterial> MANAITA_ARMOR_MATERIAL = Holder.direct(
-            new ArmorMaterial(
-                    Map.of(
-                            Type.HELMET, 0,
-                            Type.CHESTPLATE, 0,
-                            Type.LEGGINGS, 0,
-                            Type.BOOTS, 0,
-                            Type.BODY, 0
-                    ),
-                    0,
-                    SoundEvents.ARMOR_EQUIP_TURTLE,
-                    () -> Ingredient.EMPTY,
-                    List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(
-                            "manaita_plus_general", "manaita_armor"))),
-                    0.0F,
-                    0.0F
-            )
-    );
+public class MPGArmorItemBase extends Item {
+    /** Equipment asset rendered from assets/manaita_plus_general/equipment/manaita_armor.json. */
+    public static final ResourceKey<EquipmentAsset> MANAITA_ARMOR_ASSET = ResourceKey.create(EquipmentAssets.ROOT_ID,
+            Identifier.fromNamespaceAndPath("manaita_plus_general", "manaita_armor"));
 
     private static final int FAST_REGENERATION_DURATION = 60;
     private static final int FAST_REGENERATION_AMPLIFIER = 4;
@@ -67,19 +58,20 @@ public class MPGArmorItemBase extends ArmorItem {
     private static final String CHESTPLATE_FALL_TAG = "manaita_plus_general.chestplate_fall";
     private static final String CHESTPLATE_BIG_FALL_TAG = "manaita_plus_general.chestplate_big_fall";
     private static final String LEGGINGS_INVISIBILITY_TAG = "manaita_plus_general.leggings_invisibility";
-    private static final ResourceLocation BOOTS_SPEED_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(
+    private static final Identifier BOOTS_SPEED_MODIFIER_ID = Identifier.fromNamespaceAndPath(
             "manaita_plus_general", "boots_speed");
-    private static final ResourceLocation BOOTS_JUMP_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(
+    private static final Identifier BOOTS_JUMP_MODIFIER_ID = Identifier.fromNamespaceAndPath(
             "manaita_plus_general", "boots_jump");
 
-    protected MPGArmorItemBase(Holder<ArmorMaterial> material, Type type) {
-        super(material, type, new Item.Properties().fireResistant());
+    protected MPGArmorItemBase(Item.Properties properties, EquipmentSlot slot) {
+        super(MPGToolMaterials.unbreakable(properties).component(DataComponents.EQUIPPABLE,
+                Equippable.builder(slot).setEquipSound(SoundEvents.ARMOR_EQUIP_TURTLE).setAsset(MANAITA_ARMOR_ASSET).build()));
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
-                                List<Component> tooltip, @NotNull TooltipFlag flag) {
-        tooltip.add(Component.literal(MPText.manaita_infinity.formatting(text("info.armor"))));
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+        tooltip.accept(Component.literal(MPText.manaita_infinity.formatting(text("info.armor"))));
     }
 
     public static void syncArmorState(Player player) {
@@ -88,7 +80,7 @@ public class MPGArmorItemBase extends ArmorItem {
         ItemStack leggings = player.getItemBySlot(EquipmentSlot.LEGS);
         ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
 
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             if (helmet.getItem() instanceof Helmet) {
                 applyHelmetEffects(player);
             } else {
@@ -146,7 +138,7 @@ public class MPGArmorItemBase extends ArmorItem {
             return;
         }
 
-        if (player.getTags().contains(CHESTPLATE_FLIGHT_TAG)) {
+        if (player.entityTags().contains(CHESTPLATE_FLIGHT_TAG)) {
             player.removeTag(CHESTPLATE_FLIGHT_TAG);
             if (!player.isCreative() && !player.isSpectator()
                     && !MPGEntityData.manaita.accept(player)) {
@@ -167,9 +159,9 @@ public class MPGArmorItemBase extends ArmorItem {
             }
             return;
         }
-        if (player.onGround() && player.getTags().contains(CHESTPLATE_FALL_TAG)) {
+        if (player.onGround() && player.entityTags().contains(CHESTPLATE_FALL_TAG)) {
             if (!hasManaitaBoots(player)) {
-                boolean bigFall = player.getTags().contains(CHESTPLATE_BIG_FALL_TAG);
+                boolean bigFall = player.entityTags().contains(CHESTPLATE_BIG_FALL_TAG);
                 player.playSound(bigFall ? SoundEvents.GENERIC_BIG_FALL : SoundEvents.GENERIC_SMALL_FALL,
                         1.0F, 1.0F);
             }
@@ -259,7 +251,6 @@ public class MPGArmorItemBase extends ArmorItem {
         FoodData foodData = player.getFoodData();
         foodData.setFoodLevel(20);
         foodData.setSaturation(20.0F);
-        foodData.setExhaustion(0.0F);
 
         addHelmetEffect(player, MobEffects.REGENERATION, FAST_REGENERATION_DURATION,
                 FAST_REGENERATION_AMPLIFIER, HELMET_REGENERATION_TAG);
@@ -294,25 +285,25 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     private static void removeHelmetEffect(Player player, Holder<MobEffect> effect, String ownerTag) {
-        if (player.getTags().contains(ownerTag)) {
+        if (player.entityTags().contains(ownerTag)) {
             player.removeEffect(effect);
             player.removeTag(ownerTag);
         }
     }
 
     public static class Helmet extends MPGArmorItemBase {
-        public Helmet(Holder<ArmorMaterial> material) {
-            super(material, Type.HELMET);
+        public Helmet(Item.Properties properties) {
+            super(properties, EquipmentSlot.HEAD);
         }
 
         @Override
         public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
-                                    List<Component> tooltip, @NotNull TooltipFlag flag) {
-            tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+            tooltip.accept(Component.literal(MPText.manaita_mode.formatting(
                     text("mode.nightvision") + ": "
                             + (MPGConfigValues.helmet_night_vision_value
                             ? text("info.on") : text("info.off")))));
-            super.appendHoverText(stack, context, tooltip, flag);
+            super.appendHoverText(stack, context, display, tooltip, flag);
         }
 
         @Override
@@ -323,8 +314,8 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     public static class Chestplate extends MPGArmorItemBase {
-        public Chestplate(Holder<ArmorMaterial> material) {
-            super(material, Type.CHESTPLATE);
+        public Chestplate(Item.Properties properties) {
+            super(properties, EquipmentSlot.CHEST);
         }
 
         @Override
@@ -335,8 +326,8 @@ public class MPGArmorItemBase extends ArmorItem {
     }
 
     public static class Leggings extends MPGArmorItemBase {
-        public Leggings(Holder<ArmorMaterial> material) {
-            super(material, Type.LEGGINGS);
+        public Leggings(Item.Properties properties) {
+            super(properties, EquipmentSlot.LEGS);
         }
 
         @Override
@@ -346,18 +337,18 @@ public class MPGArmorItemBase extends ArmorItem {
 
         @Override
         public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
-                                    List<Component> tooltip, @NotNull TooltipFlag flag) {
-            tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+            tooltip.accept(Component.literal(MPText.manaita_mode.formatting(
                     text("mode.invisibility") + ": "
                             + (MPGConfigValues.leggings_invisibility_value
                             ? text("info.on") : text("info.off")))));
-            super.appendHoverText(stack, context, tooltip, flag);
+            super.appendHoverText(stack, context, display, tooltip, flag);
         }
     }
 
     public static class Boots extends MPGArmorItemBase implements IMPGKey {
-        public Boots(Holder<ArmorMaterial> material) {
-            super(material, Type.BOOTS);
+        public Boots(Item.Properties properties) {
+            super(properties, EquipmentSlot.FEET);
         }
 
         @Override
@@ -384,7 +375,7 @@ public class MPGArmorItemBase extends ArmorItem {
         @Override
         public void onManaitaKeyPressOnClient(ItemStack itemStack, Player player) {
             onManaitaKeyPress(itemStack);
-            player.displayClientMessage(Component.literal(MPText.manaita_mode.formatting(String.format(
+            MPGMessages.show(player, Component.literal(MPText.manaita_mode.formatting(String.format(
                     "[%s] %s: %d, %s: %d", text("item.boots.name"),
                     text("mode.speed"), getSpeed(itemStack), text("mode.jump"), getJump(itemStack)))),
                     messageUsesOverlay());
@@ -392,15 +383,15 @@ public class MPGArmorItemBase extends ArmorItem {
 
         @Override
         public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
-                                    List<Component> tooltip, @NotNull TooltipFlag flag) {
-            tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+            @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
+            tooltip.accept(Component.literal(MPText.manaita_mode.formatting(
                     text("mode.autojump") + ": "
                             + (MPGConfigValues.boots_auto_jump_value ? text("info.on") : text("info.off")))));
-            tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+            tooltip.accept(Component.literal(MPText.manaita_mode.formatting(
                     text("mode.speed") + ": " + getSpeed(stack))));
-            tooltip.add(Component.literal(MPText.manaita_mode.formatting(
+            tooltip.accept(Component.literal(MPText.manaita_mode.formatting(
                     text("mode.jump") + ": " + getJump(stack))));
-            super.appendHoverText(stack, context, tooltip, flag);
+            super.appendHoverText(stack, context, display, tooltip, flag);
         }
 
         private static int nextLevel(int level) {

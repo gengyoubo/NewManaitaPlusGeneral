@@ -80,7 +80,7 @@ public class Networking {
 
     public static void sendToServer(Object packet) {
         if (packet instanceof net.minecraft.network.protocol.common.custom.CustomPacketPayload payload) {
-            PacketDistributor.sendToServer(payload);
+            net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(payload);
         }
     }
 

@@ -18,11 +18,7 @@ import org.jetbrains.annotations.Nullable;
 public class MPFurnaceBlock extends MPGFurnaceBlockBase {
     public static final MapCodec<MPFurnaceBlock> CODEC = simpleCodec(MPFurnaceBlock::new);
 
-    public MPFurnaceBlock() {
-        this(BlockBehaviour.Properties.of().noOcclusion());
-    }
-
-    private MPFurnaceBlock(BlockBehaviour.Properties properties) {
+    public MPFurnaceBlock(BlockBehaviour.Properties properties) {
         super(properties, () -> MPGBlockCore.HookBlockItem.get());
     }
 
@@ -39,6 +35,6 @@ public class MPFurnaceBlock extends MPGFurnaceBlockBase {
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153273_, @NotNull BlockState p_153274_, @NotNull BlockEntityType<T> p_153275_) {
-        return p_153273_.isClientSide ? null : createTickerHelper(p_153275_, MPGBlockEntityCore.FURNACE_BLOCK_ENTITY.get(), MPFurnaceBlockEntity::serverTick);
+        return p_153273_.isClientSide() ? null : createTickerHelper(p_153275_, MPGBlockEntityCore.FURNACE_BLOCK_ENTITY.get(), MPFurnaceBlockEntity::serverTick);
     }
 }

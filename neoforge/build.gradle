@@ -24,38 +24,29 @@ configurations {
     }
 }
 
-repositories {
-    maven {
-        name = 'NeoForged'
-        url = 'https://maven.neoforged.net/releases'
-    }
-}
-
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
-
-    // Architectury API. This is optional, and you can comment it out if you don't need it.
-    modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
     compileOnly "mezz.jei:jei-$rootProject.minecraft_version-common-api:$rootProject.jei_version"
     compileOnly "mezz.jei:jei-$rootProject.minecraft_version-neoforge-api:$rootProject.jei_version"
     // The JEI mixins target internal implementation classes, which are not included in the API artifacts.
     compileOnly "mezz.jei:jei-$rootProject.minecraft_version-neoforge:$rootProject.jei_version"
-    modRuntimeOnly "mezz.jei:jei-$rootProject.minecraft_version-neoforge:$rootProject.jei_version"
+    runtimeOnly "mezz.jei:jei-$rootProject.minecraft_version-neoforge:$rootProject.jei_version"
 
-    compileOnly "top.theillusivec4.curios:curios-neoforge:$rootProject.curios_version+$rootProject.minecraft_version:api"
-    modRuntimeOnly "top.theillusivec4.curios:curios-neoforge:$rootProject.curios_version+$rootProject.minecraft_version"
+    // Optional accessory slots: Manaita rings only exist when Curios is installed.
+    compileOnly "top.theillusivec4.curios:curios-neoforge:$rootProject.curios_version:api"
+    runtimeOnly "top.theillusivec4.curios:curios-neoforge:$rootProject.curios_version"
 
-    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    common(project(path: ':common')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }
 
 processResources {
     def props = [
         minecraft_version: rootProject.minecraft_version,
-        minecraft_version_range: '[1.21.1,1.22)',
+        minecraft_version_range: '[26.1.2,26.2)',
         neo_version: rootProject.neoforge_version,
-        neo_version_range: '[21.1.228,21.2)',
+        neo_version_range: '[26.1.2.99,26.2)',
         loader_version_range: '[1,)',
         mod_id: rootProject.mod_id,
         mod_name: rootProject.mod_name,
@@ -71,15 +62,27 @@ processResources {
     }
 }
 
+// Minecraft is not obfuscated on this version, so there is no remapJar task.
+// The shaded jar is the mod jar that ships.
+jar {
+    archiveClassifier = 'dev'
+}
+
 shadowJar {
     configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
-}
-
-remapJar {
-    inputFile.set shadowJar.archiveFile
-}
-
-tasks.named('sourcesJar').configure {
+    archiveClassifier = null
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+assemble.dependsOn shadowJar
+
+configurations {
+    apiElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
+    runtimeElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
 }
